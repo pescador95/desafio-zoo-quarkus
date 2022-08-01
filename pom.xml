@@ -16,6 +16,7 @@
     <quarkus.platform.version>2.11.1.Final</quarkus.platform.version>
     <skipITs>true</skipITs>
     <surefire-plugin.version>3.0.0-M7</surefire-plugin.version>
+      <!--postgres.url>jdbc:postgresql://localhost:5432/desafio_zoo</postgres.url-->
   </properties>
   <dependencyManagement>
     <dependencies>
@@ -52,6 +53,7 @@
     <dependency>
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-hibernate-orm-panache</artifactId>
+      <version>2.9.2.Final</version>
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>

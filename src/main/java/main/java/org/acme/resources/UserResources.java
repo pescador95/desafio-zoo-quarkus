@@ -15,7 +15,7 @@ public class UserResources {
      UserController controller;
 
     @GET
-    @Path("/[id]")
+    @Path("/get")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
     public Response get(User pUser) {

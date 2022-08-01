@@ -1,6 +1,7 @@
 package main.java.org.acme.model;
 
 import io.quarkus.hibernate.orm.panache.PanacheEntity;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
@@ -13,6 +14,7 @@ public class User extends PanacheEntity {
     @Column(nullable = false, unique = true)
     public String login;
     @Column(nullable = false)
+    //@JsonIgnore
     public String password;
     @Column(nullable = false, unique = true)
     public String email;

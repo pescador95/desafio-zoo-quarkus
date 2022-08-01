@@ -12,7 +12,7 @@ import java.util.Objects;
 public class UserController {
     public String mensagem;
 
-    public void getUser(User pUser) {
+    public User getUser(User pUser) {
         User user = User.find("login", pUser.login).firstResult();
 
         if (user == null) {
@@ -20,7 +20,7 @@ public class UserController {
             throw new BadRequestException("Usuário não foi localizado.");
 
         }
-
+    return user;
     }
 
     public void addUser(User pUser) {

@@ -12,15 +12,15 @@ import javax.ws.rs.core.Response;
 public class UserResources {
 
     @Inject
-     UserController controller;
+    UserController controller;
 
     @GET
     @Path("/get")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
     public Response get(User pUser) {
-        controller.getUser(pUser);
-        return Response.ok().status(200).build();
+        User user = controller.getUser(pUser);
+        return Response.ok(user).status(200).build();
     }
 
     @POST
@@ -29,7 +29,7 @@ public class UserResources {
     @Consumes("application/json")
     public Response add(User pUser) {
         controller.addUser(pUser);
-        return Response.ok().status(200).build();
+        return Response.ok().status(201).build();
     }
 
     @PUT

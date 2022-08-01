@@ -16,7 +16,7 @@ public class User extends PanacheEntity {
     public String password;
     @Column(nullable = false, unique = true)
     public String email;
-    @Column(unique = true)
+    @Column()
     public boolean isAtivo;
     @Column()
     public int roleUser;

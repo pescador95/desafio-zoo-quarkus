@@ -11,20 +11,29 @@ import java.util.Objects;
 @Transactional
 public class UserController {
     public String mensagem;
+    public User user;
+    public User userReturn; //TODO var criada para retornar obj user pelo método get sem trazer a senha. Estudar para implementar um @JsonIgnoreProperty.
 
     public User getUser(User pUser) {
-        User user = User.find("login", pUser.login).firstResult();
+       user = User.find("login", pUser.login).firstResult();
 
+        userReturn = new User();
+            userReturn.id = user.id;
+            userReturn.email = user.email;
+            userReturn.nome = user.nome;
+            userReturn.login = user.login;
+            userReturn.isAtivo = user.isAtivo;
+            userReturn.roleUser = user.roleUser;
         if (user == null) {
             mensagem = ("Usuário não foi localizado.");
             throw new BadRequestException("Usuário não foi localizado.");
 
         }
-    return user;
+    return userReturn;
     }
 
     public void addUser(User pUser) {
-        User user = User.find("login", pUser.login).firstResult();
+        user = User.find("login", pUser.login).firstResult();
 
         if (user == null) {
             user = new User();
@@ -45,7 +54,7 @@ public class UserController {
     }
 
     public void updateUser(User pUser) {
-        User user = User.find("login", pUser.login).firstResult();
+        user = User.find("login", pUser.login).firstResult();
 
         if (user.login.equals(pUser.login)) {
             if (!user.email.equals(pUser.email)) {
@@ -67,7 +76,7 @@ public class UserController {
     }
 
     public void deleteUser(User pUser) {
-        User user = User.find("login", pUser.login).firstResult();
+        user = User.find("login", pUser.login).firstResult();
 
         if (!Objects.isNull(user)) {
             if (user.login.equals(pUser.login)) {
@@ -79,7 +88,7 @@ public class UserController {
             }
         } else {
             mensagem = ("Não foi possível deletar o Usuário.");
-            throw new BadRequestException("Não foi possível deletar o Usuário.");
+            throw new BadRequestException("Não foi possível localizar o Usuário para deletar.");
         }
     }
 }

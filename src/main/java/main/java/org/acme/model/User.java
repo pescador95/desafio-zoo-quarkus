@@ -14,7 +14,6 @@ public class User extends PanacheEntity {
     @Column(nullable = false, unique = true)
     public String login;
     @Column(nullable = false)
-    //@JsonIgnore
     public String password;
     @Column(nullable = false, unique = true)
     public String email;

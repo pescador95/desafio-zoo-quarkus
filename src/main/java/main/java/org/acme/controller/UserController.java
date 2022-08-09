@@ -5,7 +5,6 @@ import main.java.org.acme.model.User;
 import javax.enterprise.context.ApplicationScoped;
 import javax.transaction.Transactional;
 import javax.ws.rs.BadRequestException;
-import java.util.Objects;
 
 @ApplicationScoped
 @Transactional
@@ -17,14 +16,15 @@ public class UserController {
     public User getUser(User pUser) {
        user = User.find("login", pUser.login).firstResult();
 
-        userReturn = new User();
+        if (!(user == null)) {
+            userReturn = new User();
             userReturn.id = user.id;
             userReturn.email = user.email;
             userReturn.nome = user.nome;
             userReturn.login = user.login;
             userReturn.isAtivo = user.isAtivo;
             userReturn.roleUser = user.roleUser;
-        if (user == null) {
+        } else {
             mensagem = ("Usuário não foi localizado.");
             throw new BadRequestException("Usuário não foi localizado.");
 
@@ -42,7 +42,7 @@ public class UserController {
             user.login = pUser.login;
             user.password = pUser.password;
             user.isAtivo = true;
-            user.roleUser = User.NORMAL;
+            user.roleUser = pUser.roleUser;
             user.persist();
             mensagem = "usuário criado com sucesso!";
 
@@ -56,7 +56,7 @@ public class UserController {
     public void updateUser(User pUser) {
         user = User.find("login", pUser.login).firstResult();
 
-        if (user.login.equals(pUser.login)) {
+        if (!(user == null) && user.login.equals(pUser.login)) {
             if (!user.email.equals(pUser.email)) {
                 user.email = pUser.email;
             }
@@ -65,6 +65,9 @@ public class UserController {
             }
             if (!user.password.equals(pUser.password)) {
                 user.password = pUser.password;
+            }
+            if (user.roleUser != pUser.roleUser) {
+                user.roleUser = pUser.roleUser;
             }
             user.persist();
             mensagem = "usuário atualizado com sucesso!";
@@ -78,18 +81,14 @@ public class UserController {
     public void deleteUser(User pUser) {
         user = User.find("login", pUser.login).firstResult();
 
-        if (!Objects.isNull(user)) {
-            if (user.login.equals(pUser.login)) {
+
+            if (!(user == null) && user.login.equals(pUser.login)) {
                 user.delete();
                 mensagem = "Usuário deletado com sucesso!";
             } else {
                 mensagem = ("Não foi possível deletar o Usuário.");
                 throw new BadRequestException("Não foi possível deletar o Usuário.");
             }
-        } else {
-            mensagem = ("Não foi possível deletar o Usuário.");
-            throw new BadRequestException("Não foi possível localizar o Usuário para deletar.");
-        }
     }
 }
 ;

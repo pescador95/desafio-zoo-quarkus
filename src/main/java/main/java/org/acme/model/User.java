@@ -19,9 +19,17 @@ public class User extends PanacheEntity {
     public String email;
     @Column()
     public boolean isAtivo;
-    @Column()
+   @Column()
     public int roleUser;
 
-    public static final int NORMAL = 1;
-    public static final int ADMIN = 2;
+    public enum RolesUser {
+        NORMAL(0), ADMIN(1), VETERINARIO(2), ZOOLOGO(3), ANESTESISTA(4);
+
+        @Column
+        public int valorRoleUser;
+
+        RolesUser(int roleUser) {
+            valorRoleUser = roleUser;
+        }
+    }
 }

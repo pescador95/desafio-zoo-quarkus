@@ -19,7 +19,7 @@ public class HistoricoEtologico extends PanacheEntity {
     public String descricaoEtologico;
     @OneToOne
     @JoinColumn(name="userId")
-    private User user;
+    private Usuario usuario;
     @Column()
     public boolean isAtivo;
 }

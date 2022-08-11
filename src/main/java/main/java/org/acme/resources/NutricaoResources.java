@@ -1,34 +1,34 @@
 package main.java.org.acme.resources;
 
-import main.java.org.acme.controller.UserController;
-import main.java.org.acme.model.User;
+import main.java.org.acme.controller.NutricaoController;
+import main.java.org.acme.model.Nutricao;
 
 import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-@Path("/user")
-public class UserResources {
+@Path("/nutricao")
+public class NutricaoResources {
 
     @Inject
-    UserController controller;
+    NutricaoController controller;
 
     @GET
     @Path("/get")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
-    public Response get(User pUser) {
-        User user = controller.getUser(pUser);
-        return Response.ok(user).status(200).build();
+    public Response get(Nutricao pNutricao) {
+        Nutricao nutricao = controller.getNutricao(pNutricao);
+        return Response.ok(nutricao).status(200).build();
     }
 
     @POST
     @Path("/create")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
-    public Response add(User pUser) {
-        controller.addUser(pUser);
+    public Response add(Nutricao pNutricao) {
+        controller.addNutricao(pNutricao);
         return Response.ok().status(201).build();
     }
 
@@ -36,8 +36,8 @@ public class UserResources {
     @Path("/update")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
-    public Response update(User pUser) {
-        controller.updateUser(pUser);
+    public Response update(Nutricao pNutricao) {
+        controller.updateNutricao(pNutricao);
         return Response.ok().status(200).build();
     }
 
@@ -45,8 +45,8 @@ public class UserResources {
     @Path("/delete")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
-    public Response delete(User pUser) {
-        controller.deleteUser(pUser);
+    public Response delete(Nutricao pNutricao) {
+        controller.deleteNutricao(pNutricao);
         return Response.ok().status(200).build();
     }
 }

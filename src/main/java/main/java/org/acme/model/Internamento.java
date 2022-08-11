@@ -24,7 +24,7 @@ public class Internamento extends PanacheEntity {
     private LaudoNecroscopico laudoNecroscopico;
     @OneToOne
     @JoinColumn(name="userId")
-    private User user;
+    private Usuario usuario;
     @Column()
     public boolean isAtivo;
 }

@@ -20,7 +20,7 @@ public class Medicacao extends PanacheEntity {
     public String frequencia;
     @OneToOne
     @JoinColumn(name="userId")
-    private User user;
+    private Usuario usuario;
     @Column()
     public boolean isAtivo;
 }

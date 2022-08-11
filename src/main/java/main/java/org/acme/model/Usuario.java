@@ -5,10 +5,11 @@ import io.quarkus.hibernate.orm.panache.PanacheEntity;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import java.time.ZonedDateTime;
 
 @Entity
-@Table(name = "[user]")
-public class User extends PanacheEntity {
+@Table(name = "usuario")
+public class Usuario extends PanacheEntity {
     @Column(nullable = false)
     public String nome;
     @Column(nullable = false, unique = true)
@@ -19,17 +20,21 @@ public class User extends PanacheEntity {
     public String email;
     @Column()
     public boolean isAtivo;
+    @Column()
+    public String usuarioAcao;
+    @Column()
+    public ZonedDateTime dataAcao;
    @Column()
-    public int roleUser;
+    public int roleUsuario;
 
-    public enum RolesUser {
+    public enum RoleUsuarios {
         NORMAL(0), ADMIN(1), VETERINARIO(2), ZOOLOGO(3), ANESTESISTA(4);
 
         @Column
-        public int valorRoleUser;
+        public int valorRoleUsuario;
 
-        RolesUser(int roleUser) {
-            valorRoleUser = roleUser;
+        RoleUsuarios(int roleUsuario) {
+            valorRoleUsuario = roleUsuario;
         }
     }
 }

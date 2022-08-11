@@ -1,7 +1,7 @@
 package main.java.org.acme.model;
 
 import io.quarkus.hibernate.orm.panache.PanacheEntity;
-
+import main.java.org.acme.model.Usuario;
 import javax.persistence.*;
 import java.util.Date;
 
@@ -12,7 +12,7 @@ public class AdministracaoMedicacao extends PanacheEntity {
     public Date dataMedicacao;
     @OneToOne
     @JoinColumn(name="userId")
-    private User user;
+    private Usuario usuario;
     @Column()
     public boolean isAtivo;
 }

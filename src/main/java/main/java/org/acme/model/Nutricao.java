@@ -10,7 +10,7 @@ import java.sql.Date;
 public class Nutricao extends PanacheEntity {
     @OneToOne
     @JoinColumn(name="animalId")
-    private Animal animal;
+    public Animal animal;
     @Column(nullable = false)
     public Date dataInicio;
     @Column(nullable = false)
@@ -23,7 +23,7 @@ public class Nutricao extends PanacheEntity {
     public Float quantidade;
     @OneToOne
     @JoinColumn(name="userId")
-    private User user;
+    public Usuario usuario;
     @Column()
     public boolean isAtivo;
     @Column

@@ -26,7 +26,7 @@ public class Monitoracao extends PanacheEntity {
     public String frequenciaCariaca;
     @OneToOne
     @JoinColumn(name="userId")
-    private User user;
+    private Usuario usuario;
     @Column()
     public boolean isAtivo;
 }

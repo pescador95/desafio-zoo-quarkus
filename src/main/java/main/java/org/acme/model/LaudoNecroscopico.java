@@ -27,7 +27,7 @@ public class LaudoNecroscopico extends PanacheEntity {
     public Boolean isLaudoEntregue;
     @OneToOne
     @JoinColumn(name="userId")
-    private User user;
+    private Usuario usuario;
     @Column()
     public boolean isAtivo;
 }

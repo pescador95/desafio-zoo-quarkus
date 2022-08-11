@@ -19,7 +19,7 @@ public class EnriquecimentoAmbiental extends PanacheEntity {
     public String descricaoEnriquecimento;
     @OneToOne
     @JoinColumn(name="userId")
-    private User user;
+    private Usuario usuario;
     @Column()
     public boolean isAtivo;
 }

@@ -1,5 +1,6 @@
-package main.java.desafiozoo.model;
+package main.java.desafio.zoo.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.quarkus.hibernate.orm.panache.PanacheEntity;
 
 import javax.persistence.*;
@@ -12,6 +13,7 @@ public class HistoricoEtologico extends PanacheEntity {
     @JoinColumn(name="animalId")
     private Animal animal;
     @Column(nullable = false)
+    @JsonFormat(pattern="dd/MM/yyyy HH:mm:ss")
     public Date dataEtologico;
     @Column(nullable = false)
     public String nomeEtologico;
@@ -22,5 +24,10 @@ public class HistoricoEtologico extends PanacheEntity {
     private Usuario usuario;
     @Column()
     public boolean isAtivo;
+    @Column()
+    public String usuarioAcao;
+    @Column()
+    @JsonFormat(pattern="dd/MM/yyyy HH:mm:ss")
+    public Date dataAcao;
 }
 

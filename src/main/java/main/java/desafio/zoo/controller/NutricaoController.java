@@ -1,11 +1,12 @@
-package main.java.desafiozoo.controller;
+package main.java.desafio.zoo.controller;
 
-import main.java.desafiozoo.model.Nutricao;
+import main.java.desafio.zoo.model.Nutricao;
 import org.jetbrains.annotations.NotNull;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.transaction.Transactional;
 import javax.ws.rs.BadRequestException;
+import java.util.Date;
 
 @ApplicationScoped
 @Transactional
@@ -15,9 +16,9 @@ public class NutricaoController {
 
 
     public Nutricao getNutricao(@NotNull Nutricao pNutricao) {
-        nutricao = Nutricao.find("animal", pNutricao.animal).firstResult();
+        nutricao = Nutricao.find("animal = ?1", pNutricao.animal).firstResult();
 
-        if (nutricao == null) {
+        if (nutricao == null || !nutricao.isAtivo) {
             mensagem = ("Nutrição não foi localizado.");
             throw new BadRequestException("Nutrição não foi localizado.");
         }
@@ -31,13 +32,15 @@ public class NutricaoController {
             nutricao = new Nutricao();
             nutricao.descricaoNutricao = pNutricao.descricaoNutricao;
             nutricao.alimento = pNutricao.alimento;
-            nutricao.isAtivo = pNutricao.isAtivo;
+            nutricao.isAtivo = true;
             nutricao.dataInicio = pNutricao.dataInicio;
             nutricao.dataFim = pNutricao.dataFim;
             nutricao.quantidade = pNutricao.quantidade;
             nutricao.valorUnidadeMedida = pNutricao.valorUnidadeMedida;
             nutricao.usuario = pNutricao.usuario;
             nutricao.animal = pNutricao.animal;
+            nutricao.usuarioAcao = "";
+            nutricao.dataAcao = new Date();
 
 
             nutricao.persist();
@@ -77,6 +80,7 @@ public class NutricaoController {
             if (nutricao.usuario.equals(pNutricao.usuario)) {
                 nutricao.usuario = pNutricao.usuario;
             }
+            nutricao.dataAcao = new Date();
             nutricao.persist();
             mensagem = "Nutrição atualizada com sucesso!";
         } else {
@@ -90,8 +94,11 @@ public class NutricaoController {
         nutricao = Nutricao.find("animal", pNutricao.animal).firstResult();
 
 
-            if (!(nutricao == null) && nutricao.animal.equals(pNutricao.animal)) {
-                nutricao.delete();
+            if (!(nutricao == null) && nutricao.animal.equals(pNutricao.animal) && (nutricao.isAtivo)) {
+                nutricao.isAtivo = false;
+                nutricao.usuarioAcao = "usuario";
+                nutricao.dataAcao = new Date();
+                nutricao.persist();
                 mensagem = "Nutrição deletado com sucesso!";
             } else {
                 mensagem = ("Não foi possível deletar a ficha de Nutrição.");

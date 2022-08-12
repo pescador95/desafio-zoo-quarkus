@@ -1,5 +1,6 @@
-package main.java.desafiozoo.model;
+package main.java.desafio.zoo.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.quarkus.hibernate.orm.panache.PanacheEntity;
 
 import javax.persistence.*;
@@ -14,13 +15,15 @@ public class LaudoNecroscopico extends PanacheEntity {
     @Column(unique = true)
     public long numeroLaudo;
     @Column(nullable = false)
+    @JsonFormat(pattern="dd/MM/yyyy HH:mm:ss")
     public Date dataObito;
     @Column(nullable = false)
+    @JsonFormat(pattern="dd/MM/yyyy HH:mm:ss")
     public Date dataNecropsia;
     @Column(nullable = false)
     public Boolean isEutanasia;
     @Column(nullable = false)
-    public Boolean isespontanea;
+    public Boolean isEspontanea;
     @Column(nullable = false)
     public String tipoMorte;
     @Column(nullable = false)
@@ -30,5 +33,10 @@ public class LaudoNecroscopico extends PanacheEntity {
     private Usuario usuario;
     @Column()
     public boolean isAtivo;
+    @Column()
+    public String usuarioAcao;
+    @Column()
+    @JsonFormat(pattern="dd/MM/yyyy HH:mm:ss")
+    public Date dataAcao;
 }
 

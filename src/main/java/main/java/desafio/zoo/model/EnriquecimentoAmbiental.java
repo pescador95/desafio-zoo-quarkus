@@ -1,4 +1,4 @@
-package main.java.org.acme.model;
+package main.java.desafiozoo.model;
 
 import io.quarkus.hibernate.orm.panache.PanacheEntity;
 

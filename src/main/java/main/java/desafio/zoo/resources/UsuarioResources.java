@@ -1,34 +1,34 @@
-package main.java.org.acme.resources;
+package main.java.desafiozoo.resources;
 
-import main.java.org.acme.controller.NutricaoController;
-import main.java.org.acme.model.Nutricao;
+import main.java.desafiozoo.controller.UsuarioController;
+import main.java.desafiozoo.model.Usuario;
 
 import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-@Path("/nutricao")
-public class NutricaoResources {
+@Path("/usuario")
+public class UsuarioResources {
 
     @Inject
-    NutricaoController controller;
+    UsuarioController controller;
 
     @GET
     @Path("/get")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
-    public Response get(Nutricao pNutricao) {
-        Nutricao nutricao = controller.getNutricao(pNutricao);
-        return Response.ok(nutricao).status(200).build();
+    public Response get(Usuario pUsuario) {
+        Usuario usuario = controller.getUser(pUsuario);
+        return Response.ok(usuario).status(200).build();
     }
 
     @POST
     @Path("/create")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
-    public Response add(Nutricao pNutricao) {
-        controller.addNutricao(pNutricao);
+    public Response add(Usuario pUsuario) {
+        controller.addUser(pUsuario);
         return Response.ok().status(201).build();
     }
 
@@ -36,8 +36,8 @@ public class NutricaoResources {
     @Path("/update")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
-    public Response update(Nutricao pNutricao) {
-        controller.updateNutricao(pNutricao);
+    public Response update(Usuario pUsuario) {
+        controller.updateUser(pUsuario);
         return Response.ok().status(200).build();
     }
 
@@ -45,8 +45,8 @@ public class NutricaoResources {
     @Path("/delete")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
-    public Response delete(Nutricao pNutricao) {
-        controller.deleteNutricao(pNutricao);
+    public Response delete(Usuario pUsuario) {
+        controller.deleteUser(pUsuario);
         return Response.ok().status(200).build();
     }
 }

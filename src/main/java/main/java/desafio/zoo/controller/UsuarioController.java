@@ -1,6 +1,6 @@
-package main.java.org.acme.controller;
+package main.java.desafiozoo.controller;
 
-import main.java.org.acme.model.Usuario;
+import main.java.desafiozoo.model.Usuario;
 import org.jetbrains.annotations.NotNull;
 
 import javax.enterprise.context.ApplicationScoped;

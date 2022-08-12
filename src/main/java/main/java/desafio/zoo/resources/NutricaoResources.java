@@ -1,7 +1,7 @@
-package main.java.desafiozoo.resources;
+package main.java.desafio.zoo.resources;
 
-import main.java.desafiozoo.model.Nutricao;
-import main.java.desafiozoo.controller.NutricaoController;
+import main.java.desafio.zoo.model.Nutricao;
+import main.java.desafio.zoo.controller.NutricaoController;
 
 import javax.inject.Inject;
 import javax.ws.rs.*;

@@ -2,24 +2,25 @@ package main.java.desafio.zoo.resources;
 
 import main.java.desafio.zoo.model.Nutricao;
 import main.java.desafio.zoo.controller.NutricaoController;
-
 import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+
 
 @Path("/nutricao")
 public class NutricaoResources {
 
     @Inject
     NutricaoController controller;
+    Nutricao nutricao;
 
     @GET
     @Path("/get")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
     public Response get(Nutricao pNutricao) {
-        Nutricao nutricao = controller.getNutricao(pNutricao);
+        nutricao = controller.getNutricao(pNutricao);
         return Response.ok(nutricao).status(200).build();
     }
 

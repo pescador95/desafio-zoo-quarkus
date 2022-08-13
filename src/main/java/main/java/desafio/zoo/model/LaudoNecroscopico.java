@@ -9,34 +9,50 @@ import java.util.Date;
 @Entity
 @Table(name = "laudoNecroscopico")
 public class LaudoNecroscopico extends PanacheEntity {
+
     @OneToOne
     @JoinColumn(name="animalId", unique = true)
-    private Animal animal;
+    public Animal animal;
+
     @Column(unique = true)
     public long numeroLaudo;
+
     @Column(nullable = false)
     @JsonFormat(pattern="dd/MM/yyyy HH:mm:ss")
     public Date dataObito;
+
     @Column(nullable = false)
     @JsonFormat(pattern="dd/MM/yyyy HH:mm:ss")
     public Date dataNecropsia;
+
     @Column(nullable = false)
     public Boolean isEutanasia;
+
     @Column(nullable = false)
     public Boolean isEspontanea;
+
     @Column(nullable = false)
     public String tipoMorte;
+
     @Column(nullable = false)
     public Boolean isLaudoEntregue;
+
     @OneToOne
     @JoinColumn(name="userId")
-    private Usuario usuario;
+    public Usuario usuario;
+
     @Column()
     public boolean isAtivo;
+
     @Column()
     public String usuarioAcao;
+
     @Column()
     @JsonFormat(pattern="dd/MM/yyyy HH:mm:ss")
     public Date dataAcao;
+
+    @Column()
+    @JsonFormat(pattern="dd/MM/yyyy HH:mm:ss")
+    public Date systemDateDeleted;
 }
 

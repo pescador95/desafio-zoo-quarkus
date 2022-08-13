@@ -11,24 +11,25 @@ import java.util.Date;
 @ApplicationScoped
 @Transactional
 public class NutricaoController {
-    public String mensagem;
+
     public Nutricao nutricao;
 
 
     public Nutricao getNutricao(@NotNull Nutricao pNutricao) {
-        nutricao = Nutricao.find("animal = ?1", pNutricao.animal).firstResult();
+
+        nutricao = Nutricao.find("animal = ?1 ORDER BY id DESC", pNutricao.animal).firstResult();
 
         if (nutricao == null || !nutricao.isAtivo) {
-            mensagem = ("Nutrição não foi localizado.");
             throw new BadRequestException("Nutrição não foi localizado.");
         }
     return nutricao;
     }
 
     public void addNutricao(@NotNull Nutricao pNutricao) {
-        nutricao = Nutricao.find("animal", pNutricao.animal).firstResult();
 
-        if (nutricao == null) {
+        nutricao = Nutricao.find("animal = ?1 and isAtivo = true ORDER BY id DESC", pNutricao.animal).firstResult();
+
+        if (nutricao == null || !nutricao.isAtivo) {
             nutricao = new Nutricao();
             nutricao.descricaoNutricao = pNutricao.descricaoNutricao;
             nutricao.alimento = pNutricao.alimento;
@@ -42,23 +43,20 @@ public class NutricaoController {
             nutricao.usuarioAcao = "";
             nutricao.dataAcao = new Date();
 
-
             nutricao.persist();
-            mensagem = "Nutrição criado com sucesso!";
 
         } else {
-            mensagem = ("Nutrição já cadastrado!");
             throw new BadRequestException("Nutrição já cadastrado!");
         }
 
     }
 
     public void updateNutricao(@NotNull Nutricao pNutricao) {
-        nutricao = Nutricao.find("animal", pNutricao.animal).firstResult();
+
+        nutricao = Nutricao.find("animal = ?1 and isAtivo = true ORDER BY id DESC", pNutricao.animal).firstResult();
 
 
-        if (!(nutricao == null) && nutricao.animal.equals(pNutricao.animal)) {
-
+        if (!(nutricao == null) && nutricao.animal.equals(pNutricao.animal) && nutricao.isAtivo) {
             if (!nutricao.dataInicio.equals(pNutricao.dataInicio)) {
                 nutricao.dataInicio = pNutricao.dataInicio;
             }
@@ -82,26 +80,24 @@ public class NutricaoController {
             }
             nutricao.dataAcao = new Date();
             nutricao.persist();
-            mensagem = "Nutrição atualizada com sucesso!";
+
         } else {
-            mensagem = ("Não foi possível atualizar a ficha de Nutrição.");
             throw new BadRequestException("Não foi possível atualizar a ficha de Nutrição.");
 
         }
     }
 
     public void deleteNutricao(@NotNull Nutricao pNutricao) {
-        nutricao = Nutricao.find("animal", pNutricao.animal).firstResult();
 
+        nutricao = Nutricao.find("animal", pNutricao.animal).firstResult();
 
             if (!(nutricao == null) && nutricao.animal.equals(pNutricao.animal) && (nutricao.isAtivo)) {
                 nutricao.isAtivo = false;
                 nutricao.usuarioAcao = "usuario";
-                nutricao.dataAcao = new Date();
+                nutricao.systemDateDeleted = new Date();
                 nutricao.persist();
-                mensagem = "Nutrição deletado com sucesso!";
+
             } else {
-                mensagem = ("Não foi possível deletar a ficha de Nutrição.");
                 throw new BadRequestException("Não foi possível deletar a ficha de Nutrição.");
             }
     }

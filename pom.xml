@@ -87,14 +87,19 @@
           <version>RELEASE</version>
           <scope>compile</scope>
       </dependency>
-      <!--  <dependency>-->
-    <!--    <groupId>io.quarkus</groupId>-->
-    <!--    <artifactId>quarkus-smallrye-jwt</artifactId>-->
-    <!--  </dependency>-->
-    <!--  <dependency>-->
-    <!--    <groupId>io.quarkus</groupId>-->
-    <!--    <artifactId>quarkus-smallrye-jwt-build</artifactId>-->
-    <!--  </dependency>-->
+      <dependency>
+          <groupId>io.smallrye</groupId>
+          <artifactId>smallrye-jwt</artifactId>
+          <version>3.5.1</version>
+      </dependency>
+        <dependency>
+        <groupId>io.quarkus</groupId>
+        <artifactId>quarkus-smallrye-jwt</artifactId>
+      </dependency>
+      <dependency>
+        <groupId>io.quarkus</groupId>
+        <artifactId>quarkus-smallrye-jwt-build</artifactId>
+      </dependency>
   </dependencies>
   <build>
     <plugins>

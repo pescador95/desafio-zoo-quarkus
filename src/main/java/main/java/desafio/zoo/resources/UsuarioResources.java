@@ -8,18 +8,20 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+
 @Path("/usuario")
 public class UsuarioResources {
 
     @Inject
     UsuarioController controller;
+    Usuario usuario;
 
     @GET
     @Path("/get")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
     public Response get(Usuario pUsuario) {
-        Usuario usuario = controller.getUser(pUsuario);
+        usuario = controller.getUser(pUsuario);
         return Response.ok(usuario).status(200).build();
     }
 

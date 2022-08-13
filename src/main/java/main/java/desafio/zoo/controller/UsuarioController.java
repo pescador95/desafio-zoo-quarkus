@@ -11,16 +11,16 @@ import java.util.Date;
 @ApplicationScoped
 @Transactional
 public class UsuarioController {
-    public String mensagem;
+
     public Usuario usuario;
     public Usuario usuarioReturn; //TODO var criada para retornar obj user pelo método get sem trazer a senha. Estudar para implementar um @JsonIgnoreProperty.
 
 
     public Usuario getUser(@NotNull Usuario pUsuario) {
-        usuario = Usuario.find("login = ?1", pUsuario.login).firstResult();
+
+        usuario = Usuario.find("login = ?1 ORDER BY id DESC", pUsuario.login).firstResult();
 
         if ((!(usuario == null)) && (usuario.isAtivo)) {
-
             usuarioReturn = new Usuario();
             usuarioReturn.id = usuario.id;
             usuarioReturn.email = usuario.email;
@@ -32,8 +32,6 @@ public class UsuarioController {
             usuarioReturn.roleUsuario = usuario.roleUsuario;
 
         } else {
-
-            mensagem = ("Usuário não foi localizado ou inativo.");
             throw new BadRequestException("Usuário não localizado ou inativo.");
         }
         return usuarioReturn;
@@ -42,10 +40,10 @@ public class UsuarioController {
 
 
     public void addUser(@NotNull Usuario pUsuario) {
-        usuario = Usuario.find("login", pUsuario.login).firstResult();
+
+        usuario = Usuario.find("login = ?1 and isAtivo = true ORDER BY id DESC", pUsuario.login).firstResult();
 
         if ((usuario == null) || !usuario.isAtivo) {
-
             usuario = new Usuario();
             usuario.email = pUsuario.email;
             usuario.nome = pUsuario.nome;
@@ -56,21 +54,18 @@ public class UsuarioController {
             usuario.usuarioAcao = "";
             usuario.dataAcao = new Date();
             usuario.persist();
-            mensagem = "usuário criado com sucesso!";
 
         } else {
-
-            mensagem = ("Usuário já cadastrado!");
             throw new BadRequestException("Usuário já cadastrado!");
         }
     }
 
 
     public void updateUser(@NotNull Usuario pUsuario) {
-        usuario = Usuario.find("login", pUsuario.login).firstResult();
 
-        if (!(usuario == null) && usuario.login.equals(pUsuario.login)) {
+        usuario = Usuario.find("login = ?1 and isAtivo = true ORDER BY id DESC", pUsuario.login).firstResult();
 
+        if (!(usuario == null) && usuario.login.equals(pUsuario.login) && usuario.isAtivo) {
             if (!usuario.email.equals(pUsuario.email)) {
                 usuario.email = pUsuario.email;
             }
@@ -86,34 +81,26 @@ public class UsuarioController {
             usuario.usuarioAcao = "";
             usuario.dataAcao = new Date();
             usuario.persist();
-            mensagem = "usuário atualizado com sucesso!";
 
         } else {
-
-            mensagem = ("Não foi possível atualizar o Usuário.");
             throw new BadRequestException("Não foi possível atualizar o Usuário.");
 
         }
     }
 
     public void deleteUser(@NotNull Usuario pUsuario) {
-        usuario = Usuario.find("login", pUsuario.login).firstResult();
 
+        usuario = Usuario.find("login = ?1 and isAtivo = true ORDER BY id DESC", pUsuario.login).firstResult();
 
         if (!(usuario == null) && usuario.login.equals(pUsuario.login) && (usuario.isAtivo)) {
 
             usuario.isAtivo = false;
             usuario.usuarioAcao = "usuario";
-            usuario.dataAcao = new Date();
+            usuario.systemDateDeleted = new Date();
             usuario.persist();
-            mensagem = "Usuário deletado com sucesso!";
 
         } else {
-
-            mensagem = ("Não foi possível deletar o Usuário.");
             throw new BadRequestException("Não foi possível deletar o Usuário.");
         }
     }
 }
-
-// EXEMPLO QUERIE com mais de um parametro usuario = Usuario.find("login = ?1 and isAtivo = ?2", pUsuario.login, usuario.isAtivo = true).firstResult();

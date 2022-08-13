@@ -11,21 +11,33 @@ import java.util.Date;
 @Entity
 @Table(name = "usuario")
 public class Usuario extends PanacheEntity {
+
     @Column(nullable = false)
     public String nome;
-    @Column(nullable = false, unique = true)
+
+    @Column(nullable = false)
     public String login;
+
     @Column(nullable = false)
     public String password;
-    @Column(nullable = false, unique = true)
+
+    @Column(nullable = false)
     public String email;
+
     @Column()
     public boolean isAtivo;
+
     @Column()
     public String usuarioAcao;
+
     @Column()
     @JsonFormat(pattern="dd/MM/yyyy HH:mm:ss")
     public Date dataAcao;
+
+    @Column()
+    @JsonFormat(pattern="dd/MM/yyyy HH:mm:ss")
+    public Date systemDateDeleted;
+
    @Column()
     public int roleUsuario;
 

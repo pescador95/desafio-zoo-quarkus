@@ -1,0 +1,95 @@
+package desafio.zoo.controller;
+
+import desafio.zoo.model.HistoricoEtologico;
+import org.jetbrains.annotations.NotNull;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.transaction.Transactional;
+import javax.ws.rs.BadRequestException;
+import java.util.Date;
+import java.util.Objects;
+
+@ApplicationScoped
+@Transactional
+
+public class HistoricoEtologicoController {
+
+    public HistoricoEtologico historicoEtologico;
+
+
+    public HistoricoEtologico getHistoricoEtologico(@NotNull HistoricoEtologico pHistoricoEtologico) {
+
+        historicoEtologico = HistoricoEtologico.find("animal = ?1 ORDER BY id DESC", pHistoricoEtologico.animal).firstResult();
+
+        if (historicoEtologico == null || !historicoEtologico.isAtivo) {
+            throw new BadRequestException("Histórico Etológico não localizado.");
+        }
+        return historicoEtologico;
+    }
+
+    public void addHistoricoEtologico(@NotNull HistoricoEtologico pHistoricoEtologico) {
+
+        historicoEtologico = HistoricoEtologico.find("animal = ?1 and isAtivo = true ORDER BY id DESC", pHistoricoEtologico.animal).firstResult();
+
+        if (historicoEtologico == null || !historicoEtologico.isAtivo) {
+            historicoEtologico = new HistoricoEtologico();
+            historicoEtologico.animal = pHistoricoEtologico.animal;
+            historicoEtologico.dataEtologico = pHistoricoEtologico.dataEtologico;
+            historicoEtologico.nomeEtologico   = pHistoricoEtologico.nomeEtologico  ;
+            historicoEtologico.descricaoEtologico = pHistoricoEtologico.descricaoEtologico;
+            historicoEtologico.dataAcao = pHistoricoEtologico.dataAcao;
+            historicoEtologico.systemDateDeleted = pHistoricoEtologico.systemDateDeleted;
+            historicoEtologico.isAtivo = true;
+            historicoEtologico.usuario = pHistoricoEtologico.usuario;
+            historicoEtologico.usuarioAcao = "";
+            historicoEtologico.dataAcao = new Date();
+
+            historicoEtologico.persist();
+
+        } else {
+            throw new BadRequestException("HistoricoEtologico já cadastrado!");
+        }
+
+    }
+
+    public void updateHistoricoEtologico(@NotNull HistoricoEtologico pHistoricoEtologico) {
+
+        historicoEtologico = HistoricoEtologico.find("animal = ?1 and isAtivo = true ORDER BY id DESC", pHistoricoEtologico.animal).firstResult();
+
+        if (!(historicoEtologico == null) && historicoEtologico.animal.equals(pHistoricoEtologico.animal) && historicoEtologico.isAtivo) {
+            if (!Objects.equals(historicoEtologico.dataEtologico, pHistoricoEtologico.dataEtologico)) {
+                historicoEtologico.dataEtologico = pHistoricoEtologico.dataEtologico;
+            }
+            if (!historicoEtologico.nomeEtologico.equals(pHistoricoEtologico.nomeEtologico)) {
+                historicoEtologico.nomeEtologico = pHistoricoEtologico.nomeEtologico;
+            }
+            if (!historicoEtologico.descricaoEtologico.equals(pHistoricoEtologico.descricaoEtologico)) {
+                historicoEtologico.descricaoEtologico = pHistoricoEtologico.descricaoEtologico;
+            }
+            if (historicoEtologico.usuario.equals(pHistoricoEtologico.usuario)) {
+                historicoEtologico.usuario = pHistoricoEtologico.usuario;
+            }
+            historicoEtologico.dataAcao = new Date();
+            historicoEtologico.persist();
+
+        } else {
+            throw new BadRequestException("Não foi possível atualizar o Histórico Etológico.");
+
+        }
+    }
+
+    public void deleteHistoricoEtologico(@NotNull HistoricoEtologico pHistoricoEtologico) {
+
+        historicoEtologico = HistoricoEtologico.find("animal = ?1 and isAtivo = true ORDER BY id DESC", pHistoricoEtologico.animal).firstResult();
+
+        if (!(historicoEtologico == null) && historicoEtologico.animal.equals(pHistoricoEtologico.animal) && (historicoEtologico.isAtivo)) {
+            historicoEtologico.isAtivo = false;
+            historicoEtologico.usuarioAcao = "usuario que deletou";
+            historicoEtologico.systemDateDeleted = new Date();
+            historicoEtologico.persist();
+
+        } else {
+            throw new BadRequestException("Não foi possível deletar o Histórico Etológico.");
+        }
+    }
+}

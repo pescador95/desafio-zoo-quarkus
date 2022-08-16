@@ -36,6 +36,7 @@ public class AnimalController {
             animal.nomeComum = pAnimal.nomeComum;
             animal.nomeCientifico = pAnimal.nomeCientifico;
             animal.nomeApelido = pAnimal.nomeApelido;
+            animal.identificacao = pAnimal.identificacao;
             animal.sexo = pAnimal.sexo;
             animal.idade = pAnimal.idade;
             animal.isAtivo = true;
@@ -63,6 +64,9 @@ public class AnimalController {
             }
             if (!animal.nomeApelido.equals(pAnimal.nomeApelido)) {
                 animal.nomeApelido = pAnimal.nomeApelido;
+            }
+            if (!animal.identificacao.equals(pAnimal.identificacao)) {
+                animal.identificacao = pAnimal.identificacao;
             }
             if (animal.sexo != pAnimal.sexo) {
                 animal.sexo = pAnimal.sexo;

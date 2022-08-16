@@ -36,7 +36,7 @@ public class UsuarioController {
         } else {
             throw new BadRequestException("Usuário não localizado ou inativo.");
         }
-        return usuario;
+        return usuarioReturn;
 
     }
 

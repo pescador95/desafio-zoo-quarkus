@@ -42,16 +42,11 @@ public class Usuario extends PanacheEntity {
     public Date systemDateDeleted;
 
    @Column()
-    public Integer roleUsuario;
+    public int roleUsuario;
 
-    public enum RoleUsuarios {
-        ADMIN(0), NORMAL(1), VETERINARIO(2), ZOOLOGO(3), ANESTESISTA(4);
+   public static final int NORMAL = 0;
+   public static final int ADMIN = 1;
 
-        @Column
-        public Integer valorRoleUsuario;
 
-        RoleUsuarios(int roleUsuario) {
-            valorRoleUsuario = roleUsuario;
-        }
-    }
+
 }

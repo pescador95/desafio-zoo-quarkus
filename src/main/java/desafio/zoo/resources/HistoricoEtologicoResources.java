@@ -1,11 +1,14 @@
 package desafio.zoo.resources;
 
-import desafio.zoo.model.HistoricoEtologico;
 import desafio.zoo.controller.HistoricoEtologicoController;
+import desafio.zoo.model.HistoricoEtologico;
+import io.quarkus.panache.common.Page;
+
 import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.List;
 
 
 @Path("/historicoEtologico")
@@ -13,15 +16,41 @@ public class HistoricoEtologicoResources {
 
     @Inject
     HistoricoEtologicoController controller;
-    HistoricoEtologico HistoricoEtologico;
+    HistoricoEtologico historicoEtologico;
+    List<HistoricoEtologico> historicoEtologicoList;
+    Page page;
 
     @GET
     @Path("/get")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
     public Response get(HistoricoEtologico pHistoricoEtologico) {
-        HistoricoEtologico = controller.getHistoricoEtologico(pHistoricoEtologico);
-        return Response.ok(HistoricoEtologico).status(200).build();
+        historicoEtologico = controller.getHistoricoEtologico(pHistoricoEtologico);
+        return Response.ok(historicoEtologico).status(200).build();
+    }
+
+    @GET
+    @Path("/getListAtivos")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes("application/json")
+    public Response listAtivos(@QueryParam("sort") List<String> sortQuery,
+                               @QueryParam("page") @DefaultValue("0") int pageIndex,
+                               @QueryParam("size") @DefaultValue("20") int pageSize) {
+        page = Page.of(pageIndex, pageSize);
+        historicoEtologicoList = controller.getHistoricoEtologicoListAtivos();
+        return Response.ok(historicoEtologicoList).status(200).build();
+    }
+
+    @GET
+    @Path("/getListInativos")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes("application/json")
+    public Response listInativos(@QueryParam("sort") List<String> sortQuery,
+                                 @QueryParam("page") @DefaultValue("0") int pageIndex,
+                                 @QueryParam("size") @DefaultValue("20") int pageSize) {
+        page = Page.of(pageIndex, pageSize);
+        historicoEtologicoList = controller.getHistoricoEtologicoListInativos();
+        return Response.ok(historicoEtologicoList).status(200).build();
     }
 
     @POST

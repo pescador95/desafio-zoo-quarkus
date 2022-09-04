@@ -6,7 +6,9 @@ import org.jetbrains.annotations.NotNull;
 import javax.enterprise.context.ApplicationScoped;
 import javax.transaction.Transactional;
 import javax.ws.rs.BadRequestException;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 
 @ApplicationScoped
@@ -15,6 +17,7 @@ import java.util.Objects;
 public class EnriquecimentoAmbientalController {
 
     public EnriquecimentoAmbiental enriquecimentoAmbiental;
+    List<EnriquecimentoAmbiental> enriquecimentoAmbientalList = new ArrayList<>();
 
 
     public EnriquecimentoAmbiental getEnriquecimentoAmbiental(@NotNull EnriquecimentoAmbiental pEnriquecimentoAmbiental) {
@@ -25,6 +28,26 @@ public class EnriquecimentoAmbientalController {
             throw new BadRequestException("Enriquecimento Ambiental não localizado.");
         }
         return enriquecimentoAmbiental;
+    }
+
+    public List<EnriquecimentoAmbiental> getEnriquecimentoAmbientalListAtivos() {
+
+        enriquecimentoAmbientalList = EnriquecimentoAmbiental.list("isAtivo = true ORDER BY id DESC");
+
+        if (enriquecimentoAmbientalList.isEmpty()) {
+            throw new BadRequestException("Enriquecimentos Ambientais não localizados.");
+        }
+        return enriquecimentoAmbientalList;
+    }
+
+    public List<EnriquecimentoAmbiental> getEnriquecimentoAmbientalListInativos() {
+
+        enriquecimentoAmbientalList = EnriquecimentoAmbiental.list("isAtivo = false ORDER BY id DESC");
+
+        if (enriquecimentoAmbientalList.isEmpty()) {
+            throw new BadRequestException("Enriquecimentos Ambientais inativos não localizados.");
+        }
+        return enriquecimentoAmbientalList;
     }
 
     public void addEnriquecimentoAmbiental(@NotNull EnriquecimentoAmbiental pEnriquecimentoAmbiental) {

@@ -6,7 +6,9 @@ import org.jetbrains.annotations.NotNull;
 import javax.enterprise.context.ApplicationScoped;
 import javax.transaction.Transactional;
 import javax.ws.rs.BadRequestException;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 
 @ApplicationScoped
@@ -15,7 +17,7 @@ import java.util.Objects;
 public class AnimalController {
 
     public Animal animal;
-
+    List<Animal> animalList = new ArrayList<>();
 
     public Animal getAnimal(@NotNull Animal pAnimal) {
 
@@ -25,6 +27,26 @@ public class AnimalController {
             throw new BadRequestException("Animal não localizado.");
         }
         return animal;
+    }
+
+    public List<Animal> getAnimalListAtivos() {
+
+        animalList = Animal.list("isAtivo = true ORDER BY id DESC");
+
+        if (animalList.isEmpty()) {
+            throw new BadRequestException("Animais não localizados ou inativos.");
+        }
+        return animalList;
+    }
+
+    public List<Animal> getAnimalListInativos() {
+
+        animalList = Animal.list("isAtivo = false ORDER BY id DESC");
+
+        if (animalList.isEmpty()) {
+            throw new BadRequestException("Animais inativos não localizados.");
+        }
+        return animalList;
     }
 
     public void addAnimal(@NotNull Animal pAnimal) {

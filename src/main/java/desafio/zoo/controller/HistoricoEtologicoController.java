@@ -6,7 +6,9 @@ import org.jetbrains.annotations.NotNull;
 import javax.enterprise.context.ApplicationScoped;
 import javax.transaction.Transactional;
 import javax.ws.rs.BadRequestException;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 
 @ApplicationScoped
@@ -15,6 +17,8 @@ import java.util.Objects;
 public class HistoricoEtologicoController {
 
     public HistoricoEtologico historicoEtologico;
+    List<HistoricoEtologico> historicoEtologicoList = new ArrayList<>();
+
 
 
     public HistoricoEtologico getHistoricoEtologico(@NotNull HistoricoEtologico pHistoricoEtologico) {
@@ -25,6 +29,27 @@ public class HistoricoEtologicoController {
             throw new BadRequestException("Histórico Etológico não localizado.");
         }
         return historicoEtologico;
+    }
+
+
+    public List<HistoricoEtologico> getHistoricoEtologicoListAtivos() {
+
+        historicoEtologicoList = HistoricoEtologico.list("isAtivo = true ORDER BY id DESC");
+
+        if (historicoEtologicoList.isEmpty()) {
+            throw new BadRequestException("Históricos Etológicos não localizados.");
+        }
+        return historicoEtologicoList;
+    }
+
+    public List<HistoricoEtologico> getHistoricoEtologicoListInativos() {
+
+        historicoEtologicoList = HistoricoEtologico.list("isAtivo = false ORDER BY id DESC");
+
+        if (historicoEtologicoList.isEmpty()) {
+            throw new BadRequestException("Históricos Etológicos inativos não localizados.");
+        }
+        return historicoEtologicoList;
     }
 
     public void addHistoricoEtologico(@NotNull HistoricoEtologico pHistoricoEtologico) {

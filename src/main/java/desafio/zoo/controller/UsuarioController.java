@@ -7,16 +7,19 @@ import org.jetbrains.annotations.NotNull;
 import javax.enterprise.context.ApplicationScoped;
 import javax.transaction.Transactional;
 import javax.ws.rs.BadRequestException;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 
 @ApplicationScoped
 @Transactional
 public class UsuarioController {
 
-    public Usuario usuario;
-    public Usuario usuarioReturn; //TODO var criada para retornar obj user pelo método get sem trazer a senha. Estudar para implementar um @JsonIgnoreProperty.
-
+    public Usuario usuario = new Usuario();
+    public Usuario usuarioReturn = new Usuario(); //TODO var criada para retornar obj user pelo método get sem trazer a senha. Estudar para implementar um @JsonIgnoreProperty.
+    public List<Usuario> usuarioList = new ArrayList<>();
+    public List<Usuario> usuarioListReturn = new ArrayList<>();
 
     public Usuario getUser(@NotNull Usuario pUsuario) {
 
@@ -40,6 +43,42 @@ public class UsuarioController {
 
     }
 
+    public List<Usuario> getUserListAtivos() {
+
+        usuarioList = Usuario.list("isAtivo = true ORDER BY id DESC");
+
+        if ((!usuarioList.isEmpty())) {
+
+            for (int i = 0; i < usuarioList.size(); i++) {
+                usuarioReturn = new Usuario();
+                usuarioReturn.id = usuarioList.get(i).id;
+                usuarioReturn.email = usuarioList.get(i).email;
+                usuarioReturn.nome = usuarioList.get(i).nome;
+                usuarioReturn.login = usuarioList.get(i).login;
+                usuarioReturn.isAtivo = usuarioList.get(i).isAtivo;
+                usuarioReturn.dataAcao = usuarioList.get(i).dataAcao;
+                usuarioReturn.usuarioAcao = usuarioList.get(i).usuarioAcao;
+                usuarioReturn.roleUsuario = usuarioList.get(i).roleUsuario;
+
+                usuarioListReturn.add(usuarioReturn);
+
+            }
+        } else {
+            throw new BadRequestException("Usuários não localizados ou inativos.");
+        }
+        return usuarioListReturn;
+
+    }
+
+    public List<Usuario> getUserListInativos() {
+
+        usuarioList = Usuario.list("isAtivo = false ORDER BY id DESC");
+
+        if (usuarioList.isEmpty()) {
+            throw new BadRequestException("Usuários inativos não localizados.");
+        }
+        return usuarioListReturn;
+    }
 
     public void addUser(@NotNull Usuario pUsuario) {
 
@@ -105,4 +144,5 @@ public class UsuarioController {
             throw new BadRequestException("Não foi possível deletar o Usuário.");
         }
     }
+
 }

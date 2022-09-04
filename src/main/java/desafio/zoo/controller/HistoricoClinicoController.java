@@ -6,7 +6,9 @@ import org.jetbrains.annotations.NotNull;
 import javax.enterprise.context.ApplicationScoped;
 import javax.transaction.Transactional;
 import javax.ws.rs.BadRequestException;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 
 @ApplicationScoped
@@ -15,6 +17,8 @@ import java.util.Objects;
 public class HistoricoClinicoController {
 
     public HistoricoClinico historicoClinico;
+    List<HistoricoClinico> historicoClinicoList = new ArrayList<>();
+
 
 
     public HistoricoClinico getHistoricoClinico(@NotNull HistoricoClinico pHistoricoClinico) {
@@ -25,6 +29,26 @@ public class HistoricoClinicoController {
             throw new BadRequestException("Histórico Clínico não localizado.");
         }
         return historicoClinico;
+    }
+
+    public List<HistoricoClinico> getHistoricoClinicoListAtivos() {
+
+        historicoClinicoList = HistoricoClinico.list("isAtivo = true ORDER BY id DESC");
+
+        if (historicoClinicoList.isEmpty()) {
+            throw new BadRequestException("Históricos Clínicos não localizados.");
+        }
+        return historicoClinicoList;
+    }
+
+    public List<HistoricoClinico> getHistoricoClinicoListInativos() {
+
+        historicoClinicoList = HistoricoClinico.list("isAtivo = false ORDER BY id DESC");
+
+        if (historicoClinicoList.isEmpty()) {
+            throw new BadRequestException("Históricos Clínicos inativos não localizados.");
+        }
+        return historicoClinicoList;
     }
 
     public void addHistoricoClinico(@NotNull HistoricoClinico pHistoricoClinico) {

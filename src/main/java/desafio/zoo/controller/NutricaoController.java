@@ -6,13 +6,16 @@ import org.jetbrains.annotations.NotNull;
 import javax.enterprise.context.ApplicationScoped;
 import javax.transaction.Transactional;
 import javax.ws.rs.BadRequestException;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @ApplicationScoped
 @Transactional
 public class NutricaoController {
 
     public Nutricao nutricao;
+    List<Nutricao> nutricaoList = new ArrayList<>();
 
 
     public Nutricao getNutricao(@NotNull Nutricao pNutricao) {
@@ -23,6 +26,26 @@ public class NutricaoController {
             throw new BadRequestException("Nutrição não foi localizado.");
         }
     return nutricao;
+    }
+
+    public List<Nutricao> getNutricaoListAtivos() {
+
+        nutricaoList = Nutricao.list("isAtivo = true ORDER BY id DESC");
+
+        if (nutricaoList.isEmpty()) {
+            throw new BadRequestException("Lista de Nutrições não localizadas.");
+        }
+        return nutricaoList;
+    }
+
+    public List<Nutricao> getNutricaoListInativos() {
+
+        nutricaoList = Nutricao.list("isAtivo = false ORDER BY id DESC");
+
+        if (nutricaoList.isEmpty()) {
+            throw new BadRequestException("Lista de Nutrições inativas não localizadas.");
+        }
+        return nutricaoList;
     }
 
     public void addNutricao(@NotNull Nutricao pNutricao) {

@@ -6,7 +6,9 @@ import org.jetbrains.annotations.NotNull;
 import javax.enterprise.context.ApplicationScoped;
 import javax.transaction.Transactional;
 import javax.ws.rs.BadRequestException;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 
 @ApplicationScoped
@@ -15,6 +17,7 @@ import java.util.Objects;
 public class MedicacaoController {
 
     public Medicacao medicacao;
+    List<Medicacao> medicacaoList = new ArrayList<>();
 
 
     public Medicacao getMedicacao(@NotNull Medicacao pMedicacao) {
@@ -25,6 +28,26 @@ public class MedicacaoController {
             throw new BadRequestException("Medicação não localizada.");
         }
         return medicacao;
+    }
+
+    public List<Medicacao> getMedicacaoListAtivos() {
+
+        medicacaoList = Medicacao.list("isAtivo = true ORDER BY id DESC");
+
+        if (medicacaoList.isEmpty()) {
+            throw new BadRequestException("Medicações não localizadas.");
+        }
+        return medicacaoList;
+    }
+
+    public List<Medicacao> getMedicacaoListInativos() {
+
+        medicacaoList = Medicacao.list("isAtivo = false ORDER BY id DESC");
+
+        if (medicacaoList.isEmpty()) {
+            throw new BadRequestException("Medicações inativas não localizadas.");
+        }
+        return medicacaoList;
     }
 
     public void addMedicacao(@NotNull Medicacao pMedicacao) {

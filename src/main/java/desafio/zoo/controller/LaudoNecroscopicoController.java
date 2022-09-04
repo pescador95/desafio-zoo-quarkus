@@ -6,7 +6,9 @@ import org.jetbrains.annotations.NotNull;
 import javax.enterprise.context.ApplicationScoped;
 import javax.transaction.Transactional;
 import javax.ws.rs.BadRequestException;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 
 @ApplicationScoped
@@ -15,6 +17,7 @@ import java.util.Objects;
 public class LaudoNecroscopicoController {
 
     public LaudoNecroscopico laudoNecroscopico;
+    List<LaudoNecroscopico> laudoNecroscopicoList = new ArrayList<>();
 
 
     public LaudoNecroscopico getLaudoNecroscopico(@NotNull LaudoNecroscopico pLaudoNecroscopico) {
@@ -25,6 +28,26 @@ public class LaudoNecroscopicoController {
             throw new BadRequestException("Laudo não localizado.");
         }
         return laudoNecroscopico;
+    }
+
+    public List<LaudoNecroscopico> getLaudoNecroscopicoListAtivos() {
+
+        laudoNecroscopicoList = LaudoNecroscopico.list("isAtivo = true ORDER BY id DESC");
+
+        if (laudoNecroscopicoList.isEmpty()) {
+            throw new BadRequestException("Laudos Necroscopicos não localizados.");
+        }
+        return laudoNecroscopicoList;
+    }
+
+    public List<LaudoNecroscopico> getLaudoNecroscopicoListInativos() {
+
+        laudoNecroscopicoList = LaudoNecroscopico.list("isAtivo = false ORDER BY id DESC");
+
+        if (laudoNecroscopicoList.isEmpty()) {
+            throw new BadRequestException("Laudos Necroscopicos inativos não localizados.");
+        }
+        return laudoNecroscopicoList;
     }
 
     public void addLaudoNecroscopico(@NotNull LaudoNecroscopico pLaudoNecroscopico) {

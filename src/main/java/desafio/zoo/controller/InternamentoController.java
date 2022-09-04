@@ -6,7 +6,9 @@ import org.jetbrains.annotations.NotNull;
 import javax.enterprise.context.ApplicationScoped;
 import javax.transaction.Transactional;
 import javax.ws.rs.BadRequestException;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 
 @ApplicationScoped
@@ -15,6 +17,7 @@ import java.util.Objects;
 public class InternamentoController {
 
     public Internamento internamento;
+  List<Internamento> internamentoList = new ArrayList<>();
 
 
     public Internamento getInternamento(@NotNull Internamento pInternamento) {
@@ -25,6 +28,26 @@ public class InternamentoController {
             throw new BadRequestException("Laudo não localizado.");
         }
         return internamento;
+    }
+
+    public List<Internamento> getInternamentoListAtivos() {
+
+        internamentoList = Internamento.list("isAtivo = true ORDER BY id DESC");
+
+        if (internamentoList.isEmpty()) {
+            throw new BadRequestException("Internamentos não localizados.");
+        }
+        return internamentoList;
+    }
+
+    public List<Internamento> getInternamentoListInativos() {
+
+        internamentoList = Internamento.list("isAtivo = false ORDER BY id DESC");
+
+        if (internamentoList.isEmpty()) {
+            throw new BadRequestException("Internamentos inativos não localizados.");
+        }
+        return internamentoList;
     }
 
     public void addInternamento(@NotNull Internamento pInternamento) {

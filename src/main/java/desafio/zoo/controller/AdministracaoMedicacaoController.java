@@ -6,7 +6,9 @@ import org.jetbrains.annotations.NotNull;
 import javax.enterprise.context.ApplicationScoped;
 import javax.transaction.Transactional;
 import javax.ws.rs.BadRequestException;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @ApplicationScoped
 @Transactional
@@ -14,6 +16,8 @@ import java.util.Date;
 public class AdministracaoMedicacaoController {
 
     public AdministracaoMedicacao administracaoMedicacao;
+    List<AdministracaoMedicacao> administracaoMedicacaoList = new ArrayList<>();
+
 
 
     public AdministracaoMedicacao getAdministracaoMedicacao(@NotNull AdministracaoMedicacao pAdministracaoMedicacao) {
@@ -24,6 +28,26 @@ public class AdministracaoMedicacaoController {
             throw new BadRequestException("Administração de Medicação não localizada.");
         }
         return administracaoMedicacao;
+    }
+
+    public List<AdministracaoMedicacao> getAdministracaoMedicacaoListAtivos() {
+
+        administracaoMedicacaoList = AdministracaoMedicacao.list("isAtivo = true ORDER BY id DESC");
+
+        if (administracaoMedicacaoList.isEmpty()) {
+            throw new BadRequestException("Medicações Administradas não localizadas ou inativas.");
+        }
+        return administracaoMedicacaoList;
+    }
+
+    public List<AdministracaoMedicacao> getAdministracaoMedicacaoListInativos() {
+
+        administracaoMedicacaoList = AdministracaoMedicacao.list("isAtivo = false ORDER BY id DESC");
+
+        if (administracaoMedicacaoList.isEmpty()) {
+            throw new BadRequestException("Medicações Administradas inativas não localizadas.");
+        }
+        return administracaoMedicacaoList;
     }
 
     public void addAdministracaoMedicacao(@NotNull AdministracaoMedicacao pAdministracaoMedicacao) {

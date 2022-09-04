@@ -6,7 +6,9 @@ import org.jetbrains.annotations.NotNull;
 import javax.enterprise.context.ApplicationScoped;
 import javax.transaction.Transactional;
 import javax.ws.rs.BadRequestException;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 
 @ApplicationScoped
@@ -14,6 +16,7 @@ import java.util.Objects;
 public class MonitoracaoController {
 
     public Monitoracao monitoracao;
+    List<Monitoracao> monitoracaoList = new ArrayList<>();
 
 
     public Monitoracao getMonitoracao(@NotNull Monitoracao pMonitoracao) {
@@ -24,6 +27,27 @@ public class MonitoracaoController {
             throw new BadRequestException("Monitoração não localizada.");
         }
         return monitoracao;
+    }
+
+
+    public List<Monitoracao> getMonitoracaoListAtivos() {
+
+        monitoracaoList = Monitoracao.list("isAtivo = true ORDER BY id DESC");
+
+        if (monitoracaoList.isEmpty()) {
+            throw new BadRequestException("Monitorações não localizados.");
+        }
+        return monitoracaoList;
+    }
+
+    public List<Monitoracao> getMonitoracaoListInativos() {
+
+        monitoracaoList = Monitoracao.list("isAtivo = false ORDER BY id DESC");
+
+        if (monitoracaoList.isEmpty()) {
+            throw new BadRequestException("Monitorações inativas não localizadas.");
+        }
+        return monitoracaoList;
     }
 
     public void addMonitoracao(@NotNull Monitoracao pMonitoracao) {

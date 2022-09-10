@@ -14,10 +14,6 @@ public class Medicacao extends PanacheEntity {
     @JoinColumn(name="animalId")
     public Animal animal;
 
-    @ManyToOne
-    @JoinColumn(name="administracaoMedicacaoId")
-    public AdministracaoMedicacao administracaoMedicacao;
-
     @Column(nullable = false)
     public String nomeMedicacao;
 

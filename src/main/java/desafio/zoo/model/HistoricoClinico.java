@@ -15,16 +15,7 @@ public class HistoricoClinico extends PanacheEntity {
     public Animal animal;
 
     @Column()
-    public String pelagem;
-
-    @Column()
-    public String diagnosticoInicial;
-
-    @Column()
     public Float temperaturaAnimal;
-
-    @Column()
-    public String pulso;
 
     @Column()
     public String frequenciaRespiratoria;
@@ -33,25 +24,22 @@ public class HistoricoClinico extends PanacheEntity {
     public String frequenciaCariaca;
 
     @Column()
-    public Boolean terapiaPosCiclo;
-
-    @Column()
     public String observacao;
 
     @Column()
-    public Boolean isInternamento;
-
-    @ManyToOne
-    @JoinColumn(name = "internamentoId")
-    public Internamento internamento;
+    public Float etco2;
 
     @Column()
-    @JsonFormat(pattern="dd/MM/yyyy HH:mm:ss")
-    public Date dataAlta;
+    public Float spo2;
 
-    @ManyToOne
-    @JoinColumn(name = "laudoNecroscopicoId")
-    public LaudoNecroscopico laudoNecroscopico;
+    @Column()
+    public Float ps;
+
+    @Column()
+    public Float pd;
+
+    @Column()
+    public Float pm;
 
     @ManyToOne
     @JoinColumn(name="userId")

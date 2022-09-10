@@ -55,6 +55,7 @@ public class AnimalController {
 
         if (animal == null || !animal.isAtivo) {
             animal = new Animal();
+            animal.origem = pAnimal.origem;
             animal.nomeComum = pAnimal.nomeComum;
             animal.nomeCientifico = pAnimal.nomeCientifico;
             animal.nomeApelido = pAnimal.nomeApelido;
@@ -98,6 +99,9 @@ public class AnimalController {
             }
             if (animal.idade!= pAnimal.idade) {
                 animal.idade = pAnimal.idade;
+            }
+            if(animal.origem != pAnimal.origem){
+                animal.origem = pAnimal.origem;
             }
             animal.dataAcao = new Date();
             animal.persist();

@@ -24,19 +24,19 @@ public class AuthController {
     JWTParser parser;
 
     public Auth login(Auth data) {
-        Usuario usuario = Usuario.find("login", data.login).firstResult();
+        Usuario usuario = Usuario.find("email", data.email).firstResult();
 
         if (usuario == null) {
-            throw new BadRequestException("Login ou senha incorretas");
+            throw new BadRequestException("email ou senha incorretas");
         }
 
         boolean authenticated = BCrypt.checkpw(data.password, usuario.password);
 
         if (!authenticated) {
-            throw new BadRequestException("Login ou senha incorretas");
+            throw new BadRequestException("email ou senha incorretas");
         }
 
-        System.out.print("Iniciando login com usuário: " + usuario.login + "\n"); // todo log
+        System.out.print("Iniciando login com usuário: " + usuario.email + "\n"); // todo log
         String accessToken = token.GenerateAccessToken(usuario);
         String refreshToken = token.GenerateRefreshToken(usuario);
 
@@ -67,7 +67,7 @@ public class AuthController {
             String login = parser.parse(data.refreshToken).getClaim("upn");
             long expireDateOldToken = parser.parse(data.refreshToken).getClaim("exp");
 
-            usuario = Usuario.find("login", login).firstResult();
+            usuario = Usuario.find("email", login).firstResult();
             expireDate = new Date(expireDateOldToken * 1000); // milsec to sec
 
             if (expireDate.after(new Date()) && usuario != null) {
@@ -82,7 +82,7 @@ public class AuthController {
         if (authenticated) {
             String accessToken = token.GenerateAccessToken(usuario);
             String refreshToken = token.GenerateRefreshToken(usuario);
-            System.out.print("Refresh token solicitado pelo usuário: " + usuario.login + "\n"); // todo logger
+            System.out.print("Refresh token solicitado pelo usuário: " + usuario.email + "\n"); // todo logger
             Long ACTOKEN = 0L;
             Long RFTOKEN = 0L;
             try {

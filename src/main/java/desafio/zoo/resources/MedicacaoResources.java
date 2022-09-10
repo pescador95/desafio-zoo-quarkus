@@ -75,8 +75,11 @@ public class MedicacaoResources {
     @Path("/delete")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
-    public Response delete(Medicacao pMedicacao) {
-        controller.deleteMedicacao(pMedicacao);
+    public Response deleteList(List<Medicacao> medicacaoList, @QueryParam("sort") List<String> sortQuery,
+                               @QueryParam("page") @DefaultValue("0") int pageIndex,
+                               @QueryParam("size") @DefaultValue("20") int pageSize) {
+        page = Page.of(pageIndex, pageSize);
+        controller.deleteMedicacao(medicacaoList);
         return Response.ok().status(200).build();
     }
 }

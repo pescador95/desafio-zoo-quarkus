@@ -120,18 +120,20 @@ public class MonitoracaoController {
         }
     }
 
-    public void deleteMonitoracao(@NotNull Monitoracao pMonitoracao) {
+    public void deleteMonitoracao(@NotNull List<Monitoracao> monitoracaoList) {
 
-        monitoracao = Monitoracao.find("animal = ?1 and dataMonitoracao = ?2 and isAtivo = true ORDER BY id DESC", pMonitoracao.animal, pMonitoracao.dataMonitoracao).firstResult();
+        monitoracaoList.forEach((pMonitoracao) -> {
+            Monitoracao monitoracao = Monitoracao.find("animal = ?1 and dataMonitoracao = ?2 and isAtivo = true ORDER BY id DESC", pMonitoracao.animal, pMonitoracao.dataMonitoracao).firstResult();
 
-        if (!(monitoracao == null) && monitoracao.animal.equals(pMonitoracao.animal) && (monitoracao.isAtivo) && monitoracao.dataMonitoracao.equals(pMonitoracao.dataMonitoracao)) {
-            monitoracao.isAtivo = false;
-            monitoracao.usuarioAcao = "usuario que deletou";
-            monitoracao.systemDateDeleted = new Date();
-            monitoracao.persist();
-
-        } else {
-            throw new BadRequestException("Não foi possível deletar a ficha de Monitoração.");
-        }
+            if (monitoracao != null) {
+                monitoracao.isAtivo = Boolean.FALSE;
+                monitoracao.dataAcao = new Date();
+                monitoracao.usuarioAcao = "usuario que deletou";
+                monitoracao.systemDateDeleted = new Date();
+                monitoracao.persist();
+            } else {
+                throw new BadRequestException("Não foi possível deletar a ficha de Monitoração.");
+            }
+        });
     }
 }

@@ -110,18 +110,20 @@ public class NutricaoController {
         }
     }
 
-    public void deleteNutricao(@NotNull Nutricao pNutricao) {
+    public void deleteNutricao(@NotNull List<Nutricao> nutricaoList) {
 
-        nutricao = Nutricao.find("animal", pNutricao.animal).firstResult();
+        nutricaoList.forEach((pNutricao) -> {
+            Nutricao nutricao = Nutricao.find("animal = ?1 and isAtivo = true ORDER BY id DESC", pNutricao.animal).firstResult();
 
-            if (!(nutricao == null) && nutricao.animal.equals(pNutricao.animal) && (nutricao.isAtivo)) {
-                nutricao.isAtivo = false;
+            if (nutricao != null) {
+                nutricao.isAtivo = Boolean.FALSE;
+                nutricao.dataAcao = new Date();
                 nutricao.usuarioAcao = "usuario que deletou";
                 nutricao.systemDateDeleted = new Date();
                 nutricao.persist();
-
             } else {
                 throw new BadRequestException("Não foi possível deletar a ficha de Nutrição.");
             }
+        });
     }
 }

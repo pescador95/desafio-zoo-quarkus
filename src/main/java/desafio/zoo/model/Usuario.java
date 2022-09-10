@@ -47,6 +47,4 @@ public class Usuario extends PanacheEntity {
    public static final int NORMAL = 0;
    public static final int ADMIN = 1;
 
-
-
 }

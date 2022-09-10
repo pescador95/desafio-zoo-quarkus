@@ -108,18 +108,20 @@ public class AnimalController {
         }
     }
 
-    public void deleteAnimal(@NotNull Animal pAnimal) {
+    public void deleteAnimal(@NotNull List<Animal> animalList) {
 
-        animal = Animal.find("identificacao = ?1 and isAtivo = true ORDER BY id DESC", pAnimal.identificacao).firstResult();
+        animalList.forEach((pAnimal) -> {
+            animal = Animal.find("identificacao = ?1 and isAtivo = true ORDER BY id DESC", pAnimal.identificacao).firstResult();
 
-        if (!(animal == null) && animal.identificacao.equals(pAnimal.identificacao) && (animal.isAtivo)) {
-            animal.isAtivo = false;
-            animal.usuarioAcao = "usuario que deletou";
-            animal.systemDateDeleted = new Date();
-            animal.persist();
-
-        } else {
-            throw new BadRequestException("Não foi possível deletar o animal.");
-        }
+            if (animal != null) {
+                animal.isAtivo = Boolean.FALSE;
+                animal.dataAcao = new Date();
+                animal.usuarioAcao = "usuario que deletou";
+                animal.systemDateDeleted = new Date();
+                animal.persist();
+            } else {
+                throw new BadRequestException("Não foi possível deletar o animal.");
+            }
+        });
     }
 }

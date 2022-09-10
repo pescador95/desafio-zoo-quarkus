@@ -75,8 +75,11 @@ public class HistoricoEtologicoResources {
     @Path("/delete")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
-    public Response delete(HistoricoEtologico pHistoricoEtologico) {
-        controller.deleteHistoricoEtologico(pHistoricoEtologico);
+    public Response deleteList(List<HistoricoEtologico> historicoEtologicoList, @QueryParam("sort") List<String> sortQuery,
+                               @QueryParam("page") @DefaultValue("0") int pageIndex,
+                               @QueryParam("size") @DefaultValue("20") int pageSize) {
+        page = Page.of(pageIndex, pageSize);
+        controller.deleteHistoricoEtologico(historicoEtologicoList);
         return Response.ok().status(200).build();
     }
 }

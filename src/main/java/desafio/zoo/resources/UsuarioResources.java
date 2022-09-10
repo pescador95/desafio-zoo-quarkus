@@ -76,8 +76,11 @@ public class UsuarioResources {
     @Path("/delete")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
-    public Response delete(Usuario pUsuario) {
-        controller.deleteUser(pUsuario);
+    public Response deleteList(List<Usuario> usuarioList, @QueryParam("sort") List<String> sortQuery,
+                               @QueryParam("page") @DefaultValue("0") int pageIndex,
+                               @QueryParam("size") @DefaultValue("20") int pageSize) {
+        page = Page.of(pageIndex, pageSize);
+        controller.deleteUser(usuarioList);
         return Response.ok().status(200).build();
     }
 }

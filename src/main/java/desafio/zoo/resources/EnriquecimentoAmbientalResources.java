@@ -76,8 +76,11 @@ public class EnriquecimentoAmbientalResources {
     @Path("/delete")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
-    public Response delete(EnriquecimentoAmbiental pEnriquecimentoAmbiental) {
-        controller.deleteEnriquecimentoAmbiental(pEnriquecimentoAmbiental);
+    public Response deleteList(List<EnriquecimentoAmbiental> enriquecimentoAmbientalList, @QueryParam("sort") List<String> sortQuery,
+                               @QueryParam("page") @DefaultValue("0") int pageIndex,
+                               @QueryParam("size") @DefaultValue("20") int pageSize) {
+        page = Page.of(pageIndex, pageSize);
+        controller.deleteEnriquecimentoAmbiental(enriquecimentoAmbientalList);
         return Response.ok().status(200).build();
     }
 }

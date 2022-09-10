@@ -16,10 +16,12 @@ import java.util.Objects;
 @Transactional
 public class UsuarioController {
 
-    public Usuario usuario = new Usuario();
-    public Usuario usuarioReturn = new Usuario(); //TODO var criada para retornar obj user pelo método get sem trazer a senha. Estudar para implementar um @JsonIgnoreProperty.
-    public List<Usuario> usuarioList = new ArrayList<>();
-    public List<Usuario> usuarioListReturn = new ArrayList<>();
+
+    private Usuario usuario = new Usuario();
+    private Usuario usuarioReturn = new Usuario(); //TODO var criada para retornar obj user pelo método get sem trazer a senha. Estudar para implementar um @JsonIgnoreProperty.
+    private List<Usuario> usuarioList = new ArrayList<>();
+    private List<Usuario> usuarioListReturn = new ArrayList<>();
+    private Usuario pUsuario;
 
     public Usuario getUser(@NotNull Usuario pUsuario) {
 
@@ -47,18 +49,20 @@ public class UsuarioController {
 
         usuarioList = Usuario.list("isAtivo = true ORDER BY id DESC");
 
+        usuarioListReturn = new ArrayList<>();
+
         if ((!usuarioList.isEmpty())) {
 
-            for (int i = 0; i < usuarioList.size(); i++) {
+            for (Usuario value : usuarioList) {
                 usuarioReturn = new Usuario();
-                usuarioReturn.id = usuarioList.get(i).id;
-                usuarioReturn.email = usuarioList.get(i).email;
-                usuarioReturn.nome = usuarioList.get(i).nome;
-                usuarioReturn.login = usuarioList.get(i).login;
-                usuarioReturn.isAtivo = usuarioList.get(i).isAtivo;
-                usuarioReturn.dataAcao = usuarioList.get(i).dataAcao;
-                usuarioReturn.usuarioAcao = usuarioList.get(i).usuarioAcao;
-                usuarioReturn.roleUsuario = usuarioList.get(i).roleUsuario;
+                usuarioReturn.id = value.id;
+                usuarioReturn.email = value.email;
+                usuarioReturn.nome = value.nome;
+                usuarioReturn.login = value.login;
+                usuarioReturn.isAtivo = value.isAtivo;
+                usuarioReturn.dataAcao = value.dataAcao;
+                usuarioReturn.usuarioAcao = value.usuarioAcao;
+                usuarioReturn.roleUsuario = value.roleUsuario;
 
                 usuarioListReturn.add(usuarioReturn);
 
@@ -74,7 +78,24 @@ public class UsuarioController {
 
         usuarioList = Usuario.list("isAtivo = false ORDER BY id DESC");
 
-        if (usuarioList.isEmpty()) {
+        usuarioListReturn = new ArrayList<>();
+
+        if ((!usuarioList.isEmpty())) {
+
+            for (Usuario value : usuarioList) {
+                usuarioReturn = new Usuario();
+                usuarioReturn.id = value.id;
+                usuarioReturn.email = value.email;
+                usuarioReturn.nome = value.nome;
+                usuarioReturn.login = value.login;
+                usuarioReturn.isAtivo = value.isAtivo;
+                usuarioReturn.dataAcao = value.dataAcao;
+                usuarioReturn.usuarioAcao = value.usuarioAcao;
+                usuarioReturn.roleUsuario = value.roleUsuario;
+
+                usuarioListReturn.add(usuarioReturn);
+            }
+        } else {
             throw new BadRequestException("Usuários inativos não localizados.");
         }
         return usuarioListReturn;
@@ -129,20 +150,21 @@ public class UsuarioController {
         }
     }
 
-    public void deleteUser(@NotNull Usuario pUsuario) {
+    public void deleteUser(@NotNull List<Usuario> usuarioList) {
 
-        usuario = Usuario.find("login = ?1 and isAtivo = true ORDER BY id DESC", pUsuario.login).firstResult();
+        usuarioList.forEach((pUsuario) -> {
+            Usuario usuario = Usuario.find("login = ?1 and isAtivo = true ORDER BY id DESC", pUsuario.login).firstResult();
 
-        if (!(usuario == null) && usuario.login.equals(pUsuario.login) && (usuario.isAtivo)) {
-
-            usuario.isAtivo = false;
-            usuario.usuarioAcao = "usuario que deletou";
-            usuario.systemDateDeleted = new Date();
-            usuario.persist();
-
-        } else {
-            throw new BadRequestException("Não foi possível deletar o Usuário.");
-        }
+            if (usuario != null) {
+                usuario.isAtivo = Boolean.FALSE;
+                usuario.dataAcao = new Date();
+                usuario.usuarioAcao = "usuario que deletou";
+                usuario.systemDateDeleted = new Date();
+                usuario.persist();
+            } else {
+                throw new BadRequestException("Usuários não localizados ou inativos.");
+            }
+        });
     }
 
 }

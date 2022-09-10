@@ -76,8 +76,11 @@ public class MonitoracaoResources {
     @Path("/delete")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
-    public Response delete(Monitoracao pMonitoracao) {
-        controller.deleteMonitoracao(pMonitoracao);
+    public Response deleteList(List<Monitoracao> monitoracaoList, @QueryParam("sort") List<String> sortQuery,
+                               @QueryParam("page") @DefaultValue("0") int pageIndex,
+                               @QueryParam("size") @DefaultValue("20") int pageSize) {
+        page = Page.of(pageIndex, pageSize);
+        controller.deleteMonitoracao(monitoracaoList);
         return Response.ok().status(200).build();
     }
 }

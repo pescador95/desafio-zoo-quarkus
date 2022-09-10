@@ -103,18 +103,20 @@ public class HistoricoEtologicoController {
         }
     }
 
-    public void deleteHistoricoEtologico(@NotNull HistoricoEtologico pHistoricoEtologico) {
+    public void deleteHistoricoEtologico(@NotNull List<HistoricoEtologico> historicoEtologicoList) {
 
-        historicoEtologico = HistoricoEtologico.find("animal = ?1 and isAtivo = true ORDER BY id DESC", pHistoricoEtologico.animal).firstResult();
+        historicoEtologicoList.forEach((pHistoricoEtologico) -> {
+            historicoEtologico = HistoricoEtologico.find("animal = ?1 and isAtivo = true ORDER BY id DESC", pHistoricoEtologico.animal).firstResult();
 
-        if (!(historicoEtologico == null) && historicoEtologico.animal.equals(pHistoricoEtologico.animal) && (historicoEtologico.isAtivo)) {
-            historicoEtologico.isAtivo = false;
-            historicoEtologico.usuarioAcao = "usuario que deletou";
-            historicoEtologico.systemDateDeleted = new Date();
-            historicoEtologico.persist();
-
-        } else {
-            throw new BadRequestException("Não foi possível deletar o Histórico Etológico.");
-        }
+            if (historicoEtologico != null) {
+                historicoEtologico.isAtivo = Boolean.FALSE;
+                historicoEtologico.dataAcao = new Date();
+                historicoEtologico.usuarioAcao = "usuario que deletou";
+                historicoEtologico.systemDateDeleted = new Date();
+                historicoEtologico.persist();
+            } else {
+                throw new BadRequestException("Não foi possível deletar o Histórico Etológico.");
+            }
+        });
     }
 }

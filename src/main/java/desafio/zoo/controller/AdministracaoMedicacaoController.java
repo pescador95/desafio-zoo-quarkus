@@ -91,18 +91,20 @@ public class AdministracaoMedicacaoController {
         }
     }
 
-    public void deleteAdministracaoMedicacao(@NotNull AdministracaoMedicacao pAdministracaoMedicacao) {
+    public void deleteAdministracaoMedicacao(@NotNull List<AdministracaoMedicacao> administracaoMedicacaoList) {
 
-        administracaoMedicacao = AdministracaoMedicacao.find("medicacao = ?1 and dataMedicacao = ?2 and isAtivo = true ORDER BY id DESC", pAdministracaoMedicacao.medicacao, pAdministracaoMedicacao.dataMedicacao).firstResult();
+        administracaoMedicacaoList.forEach((pAdministracaoMedicacao) -> {
+            administracaoMedicacao = AdministracaoMedicacao.find("medicacao = ?1 and dataMedicacao = ?2 and isAtivo = true ORDER BY id DESC", pAdministracaoMedicacao.medicacao, pAdministracaoMedicacao.dataMedicacao).firstResult();
 
-        if (!(administracaoMedicacao == null) && administracaoMedicacao.medicacao.equals(pAdministracaoMedicacao.medicacao) && administracaoMedicacao.isAtivo && administracaoMedicacao.dataMedicacao.equals(pAdministracaoMedicacao.dataMedicacao)) {
-            administracaoMedicacao.isAtivo = false;
-            administracaoMedicacao.usuarioAcao = "usuario que deletou";
-            administracaoMedicacao.systemDateDeleted = new Date();
-            administracaoMedicacao.persist();
-
-        } else {
-            throw new BadRequestException("Não foi possível deletar a administração Medicação.");
-        }
+            if (administracaoMedicacao != null) {
+                administracaoMedicacao.isAtivo = Boolean.FALSE;
+                administracaoMedicacao.dataAcao = new Date();
+                administracaoMedicacao.usuarioAcao = "usuario que deletou";
+                administracaoMedicacao.systemDateDeleted = new Date();
+                administracaoMedicacao.persist();
+            } else {
+                throw new BadRequestException("Não foi possível deletar a administração Medicação.");
+            }
+        });
     }
 }

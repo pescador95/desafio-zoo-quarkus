@@ -75,8 +75,11 @@ public class HistoricoClinicoResources {
     @Path("/delete")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
-    public Response delete(HistoricoClinico pHistoricoClinico) {
-        controller.deleteHistoricoClinico(pHistoricoClinico);
+    public Response deleteList(List<HistoricoClinico> HistoricoClinicoList, @QueryParam("sort") List<String> sortQuery,
+                               @QueryParam("page") @DefaultValue("0") int pageIndex,
+                               @QueryParam("size") @DefaultValue("20") int pageSize) {
+        page = Page.of(pageIndex, pageSize);
+        controller.deleteHistoricoClinico(historicoClinicoList);
         return Response.ok().status(200).build();
     }
 }

@@ -17,7 +17,7 @@ import java.util.Objects;
 public class InternamentoController {
 
     public Internamento internamento;
-  List<Internamento> internamentoList = new ArrayList<>();
+    List<Internamento> internamentoList = new ArrayList<>();
 
 
     public Internamento getInternamento(@NotNull Internamento pInternamento) {
@@ -111,18 +111,20 @@ public class InternamentoController {
         }
     }
 
-    public void deleteInternamento(@NotNull Internamento pInternamento) {
+    public void deleteInternamento(@NotNull List<Internamento> internamentoList) {
 
-        internamento = Internamento.find("monitoracaoId = ?1 and isAtivo = true ORDER BY id DESC", pInternamento.monitoracao).firstResult();
+        internamentoList.forEach((pInternamento) -> {
+            internamento = Internamento.find("monitoracaoId = ?1 and isAtivo = true ORDER BY id DESC", pInternamento.monitoracao).firstResult();
 
-        if (!(internamento == null) && internamento.monitoracao.equals(pInternamento.monitoracao) && (internamento.isAtivo)) {
-            internamento.isAtivo = false;
-            internamento.usuarioAcao = "usuario que deletou";
-            internamento.systemDateDeleted = new Date();
-            internamento.persist();
-
-        } else {
-            throw new BadRequestException("Não foi possível deletar o Internamento.");
-        }
+            if (internamento != null) {
+                internamento.isAtivo = Boolean.FALSE;
+                internamento.dataAcao = new Date();
+                internamento.usuarioAcao = "usuario que deletou";
+                internamento.systemDateDeleted = new Date();
+                internamento.persist();
+            } else {
+                throw new BadRequestException("Não foi possível deletar o Internamento.");
+            }
+        });
     }
 }

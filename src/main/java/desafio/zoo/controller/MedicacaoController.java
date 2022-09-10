@@ -108,18 +108,20 @@ public class MedicacaoController {
         }
     }
 
-    public void deleteMedicacao(@NotNull Medicacao pMedicacao) {
+    public void deleteMedicacao(@NotNull List<Medicacao> medicacaoList) {
 
-        medicacao = Medicacao.find("animal = ?1 and isAtivo = true ORDER BY id DESC", pMedicacao.animal).firstResult();
+        medicacaoList.forEach((pMedicacao) -> {
+            medicacao = Medicacao.find("animal = ?1 and isAtivo = true ORDER BY id DESC", pMedicacao.animal).firstResult();
 
-        if (!(medicacao == null) && medicacao.animal.equals(pMedicacao.animal) && (medicacao.isAtivo)) {
-            medicacao.isAtivo = false;
-            medicacao.usuarioAcao = "usuario que deletou";
-            medicacao.systemDateDeleted = new Date();
-            medicacao.persist();
-
-        } else {
-            throw new BadRequestException("Não foi possível deletar a medicação.");
-        }
+            if (medicacao != null) {
+                medicacao.isAtivo = Boolean.FALSE;
+                medicacao.dataAcao = new Date();
+                medicacao.usuarioAcao = "usuario que deletou";
+                medicacao.systemDateDeleted = new Date();
+                medicacao.persist();
+            } else {
+                throw new BadRequestException("Não foi possível deletar a medicação.");
+            }
+        });
     }
 }

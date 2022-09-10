@@ -76,8 +76,11 @@ public class InternamentoResources {
     @Path("/delete")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
-    public Response delete(Internamento pInternamento) {
-        controller.deleteInternamento(pInternamento);
+    public Response deleteList(List<Internamento> internamentoList, @QueryParam("sort") List<String> sortQuery,
+                               @QueryParam("page") @DefaultValue("0") int pageIndex,
+                               @QueryParam("size") @DefaultValue("20") int pageSize) {
+        page = Page.of(pageIndex, pageSize);
+        controller.deleteInternamento(internamentoList);
         return Response.ok().status(200).build();
     }
 }

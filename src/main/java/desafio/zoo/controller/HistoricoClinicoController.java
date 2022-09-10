@@ -138,18 +138,20 @@ public class HistoricoClinicoController {
         }
     }
 
-    public void deleteHistoricoClinico(@NotNull HistoricoClinico pHistoricoClinico) {
+    public void deleteHistoricoClinico(@NotNull List<HistoricoClinico> historicoClinicoList) {
 
-        historicoClinico = HistoricoClinico.find("animal = ?1 and isAtivo = true ORDER BY id DESC", pHistoricoClinico.animal).firstResult();
+        historicoClinicoList.forEach((pHistoricoClinico) -> {
+            historicoClinico = HistoricoClinico.find("animal = ?1 and isAtivo = true ORDER BY id DESC", pHistoricoClinico.animal).firstResult();
 
-        if (!(historicoClinico == null) && historicoClinico.animal.equals(pHistoricoClinico.animal) && (historicoClinico.isAtivo)) {
-            historicoClinico.isAtivo = false;
-            historicoClinico.usuarioAcao = "usuario que deletou";
-            historicoClinico.systemDateDeleted = new Date();
-            historicoClinico.persist();
-
-        } else {
-            throw new BadRequestException("Não foi possível deletar o Histórico Clínico.");
-        }
+            if (historicoClinico != null) {
+                historicoClinico.isAtivo = Boolean.FALSE;
+                historicoClinico.dataAcao = new Date();
+                historicoClinico.usuarioAcao = "usuario que deletou";
+                historicoClinico.systemDateDeleted = new Date();
+                historicoClinico.persist();
+            } else {
+                throw new BadRequestException("Não foi possível deletar o Histórico Clínico.");
+            }
+        });
     }
 }

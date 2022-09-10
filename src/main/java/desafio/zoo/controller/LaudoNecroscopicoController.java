@@ -116,18 +116,21 @@ public class LaudoNecroscopicoController {
         }
     }
 
-    public void deleteLaudoNecroscopico(@NotNull LaudoNecroscopico pLaudoNecroscopico) {
+    public void deleteLaudoNecroscopico(@NotNull List<LaudoNecroscopico> laudoNecroscopicoList) {
 
-        laudoNecroscopico = LaudoNecroscopico.find("animal = ?1 and isAtivo = true ORDER BY id DESC", pLaudoNecroscopico.animal).firstResult();
+        laudoNecroscopicoList.forEach((pLaudoNecroscopico) -> {
+            laudoNecroscopico = LaudoNecroscopico.find("animal = ?1 and isAtivo = true ORDER BY id DESC", pLaudoNecroscopico.animal).firstResult();
 
-        if (!(laudoNecroscopico == null) && laudoNecroscopico.animal.equals(pLaudoNecroscopico.animal) && (laudoNecroscopico.isAtivo)) {
-            laudoNecroscopico.isAtivo = false;
-            laudoNecroscopico.usuarioAcao = "usuario que deletou";
-            laudoNecroscopico.systemDateDeleted = new Date();
-            laudoNecroscopico.persist();
-
-        } else {
-            throw new BadRequestException("Não foi possível deletar o Laudo.");
-        }
+            if (laudoNecroscopico != null) {
+                laudoNecroscopico.isAtivo = Boolean.FALSE;
+                laudoNecroscopico.dataAcao = new Date();
+                laudoNecroscopico.usuarioAcao = "usuario que deletou";
+                laudoNecroscopico.systemDateDeleted = new Date();
+                laudoNecroscopico.persist();
+            } else {
+                throw new BadRequestException("Não foi possível deletar o Laudo.");
+            }
+        });
     }
 }
+

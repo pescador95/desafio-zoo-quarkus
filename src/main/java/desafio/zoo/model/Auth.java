@@ -7,7 +7,7 @@ import java.util.Date;
 public class Auth {
     public String login;
     public String password;
-    public String usuario;
+    public Usuario usuario;
     public String accessToken;
     public Date expireDateAccessToken;
     public String refreshToken;

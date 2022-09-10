@@ -75,8 +75,11 @@ public class LaudoNecroscopicoResources {
     @Path("/delete")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
-    public Response delete(LaudoNecroscopico pLaudoNecroscopico) {
-        controller.deleteLaudoNecroscopico(pLaudoNecroscopico);
+    public Response deleteList(List<LaudoNecroscopico> laudoNecroscopicoList, @QueryParam("sort") List<String> sortQuery,
+                               @QueryParam("page") @DefaultValue("0") int pageIndex,
+                               @QueryParam("size") @DefaultValue("20") int pageSize) {
+        page = Page.of(pageIndex, pageSize);
+        controller.deleteLaudoNecroscopico(laudoNecroscopicoList);
         return Response.ok().status(200).build();
     }
 }

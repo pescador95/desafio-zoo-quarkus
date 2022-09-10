@@ -55,12 +55,9 @@ public class NutricaoController {
         if (nutricao == null || !nutricao.isAtivo) {
             nutricao = new Nutricao();
             nutricao.descricaoNutricao = pNutricao.descricaoNutricao;
-            nutricao.alimento = pNutricao.alimento;
             nutricao.isAtivo = true;
             nutricao.dataInicio = pNutricao.dataInicio;
             nutricao.dataFim = pNutricao.dataFim;
-            nutricao.quantidade = pNutricao.quantidade;
-            nutricao.valorUnidadeMedida = pNutricao.valorUnidadeMedida;
             nutricao.usuario = pNutricao.usuario;
             nutricao.animal = pNutricao.animal;
             nutricao.usuarioAcao = "";
@@ -88,15 +85,6 @@ public class NutricaoController {
             }
             if (!nutricao.descricaoNutricao.equals(pNutricao.descricaoNutricao)) {
                 nutricao.descricaoNutricao = pNutricao.descricaoNutricao;
-            }
-            if (!nutricao.alimento.equals(pNutricao.alimento)) {
-                nutricao.alimento = pNutricao.alimento;
-            }
-            if (!nutricao.quantidade.equals(pNutricao.quantidade)) {
-                nutricao.quantidade = pNutricao.quantidade;
-            }
-            if (nutricao.valorUnidadeMedida != pNutricao.valorUnidadeMedida) {
-                nutricao.valorUnidadeMedida = pNutricao.valorUnidadeMedida;
             }
             if (nutricao.usuario.equals(pNutricao.usuario)) {
                 nutricao.usuario = pNutricao.usuario;

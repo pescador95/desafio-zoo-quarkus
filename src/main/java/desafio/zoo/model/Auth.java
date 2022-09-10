@@ -5,7 +5,7 @@ import java.util.Date;
 
 @ApplicationScoped
 public class Auth {
-    public String login;
+    public String email;
     public String password;
     public Usuario usuario;
     public String accessToken;

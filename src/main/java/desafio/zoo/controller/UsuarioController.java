@@ -25,14 +25,13 @@ public class UsuarioController {
 
     public Usuario getUser(@NotNull Usuario pUsuario) {
 
-        usuario = Usuario.find("login = ?1 ORDER BY id DESC", pUsuario.login).firstResult();
+        usuario = Usuario.find("email = ?1 ORDER BY id DESC", pUsuario.email).firstResult();
 
         if ((!(usuario == null)) && (usuario.isAtivo)) {
             usuarioReturn = new Usuario();
             usuarioReturn.id = usuario.id;
             usuarioReturn.email = usuario.email;
             usuarioReturn.nome = usuario.nome;
-            usuarioReturn.login = usuario.login;
             usuarioReturn.isAtivo = usuario.isAtivo;
             usuarioReturn.dataAcao = usuario.dataAcao;
             usuarioReturn.usuarioAcao = usuario.usuarioAcao;
@@ -58,7 +57,6 @@ public class UsuarioController {
                 usuarioReturn.id = value.id;
                 usuarioReturn.email = value.email;
                 usuarioReturn.nome = value.nome;
-                usuarioReturn.login = value.login;
                 usuarioReturn.isAtivo = value.isAtivo;
                 usuarioReturn.dataAcao = value.dataAcao;
                 usuarioReturn.usuarioAcao = value.usuarioAcao;
@@ -87,7 +85,6 @@ public class UsuarioController {
                 usuarioReturn.id = value.id;
                 usuarioReturn.email = value.email;
                 usuarioReturn.nome = value.nome;
-                usuarioReturn.login = value.login;
                 usuarioReturn.isAtivo = value.isAtivo;
                 usuarioReturn.dataAcao = value.dataAcao;
                 usuarioReturn.usuarioAcao = value.usuarioAcao;
@@ -103,13 +100,12 @@ public class UsuarioController {
 
     public void addUser(@NotNull Usuario pUsuario) {
 
-        usuario = Usuario.find("login = ?1 and isAtivo = true ORDER BY id DESC", pUsuario.login).firstResult();
+        usuario = Usuario.find("email = ?1 and isAtivo = true ORDER BY id DESC", pUsuario.email).firstResult();
 
         if ((usuario == null) || !usuario.isAtivo) {
             usuario = new Usuario();
             usuario.email = pUsuario.email;
             usuario.nome = pUsuario.nome;
-            usuario.login = pUsuario.login;
             usuario.password = BcryptUtil.bcryptHash(pUsuario.password);
             usuario.isAtivo = true;
             usuario.roleUsuario = pUsuario.roleUsuario;
@@ -125,9 +121,9 @@ public class UsuarioController {
 
     public void updateUser(@NotNull Usuario pUsuario) {
 
-        usuario = Usuario.find("login = ?1 and isAtivo = true ORDER BY id DESC", pUsuario.login).firstResult();
+        usuario = Usuario.find("email = ?1 and isAtivo = true ORDER BY id DESC", pUsuario.email).firstResult();
 
-        if (!(usuario == null) && usuario.login.equals(pUsuario.login) && usuario.isAtivo) {
+        if (!(usuario == null)) {
             if (!usuario.email.equals(pUsuario.email)) {
                 usuario.email = pUsuario.email;
             }
@@ -153,7 +149,7 @@ public class UsuarioController {
     public void deleteUser(@NotNull List<Usuario> usuarioList) {
 
         usuarioList.forEach((pUsuario) -> {
-            Usuario usuario = Usuario.find("login = ?1 and isAtivo = true ORDER BY id DESC", pUsuario.login).firstResult();
+            Usuario usuario = Usuario.find("email = ?1 and isAtivo = true ORDER BY id DESC", pUsuario.email).firstResult();
 
             if (usuario != null) {
                 usuario.isAtivo = Boolean.FALSE;

@@ -21,7 +21,7 @@ public class Animal extends PanacheEntity {
     @Column(nullable = false)
     public String nomeApelido;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     public String identificacao;
 
     @Column()
@@ -47,8 +47,8 @@ public class Animal extends PanacheEntity {
     @Column()
     @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
     public Date systemDateDeleted;
-// T   @Column()
-//    public boolean origem TODO DESCOBRIR O QUE É O DADO ORIGEM;
+   @Column()
+    public String origem;
 
     public static final int MACHO = 0;
     public static final int FEMEA = 1;

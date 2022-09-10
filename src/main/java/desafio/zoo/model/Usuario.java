@@ -17,14 +17,11 @@ public class Usuario extends PanacheEntity {
     public String nome;
 
     @Column(nullable = false)
-   // @Username
-    public String login;
-
-    @Column(nullable = false)
    // @Password
     public String password;
 
     @Column(nullable = false)
+    // @Username
     public String email;
 
     @Column()

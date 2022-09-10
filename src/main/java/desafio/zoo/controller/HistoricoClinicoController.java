@@ -9,7 +9,6 @@ import javax.ws.rs.BadRequestException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Objects;
 
 @ApplicationScoped
 @Transactional
@@ -58,18 +57,15 @@ public class HistoricoClinicoController {
         if (historicoClinico == null || !historicoClinico.isAtivo) {
             historicoClinico = new HistoricoClinico();
             historicoClinico.animal = pHistoricoClinico.animal;
-            historicoClinico.pelagem = pHistoricoClinico.pelagem;
-            historicoClinico.diagnosticoInicial = pHistoricoClinico.diagnosticoInicial;
+            historicoClinico.etco2 = pHistoricoClinico.etco2;
+            historicoClinico.spo2 = pHistoricoClinico.spo2;
             historicoClinico.temperaturaAnimal = pHistoricoClinico.temperaturaAnimal;
-            historicoClinico.pulso = pHistoricoClinico.pulso;
+            historicoClinico.ps = pHistoricoClinico.ps;
             historicoClinico.frequenciaRespiratoria = pHistoricoClinico.frequenciaRespiratoria;
             historicoClinico.frequenciaCariaca = pHistoricoClinico.frequenciaCariaca;
-            historicoClinico.terapiaPosCiclo = pHistoricoClinico.terapiaPosCiclo;
+            historicoClinico.pd = pHistoricoClinico.pd;
             historicoClinico.observacao = pHistoricoClinico.observacao;
-            historicoClinico.isInternamento = pHistoricoClinico.isInternamento;
-            historicoClinico.internamento = pHistoricoClinico.internamento;
-            historicoClinico.dataAlta = pHistoricoClinico.dataAlta;
-            historicoClinico.laudoNecroscopico = pHistoricoClinico.laudoNecroscopico;
+            historicoClinico.pm = pHistoricoClinico.pm;
             historicoClinico.dataAcao = pHistoricoClinico.dataAcao;
             historicoClinico.systemDateDeleted = pHistoricoClinico.systemDateDeleted;
             historicoClinico.isAtivo = true;
@@ -90,17 +86,15 @@ public class HistoricoClinicoController {
         historicoClinico = HistoricoClinico.find("animal = ?1 and isAtivo = true ORDER BY id DESC", pHistoricoClinico.animal).firstResult();
 
         if (!(historicoClinico == null) && historicoClinico.animal.equals(pHistoricoClinico.animal) && historicoClinico.isAtivo) {
-            if (!Objects.equals(historicoClinico.pelagem, pHistoricoClinico.pelagem)) {
-                historicoClinico.pelagem = pHistoricoClinico.pelagem;
-            }
-            if (!historicoClinico.diagnosticoInicial.equals(pHistoricoClinico.diagnosticoInicial)) {
-                historicoClinico.diagnosticoInicial = pHistoricoClinico.diagnosticoInicial;
+
+            if (!historicoClinico.etco2.equals(pHistoricoClinico.etco2)) {
+                historicoClinico.etco2 = pHistoricoClinico.etco2;
             }
             if (!historicoClinico.temperaturaAnimal.equals(pHistoricoClinico.temperaturaAnimal)) {
                 historicoClinico.temperaturaAnimal = pHistoricoClinico.temperaturaAnimal;
             }
-            if (!historicoClinico.pulso.equals(pHistoricoClinico.pulso)) {
-                historicoClinico.pulso = pHistoricoClinico.pulso;
+            if (!historicoClinico.spo2.equals(pHistoricoClinico.spo2)) {
+                historicoClinico.spo2 = pHistoricoClinico.spo2;
             }
             if (!historicoClinico.frequenciaRespiratoria.equals(pHistoricoClinico.frequenciaRespiratoria)) {
                 historicoClinico.frequenciaRespiratoria = pHistoricoClinico.frequenciaRespiratoria;
@@ -108,23 +102,17 @@ public class HistoricoClinicoController {
             if (!historicoClinico.frequenciaCariaca.equals(pHistoricoClinico.frequenciaCariaca)) {
                 historicoClinico.frequenciaCariaca = pHistoricoClinico.frequenciaCariaca;
             }
-            if (!historicoClinico.terapiaPosCiclo.equals(pHistoricoClinico.terapiaPosCiclo)) {
-                historicoClinico.terapiaPosCiclo = pHistoricoClinico.terapiaPosCiclo;
+            if (!historicoClinico.ps.equals(pHistoricoClinico.ps)) {
+                historicoClinico.ps = pHistoricoClinico.ps;
             }
             if (!historicoClinico.observacao.equals(pHistoricoClinico.observacao)) {
                 historicoClinico.observacao = pHistoricoClinico.observacao;
             }
-            if (!historicoClinico.isInternamento.equals(pHistoricoClinico.isInternamento)) {
-                historicoClinico.isInternamento = pHistoricoClinico.isInternamento;
+            if (!historicoClinico.pd.equals(pHistoricoClinico.pd)) {
+                historicoClinico.pd = pHistoricoClinico.pd;
             }
-            if (!historicoClinico.internamento.equals(pHistoricoClinico.internamento)) {
-                historicoClinico.internamento = pHistoricoClinico.internamento;
-            }
-            if (!historicoClinico.dataAlta.equals(pHistoricoClinico.dataAlta)) {
-                historicoClinico.dataAlta = pHistoricoClinico.dataAlta;
-            }
-            if (!historicoClinico.laudoNecroscopico.equals(pHistoricoClinico.laudoNecroscopico)) {
-                historicoClinico.laudoNecroscopico = pHistoricoClinico.laudoNecroscopico;
+            if (!historicoClinico.pm.equals(pHistoricoClinico.pm)) {
+                historicoClinico.pm = pHistoricoClinico.pm;
             }
             if (historicoClinico.usuario.equals(pHistoricoClinico.usuario)) {
                 historicoClinico.usuario = pHistoricoClinico.usuario;

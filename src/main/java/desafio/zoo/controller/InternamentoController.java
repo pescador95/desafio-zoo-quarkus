@@ -17,6 +17,7 @@ import java.util.Objects;
 public class InternamentoController {
 
     public Internamento internamento;
+
     List<Internamento> internamentoList = new ArrayList<>();
 
 

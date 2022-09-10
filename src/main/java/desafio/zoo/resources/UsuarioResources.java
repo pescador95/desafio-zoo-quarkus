@@ -19,8 +19,6 @@ public class UsuarioResources {
     Usuario usuario;
     List<Usuario> usuarioList;
     Page page;
-    List<String> login;
-
 
     @GET
     @Path("/get")

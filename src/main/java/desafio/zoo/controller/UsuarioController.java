@@ -16,6 +16,7 @@ import java.util.Objects;
 @Transactional
 public class UsuarioController {
 
+
     private Usuario usuario = new Usuario();
     private Usuario usuarioReturn = new Usuario(); //TODO var criada para retornar obj user pelo método get sem trazer a senha. Estudar para implementar um @JsonIgnoreProperty.
     private List<Usuario> usuarioList = new ArrayList<>();
@@ -47,6 +48,7 @@ public class UsuarioController {
     public List<Usuario> getUserListAtivos() {
 
         usuarioList = Usuario.list("isAtivo = true ORDER BY id DESC");
+
         usuarioListReturn = new ArrayList<>();
 
         if ((!usuarioList.isEmpty())) {
@@ -75,6 +77,7 @@ public class UsuarioController {
     public List<Usuario> getUserListInativos() {
 
         usuarioList = Usuario.list("isAtivo = false ORDER BY id DESC");
+
         usuarioListReturn = new ArrayList<>();
 
         if ((!usuarioList.isEmpty())) {
@@ -163,4 +166,5 @@ public class UsuarioController {
             }
         });
     }
+
 }

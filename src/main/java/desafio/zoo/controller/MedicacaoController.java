@@ -57,7 +57,6 @@ public class MedicacaoController {
         if (medicacao == null || !medicacao.isAtivo) {
             medicacao = new Medicacao();
             medicacao.animal = pMedicacao.animal;
-            medicacao.administracaoMedicacao = pMedicacao.administracaoMedicacao;
             medicacao.nomeMedicacao = pMedicacao.nomeMedicacao;
             medicacao.viaAdministracao = pMedicacao.viaAdministracao;
             medicacao.posologia = pMedicacao.posologia;
@@ -81,9 +80,6 @@ public class MedicacaoController {
 
 
         if (!(medicacao == null) && medicacao.animal.equals(pMedicacao.animal) && medicacao.isAtivo) {
-            if (!medicacao.administracaoMedicacao.equals(pMedicacao.administracaoMedicacao)) {
-                medicacao.administracaoMedicacao = pMedicacao.administracaoMedicacao;
-            }
             if (!medicacao.nomeMedicacao.equals(pMedicacao.nomeMedicacao)) {
                 medicacao.nomeMedicacao = pMedicacao.nomeMedicacao;
             }

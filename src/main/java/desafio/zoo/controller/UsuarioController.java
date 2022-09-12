@@ -21,7 +21,7 @@ public class UsuarioController {
     private Usuario usuarioReturn = new Usuario(); //TODO var criada para retornar obj user pelo método get sem trazer a senha. Estudar para implementar um @JsonIgnoreProperty.
     private List<Usuario> usuarioList = new ArrayList<>();
     private List<Usuario> usuarioListReturn = new ArrayList<>();
-    private Usuario pUsuario;
+
 
     public Usuario getUser(@NotNull Usuario pUsuario) {
 

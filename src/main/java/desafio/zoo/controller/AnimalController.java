@@ -100,7 +100,7 @@ public class AnimalController {
             if (animal.idade!= pAnimal.idade) {
                 animal.idade = pAnimal.idade;
             }
-            if(animal.origem != pAnimal.origem){
+            if(animal.origem.equals(pAnimal.origem)){
                 animal.origem = pAnimal.origem;
             }
             animal.dataAcao = new Date();

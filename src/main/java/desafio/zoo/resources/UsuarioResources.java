@@ -4,6 +4,7 @@ import desafio.zoo.controller.UsuarioController;
 import desafio.zoo.model.Usuario;
 import io.quarkus.panache.common.Page;
 
+import javax.annotation.security.PermitAll;
 import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -24,6 +25,7 @@ public class UsuarioResources {
     @Path("/get")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
+    @PermitAll
     public Response get(Usuario pUsuario) {
         usuario = controller.getUser(pUsuario);
         return Response.ok(usuario).status(200).build();
@@ -33,6 +35,7 @@ public class UsuarioResources {
     @Path("/getListAtivos")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
+    @PermitAll
     public Response listAtivos(@QueryParam("sort") List<String> sortQuery,
                                @QueryParam("page") @DefaultValue("0") int pageIndex,
                                @QueryParam("size") @DefaultValue("20") int pageSize) {
@@ -45,6 +48,7 @@ public class UsuarioResources {
     @Path("/getListInativos")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
+    @PermitAll
     public Response listInativos(@QueryParam("sort") List<String> sortQuery,
                                  @QueryParam("page") @DefaultValue("0") int pageIndex,
                                  @QueryParam("size") @DefaultValue("20") int pageSize) {
@@ -58,6 +62,7 @@ public class UsuarioResources {
     @Path("/create")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
+    @PermitAll
     public Response add(Usuario pUsuario) {
         controller.addUser(pUsuario);
         return Response.ok().status(201).build();
@@ -67,6 +72,7 @@ public class UsuarioResources {
     @Path("/update")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
+    @PermitAll
     public Response update(Usuario pUsuario) {
         controller.updateUser(pUsuario);
         return Response.ok().status(200).build();
@@ -76,6 +82,7 @@ public class UsuarioResources {
     @Path("/delete")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
+    @PermitAll
     public Response deleteList(List<Usuario> usuarioList, @QueryParam("sort") List<String> sortQuery,
                                @QueryParam("page") @DefaultValue("0") int pageIndex,
                                @QueryParam("size") @DefaultValue("20") int pageSize) {

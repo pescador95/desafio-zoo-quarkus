@@ -14,11 +14,11 @@ public class Nutricao extends PanacheEntity {
     @JoinColumn(name="animalId")
     public Animal animal;
 
-    @Column(nullable = false)
+    @Column()
     @JsonFormat(pattern="dd/MM/yyyy")
     public Date dataInicio;
 
-    @Column(nullable = false)
+    @Column()
     @JsonFormat(pattern="dd/MM/yyyy")
     public Date dataFim;
 

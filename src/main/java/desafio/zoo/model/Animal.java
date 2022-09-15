@@ -12,22 +12,22 @@ import java.util.Date;
 @Table(name = "animal")
 public class Animal extends PanacheEntity {
 
-    @Column(nullable = false)
+    @Column()
     public String nomeComum;
 
-    @Column(nullable = false)
+    @Column()
     public String nomeCientifico;
 
-    @Column(nullable = false)
+    @Column()
     public String nomeApelido;
 
-    @Column(nullable = false)
+    @Column()
     public String identificacao;
 
     @Column()
     public String sexo;
 
-    @Column(nullable = false)
+    @Column()
     @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
     public Date dataEntrada;
 

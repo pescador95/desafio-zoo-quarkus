@@ -14,11 +14,11 @@ public class EnriquecimentoAmbiental extends PanacheEntity {
     @JoinColumn(name="animalId")
     public Animal animal;
 
-    @Column(nullable = false)
+    @Column()
     @JsonFormat(pattern="dd/MM/yyyy HH:mm:ss")
     public Date dataEnriquecimento;
 
-    @Column(nullable = false)
+    @Column()
     public String nomeEnriquecimento;
 
     @Column()

@@ -21,7 +21,7 @@ public class AnimalController {
 
     public Animal getAnimal(@NotNull Animal pAnimal) {
 
-        animal = Animal.find("identificacao = ?1 ORDER BY id DESC", pAnimal.identificacao).firstResult();
+        animal = Animal.find("id = ?1 ORDER BY id DESC", pAnimal.id).firstResult();
 
         if (animal == null || !animal.isAtivo) {
             throw new BadRequestException("Animal não localizado.");
@@ -76,9 +76,9 @@ public class AnimalController {
 
     public void updateAnimal(@NotNull Animal pAnimal) {
 
-        animal = Animal.find("identificacao = ?1 and isAtivo = true ORDER BY id DESC", pAnimal.identificacao).firstResult();
+        animal = Animal.find("id = ?1 and isAtivo = true ORDER BY id DESC", pAnimal.id).firstResult();
 
-        if (!(animal == null) && animal.identificacao.equals(pAnimal.identificacao) && animal.isAtivo) {
+        if (!(animal == null) && animal.id.equals(pAnimal.id) && animal.isAtivo) {
             if (!animal.nomeComum.equals(pAnimal.nomeComum)) {
                 animal.nomeComum = pAnimal.nomeComum;
             }
@@ -115,7 +115,7 @@ public class AnimalController {
     public void deleteAnimal(@NotNull List<Animal> animalList) {
 
         animalList.forEach((pAnimal) -> {
-            animal = Animal.find("identificacao = ?1 and isAtivo = true ORDER BY id DESC", pAnimal.identificacao).firstResult();
+            animal = Animal.find("id = ?1 and isAtivo = true ORDER BY id DESC", pAnimal.id).firstResult();
 
             if (animal != null) {
                 animal.isAtivo = Boolean.FALSE;

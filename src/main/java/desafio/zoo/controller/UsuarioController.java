@@ -25,7 +25,7 @@ public class UsuarioController {
 
     public Usuario getUser(@NotNull Usuario pUsuario) {
 
-        usuario = Usuario.find("email = ?1 ORDER BY id DESC", pUsuario.email).firstResult();
+        usuario = Usuario.find("id = ?1 ORDER BY id DESC", pUsuario.id).firstResult();
 
         if ((!(usuario == null)) && (usuario.isAtivo)) {
             usuarioReturn = new Usuario();
@@ -121,7 +121,7 @@ public class UsuarioController {
 
     public void updateUser(@NotNull Usuario pUsuario) {
 
-        usuario = Usuario.find("email = ?1 and isAtivo = true ORDER BY id DESC", pUsuario.email).firstResult();
+        usuario = Usuario.find("id = ?1 and isAtivo = true ORDER BY id DESC", pUsuario.id).firstResult();
 
         if (!(usuario == null)) {
             if (!usuario.email.equals(pUsuario.email)) {
@@ -149,7 +149,7 @@ public class UsuarioController {
     public void deleteUser(@NotNull List<Usuario> usuarioList) {
 
         usuarioList.forEach((pUsuario) -> {
-            Usuario usuario = Usuario.find("email = ?1 and isAtivo = true ORDER BY id DESC", pUsuario.email).firstResult();
+            Usuario usuario = Usuario.find("id = ?1 and isAtivo = true ORDER BY id DESC", pUsuario.id).firstResult();
 
             if (usuario != null) {
                 usuario.isAtivo = Boolean.FALSE;

@@ -22,7 +22,7 @@ public class HistoricoClinicoController {
 
     public HistoricoClinico getHistoricoClinico(@NotNull HistoricoClinico pHistoricoClinico) {
 
-        historicoClinico = HistoricoClinico.find("animal = ?1 ORDER BY id DESC", pHistoricoClinico.animal).firstResult();
+        historicoClinico = HistoricoClinico.find("id = ?1 ORDER BY id DESC", pHistoricoClinico.id).firstResult();
 
         if (historicoClinico == null || !historicoClinico.isAtivo) {
             throw new BadRequestException("Histórico Clínico não localizado.");
@@ -83,9 +83,9 @@ public class HistoricoClinicoController {
 
     public void updateHistoricoClinico(@NotNull HistoricoClinico pHistoricoClinico) {
 
-        historicoClinico = HistoricoClinico.find("animal = ?1 and isAtivo = true ORDER BY id DESC", pHistoricoClinico.animal).firstResult();
+        historicoClinico = HistoricoClinico.find("id = ?1 and isAtivo = true ORDER BY id DESC", pHistoricoClinico.id).firstResult();
 
-        if (!(historicoClinico == null) && historicoClinico.animal.equals(pHistoricoClinico.animal) && historicoClinico.isAtivo) {
+        if (!(historicoClinico == null) && historicoClinico.id.equals(pHistoricoClinico.id) && historicoClinico.isAtivo) {
 
             if (!historicoClinico.etco2.equals(pHistoricoClinico.etco2)) {
                 historicoClinico.etco2 = pHistoricoClinico.etco2;
@@ -129,7 +129,7 @@ public class HistoricoClinicoController {
     public void deleteHistoricoClinico(@NotNull List<HistoricoClinico> historicoClinicoList) {
 
         historicoClinicoList.forEach((pHistoricoClinico) -> {
-            historicoClinico = HistoricoClinico.find("animal = ?1 and isAtivo = true ORDER BY id DESC", pHistoricoClinico.animal).firstResult();
+            historicoClinico = HistoricoClinico.find("id = ?1 and isAtivo = true ORDER BY id DESC", pHistoricoClinico.id).firstResult();
 
             if (historicoClinico != null) {
                 historicoClinico.isAtivo = Boolean.FALSE;

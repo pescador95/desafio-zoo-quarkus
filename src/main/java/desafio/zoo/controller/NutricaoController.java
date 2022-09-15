@@ -20,7 +20,7 @@ public class NutricaoController {
 
     public Nutricao getNutricao(@NotNull Nutricao pNutricao) {
 
-        nutricao = Nutricao.find("animal = ?1 ORDER BY id DESC", pNutricao.animal).firstResult();
+        nutricao = Nutricao.find("id = ?1 ORDER BY id DESC", pNutricao.id).firstResult();
 
         if (nutricao == null || !nutricao.isAtivo) {
             throw new BadRequestException("Nutrição não foi localizado.");
@@ -73,10 +73,10 @@ public class NutricaoController {
 
     public void updateNutricao(@NotNull Nutricao pNutricao) {
 
-        nutricao = Nutricao.find("animal = ?1 and isAtivo = true ORDER BY id DESC", pNutricao.animal).firstResult();
+        nutricao = Nutricao.find("id = ?1 and isAtivo = true ORDER BY id DESC", pNutricao.id).firstResult();
 
 
-        if (!(nutricao == null) && nutricao.animal.equals(pNutricao.animal) && nutricao.isAtivo) {
+        if (!(nutricao == null) && nutricao.id.equals(pNutricao.id) && nutricao.isAtivo) {
             if (!nutricao.dataInicio.equals(pNutricao.dataInicio)) {
                 nutricao.dataInicio = pNutricao.dataInicio;
             }
@@ -101,7 +101,7 @@ public class NutricaoController {
     public void deleteNutricao(@NotNull List<Nutricao> nutricaoList) {
 
         nutricaoList.forEach((pNutricao) -> {
-            Nutricao nutricao = Nutricao.find("animal = ?1 and isAtivo = true ORDER BY id DESC", pNutricao.animal).firstResult();
+            Nutricao nutricao = Nutricao.find("id = ?1 and isAtivo = true ORDER BY id DESC", pNutricao.id).firstResult();
 
             if (nutricao != null) {
                 nutricao.isAtivo = Boolean.FALSE;

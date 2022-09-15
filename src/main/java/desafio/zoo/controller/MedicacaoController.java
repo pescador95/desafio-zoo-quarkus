@@ -22,7 +22,7 @@ public class MedicacaoController {
 
     public Medicacao getMedicacao(@NotNull Medicacao pMedicacao) {
 
-        medicacao = Medicacao.find("animal = ?1 ORDER BY id DESC", pMedicacao.animal).firstResult();
+        medicacao = Medicacao.find("id = ?1 ORDER BY id DESC", pMedicacao.id).firstResult();
 
         if (medicacao == null || !medicacao.isAtivo) {
             throw new BadRequestException("Medicação não localizada.");
@@ -76,10 +76,10 @@ public class MedicacaoController {
 
     public void updateMedicacao(@NotNull Medicacao pMedicacao) {
 
-        medicacao = Medicacao.find("animal = ?1 and isAtivo = true ORDER BY id DESC", pMedicacao.animal).firstResult();
+        medicacao = Medicacao.find("id = ?1 and isAtivo = true ORDER BY id DESC", pMedicacao.id).firstResult();
 
 
-        if (!(medicacao == null) && medicacao.animal.equals(pMedicacao.animal) && medicacao.isAtivo) {
+        if (!(medicacao == null) && medicacao.id.equals(pMedicacao.id) && medicacao.isAtivo) {
             if (!medicacao.nomeMedicacao.equals(pMedicacao.nomeMedicacao)) {
                 medicacao.nomeMedicacao = pMedicacao.nomeMedicacao;
             }
@@ -107,7 +107,7 @@ public class MedicacaoController {
     public void deleteMedicacao(@NotNull List<Medicacao> medicacaoList) {
 
         medicacaoList.forEach((pMedicacao) -> {
-            medicacao = Medicacao.find("animal = ?1 and isAtivo = true ORDER BY id DESC", pMedicacao.animal).firstResult();
+            medicacao = Medicacao.find("id = ?1 and isAtivo = true ORDER BY id DESC", pMedicacao.id).firstResult();
 
             if (medicacao != null) {
                 medicacao.isAtivo = Boolean.FALSE;

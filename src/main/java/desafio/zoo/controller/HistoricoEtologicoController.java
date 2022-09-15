@@ -23,7 +23,7 @@ public class HistoricoEtologicoController {
 
     public HistoricoEtologico getHistoricoEtologico(@NotNull HistoricoEtologico pHistoricoEtologico) {
 
-        historicoEtologico = HistoricoEtologico.find("animal = ?1 ORDER BY id DESC", pHistoricoEtologico.animal).firstResult();
+        historicoEtologico = HistoricoEtologico.find("id = ?1 ORDER BY id DESC", pHistoricoEtologico.id).firstResult();
 
         if (historicoEtologico == null || !historicoEtologico.isAtivo) {
             throw new BadRequestException("Histórico Etológico não localizado.");
@@ -79,9 +79,9 @@ public class HistoricoEtologicoController {
 
     public void updateHistoricoEtologico(@NotNull HistoricoEtologico pHistoricoEtologico) {
 
-        historicoEtologico = HistoricoEtologico.find("animal = ?1 and isAtivo = true ORDER BY id DESC", pHistoricoEtologico.animal).firstResult();
+        historicoEtologico = HistoricoEtologico.find("id = ?1 and isAtivo = true ORDER BY id DESC", pHistoricoEtologico.id).firstResult();
 
-        if (!(historicoEtologico == null) && historicoEtologico.animal.equals(pHistoricoEtologico.animal) && historicoEtologico.isAtivo) {
+        if (!(historicoEtologico == null) && historicoEtologico.id.equals(pHistoricoEtologico.id) && historicoEtologico.isAtivo) {
             if (!Objects.equals(historicoEtologico.dataEtologico, pHistoricoEtologico.dataEtologico)) {
                 historicoEtologico.dataEtologico = pHistoricoEtologico.dataEtologico;
             }
@@ -106,7 +106,7 @@ public class HistoricoEtologicoController {
     public void deleteHistoricoEtologico(@NotNull List<HistoricoEtologico> historicoEtologicoList) {
 
         historicoEtologicoList.forEach((pHistoricoEtologico) -> {
-            historicoEtologico = HistoricoEtologico.find("animal = ?1 and isAtivo = true ORDER BY id DESC", pHistoricoEtologico.animal).firstResult();
+            historicoEtologico = HistoricoEtologico.find("id = ?1 and isAtivo = true ORDER BY id DESC", pHistoricoEtologico.id).firstResult();
 
             if (historicoEtologico != null) {
                 historicoEtologico.isAtivo = Boolean.FALSE;

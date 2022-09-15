@@ -22,7 +22,7 @@ public class EnriquecimentoAmbientalController {
 
     public EnriquecimentoAmbiental getEnriquecimentoAmbiental(@NotNull EnriquecimentoAmbiental pEnriquecimentoAmbiental) {
 
-        enriquecimentoAmbiental = EnriquecimentoAmbiental.find("animal = ?1 and dataEnriquecimento = ?2 ORDER BY id DESC", pEnriquecimentoAmbiental.animal, pEnriquecimentoAmbiental.dataEnriquecimento).firstResult();
+        enriquecimentoAmbiental = EnriquecimentoAmbiental.find("id = ?1 and dataEnriquecimento = ?2 ORDER BY id DESC", pEnriquecimentoAmbiental.id, pEnriquecimentoAmbiental.dataEnriquecimento).firstResult();
 
         if (enriquecimentoAmbiental == null || !enriquecimentoAmbiental.isAtivo) {
             throw new BadRequestException("Enriquecimento Ambiental não localizado.");
@@ -77,9 +77,9 @@ public class EnriquecimentoAmbientalController {
 
     public void updateEnriquecimentoAmbiental(@NotNull EnriquecimentoAmbiental pEnriquecimentoAmbiental) {
 
-        enriquecimentoAmbiental = EnriquecimentoAmbiental.find("animal = ?1 and dataEnriquecimento = ?2 and isAtivo = true ORDER BY id DESC", pEnriquecimentoAmbiental.animal, pEnriquecimentoAmbiental.dataEnriquecimento).firstResult();
+        enriquecimentoAmbiental = EnriquecimentoAmbiental.find("id = ?1 and dataEnriquecimento = ?2 and isAtivo = true ORDER BY id DESC", pEnriquecimentoAmbiental.id, pEnriquecimentoAmbiental.dataEnriquecimento).firstResult();
 
-        if (!(enriquecimentoAmbiental == null) && enriquecimentoAmbiental.animal.equals(pEnriquecimentoAmbiental.animal) && enriquecimentoAmbiental.isAtivo) {
+        if (!(enriquecimentoAmbiental == null) && enriquecimentoAmbiental.id.equals(pEnriquecimentoAmbiental.id) && enriquecimentoAmbiental.isAtivo) {
             if (!Objects.equals(enriquecimentoAmbiental.dataEnriquecimento, pEnriquecimentoAmbiental.dataEnriquecimento)) {
                 enriquecimentoAmbiental.dataEnriquecimento = pEnriquecimentoAmbiental.dataEnriquecimento;
             }
@@ -104,7 +104,7 @@ public class EnriquecimentoAmbientalController {
     public void deleteEnriquecimentoAmbiental(@NotNull List<EnriquecimentoAmbiental> enriquecimentoAmbientalList) {
 
         enriquecimentoAmbientalList.forEach((pEnriquecimentoAmbiental) -> {
-            enriquecimentoAmbiental = EnriquecimentoAmbiental.find("animal = ?1 and dataEnriquecimento = ?2 and isAtivo = true ORDER BY id DESC", pEnriquecimentoAmbiental.animal, pEnriquecimentoAmbiental.dataEnriquecimento).firstResult();
+            enriquecimentoAmbiental = EnriquecimentoAmbiental.find("id = ?1 and dataEnriquecimento = ?2 and isAtivo = true ORDER BY id DESC", pEnriquecimentoAmbiental.id, pEnriquecimentoAmbiental.dataEnriquecimento).firstResult();
 
             if (enriquecimentoAmbiental != null) {
                 enriquecimentoAmbiental.isAtivo = Boolean.FALSE;

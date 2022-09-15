@@ -25,14 +25,14 @@ public class Animal extends PanacheEntity {
     public String identificacao;
 
     @Column()
-    public int sexo;
+    public String sexo;
 
     @Column(nullable = false)
     @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
     public Date dataEntrada;
 
     @Column()
-    public int idade;
+    public String idade;
 
     @Column()
     public boolean isAtivo;
@@ -50,6 +50,4 @@ public class Animal extends PanacheEntity {
    @Column()
     public String origem;
 
-    public static final int MACHO = 0;
-    public static final int FEMEA = 1;
 }

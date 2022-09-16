@@ -1,14 +1,25 @@
 package desafio.zoo.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import io.quarkus.hibernate.orm.panache.PanacheEntity;
+import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 
 import javax.persistence.*;
 import java.util.Date;
 
 @Entity
 @Table(name = "enriquecimentoAmbiental")
-public class EnriquecimentoAmbiental extends PanacheEntity {
+public class EnriquecimentoAmbiental extends PanacheEntityBase {
+
+    @Column()
+    @SequenceGenerator(
+            name = "enriquecimentoAmbientalIdSequence",
+            sequenceName = "enriquecimentoAmbiental_id_seq",
+            allocationSize = 1,
+            initialValue = 1
+    )
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "enriquecimentoAmbientalIdSequence")
+    @Id
+    public Long id;
 
     @ManyToOne
     @JoinColumn(name="animalId")

@@ -3,9 +3,12 @@ package desafio.zoo.model;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.Set;
 
 @Entity
 @Table(name = "nutricao")
@@ -21,10 +24,13 @@ public class Nutricao extends PanacheEntityBase {
     @Id
     public Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+
+    @ManyToOne()
     @JsonIgnoreProperties("nutricao")
     @JoinColumn(name="animalId")
-    public Animal animal;
+    @GeneratedValue
+    public
+    Animal animal;
 
     @Column()
     @JsonFormat(pattern="dd/MM/yyyy")
@@ -37,9 +43,11 @@ public class Nutricao extends PanacheEntityBase {
     @Column()
     public String descricaoNutricao;
 
-    @ManyToOne
+    @ManyToOne()
+    @JsonIgnoreProperties("nutricao")
     @JoinColumn(name="userId")
-    public Usuario usuario;
+    @GeneratedValue
+    public Usuario  usuario;
 
     @Column()
     public boolean isAtivo;

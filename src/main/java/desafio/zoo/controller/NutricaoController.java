@@ -1,5 +1,6 @@
 package desafio.zoo.controller;
 
+import desafio.zoo.model.Animal;
 import desafio.zoo.model.Nutricao;
 import org.jetbrains.annotations.NotNull;
 
@@ -52,14 +53,14 @@ public class NutricaoController {
 
         nutricao = Nutricao.find("animal = ?1 and isAtivo = true ORDER BY id DESC", pNutricao.animal).firstResult();
 
-        if (nutricao == null || !nutricao.isAtivo) {
+        if (nutricao == null) {
             nutricao = new Nutricao();
             nutricao.descricaoNutricao = pNutricao.descricaoNutricao;
             nutricao.isAtivo = true;
             nutricao.dataInicio = pNutricao.dataInicio;
             nutricao.dataFim = pNutricao.dataFim;
             nutricao.usuario = pNutricao.usuario;
-            nutricao.animal = pNutricao.animal;
+            nutricao.animal = Animal.findById(pNutricao.animal.id);
             nutricao.usuarioAcao = "";
             nutricao.dataAcao = new Date();
 

@@ -1,16 +1,29 @@
 package desafio.zoo.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import io.quarkus.hibernate.orm.panache.PanacheEntity;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 
 import javax.persistence.*;
 import java.util.Date;
 
 @Entity
 @Table(name = "nutricao")
-public class Nutricao extends PanacheEntity {
+public class Nutricao extends PanacheEntityBase {
+
+    @Column()
+    @SequenceGenerator(
+            name = "nutricaoIdSequence",
+            sequenceName = "nutricao_id_seq",
+            allocationSize = 1,
+            initialValue = 1
+    )
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "nutricaoIdSequence")
+    @Id
+    public Long id;
 
     @ManyToOne
+    @JsonIgnoreProperties("animal")
     @JoinColumn(name="animalId")
     public Animal animal;
 

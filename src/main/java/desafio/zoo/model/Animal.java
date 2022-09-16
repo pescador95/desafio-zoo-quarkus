@@ -16,8 +16,7 @@ public class Animal extends PanacheEntityBase {
     @SequenceGenerator(
             name = "animalIdSequence",
             sequenceName = "animal_id_seq",
-            allocationSize = 1,
-            initialValue = 1
+            allocationSize = 1
     )
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "animalIdSequence")
     @Id
@@ -64,4 +63,8 @@ public class Animal extends PanacheEntityBase {
    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "animal")
     @JsonIgnoreProperties("animal")
    List<Nutricao> nutricao;
+
+   public Animal(){
+
+   }
 }

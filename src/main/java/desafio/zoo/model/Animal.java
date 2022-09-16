@@ -3,14 +3,19 @@ package desafio.zoo.model;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "animal")
 public class Animal extends PanacheEntityBase {
+
 
     @Column()
     @SequenceGenerator(
@@ -47,8 +52,17 @@ public class Animal extends PanacheEntityBase {
     @Column()
     public boolean isAtivo;
 
-    @Column()
-    public String usuarioAcao;
+    @ManyToOne()
+    @JsonIgnoreProperties("animal")
+    @JoinColumn(name = "userId")
+    @GeneratedValue
+    public Usuario usuarioAcao;
+
+    @ManyToOne()
+    @JsonIgnoreProperties("animal")
+    @JoinColumn(name = "userId")
+    @GeneratedValue
+    public Usuario usuario;
 
     @Column()
     @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
@@ -57,14 +71,16 @@ public class Animal extends PanacheEntityBase {
     @Column()
     @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
     public Date systemDateDeleted;
-   @Column()
+    @Column()
     public String origem;
 
-   @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "animal")
+
+    @LazyCollection(LazyCollectionOption.FALSE)
+    @OneToMany(fetch = FetchType.LAZY, targetEntity = Nutricao.class, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "animal")
     @JsonIgnoreProperties("animal")
-   List<Nutricao> nutricao;
+    List<Nutricao> nutricaoList;
 
-   public Animal(){
+    public Animal() {
 
-   }
+    }
 }

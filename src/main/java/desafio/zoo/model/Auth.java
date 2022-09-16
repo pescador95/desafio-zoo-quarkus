@@ -6,6 +6,7 @@ import java.util.Date;
 @ApplicationScoped
 public class Auth {
     public String email;
+
     public String password;
 
     public Usuario usuario;

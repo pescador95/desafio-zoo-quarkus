@@ -1,15 +1,20 @@
 package desafio.zoo.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import io.quarkus.security.jpa.Password;
 import io.quarkus.security.jpa.Roles;
 import io.quarkus.security.jpa.UserDefinition;
 import io.quarkus.security.jpa.Username;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "usuario")
@@ -20,8 +25,7 @@ public class Usuario extends PanacheEntityBase {
     @SequenceGenerator(
             name = "usuarioIdSequence",
             sequenceName = "usuario_id_seq",
-            allocationSize = 1,
-            initialValue = 1
+            allocationSize = 1
     )
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "usuarioIdSequence")
     @Id
@@ -31,7 +35,7 @@ public class Usuario extends PanacheEntityBase {
 
     @Column(nullable = false)
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-   @Password
+    @Password
     public String password;
 
     @Column(nullable = false)
@@ -41,22 +45,30 @@ public class Usuario extends PanacheEntityBase {
     @Column()
     public boolean isAtivo;
 
-    @Column()
-    public String usuarioAcao;
+    @ManyToOne()
+    @JsonIgnoreProperties("usuario")
+    @JoinColumn(name = "userId")
+    @GeneratedValue
+    public Usuario usuarioAcao;
 
     @Column()
-    @JsonFormat(pattern="dd/MM/yyyy HH:mm:ss")
+    @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
     public Date dataAcao;
 
     @Column()
-    @JsonFormat(pattern="dd/MM/yyyy HH:mm:ss")
+    @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
     public Date systemDateDeleted;
 
-   @Column()
-   @Roles
+    @Column()
+    @Roles
     public String roleUsuario;
 
-   public Usuario(){
+    @LazyCollection(LazyCollectionOption.FALSE)
+    @OneToMany(fetch = FetchType.LAZY, targetEntity = Nutricao.class, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "animal")
+    @JsonIgnoreProperties("usuario")
+    List<Nutricao> nutricaoList;
 
-   }
+    public Usuario() {
+
+    }
 }

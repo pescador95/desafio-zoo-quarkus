@@ -1,0 +1,46 @@
+<html></html>
+<!--
+OneToMany
+O relacionamento OneToMany é bem usado e são poucas as vezes que de fato não precisamos tê-lo. Acredite, se não precisou até hoje, espere mais um pouco que essa necessidade vai aparecer. Vamos tirar a vantagem dos Annotations e veremos @OneToMany e @ManyToOne, ao invés dos .hbm. Como exemplo, existem vários cenários para exemplificar esse tipo de relacionamento, tais como: um time de futebol tem vários jogadores e uma infraestrutura tem vários servidores; porém, um jogador só pode jogar em um time (ou não. Depende da regra de negócio, e esse é segredo!), e um servidor está em uma infraestrutura.
+
+Note: Há casos que um jogador joga em mais de um time, então temos o ManyToMany.
+
+Para criar esse tipo de relacionamento, temos que identificar o ponto chave do relacionamento entre as classes. Para um time de futebol, por exemplo, temos que saber que há uma lista dos jogadores que pertencem ao clube, uma vez que um time pode ter de 0 a X jogadores (mesmo sem jogadores ele pode ser considerado um time de futebol, mas está sem dinheiro e demitiu todos os jogadores). Eu costumo chamar de HAS-AN List something (tem uma lista de alguma coisa).
+
+A seguir, temos a class bean que representa o Team (por boas práticas, ela não deveria fazer o extends DAO, porém fiz aqui para facilitar e trazer sentindo às invocações do Hibernate que temos no code).
+
+@Entity
+public class Team extends DAO{
+@Id
+@GeneratedValue
+private long id;
+@Column
+private String nameTeam;
+private List<Player> players;
+    Usando @OneToMany
+    Agora vamos usar o relacionamento apropriado para a classe. A seguir, temos o code atualizado:
+
+    @Entity
+    public class Team  {
+    private String nameTeam;
+    @OneToMany(mappedBy = "team", targetEntity = Player.class, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<Player> players;
+        MappedBy: informamos o nome da variável de instância que vai indicar a quem aquele One pertence, ou seja, um jogador; e ele deve dizer a qual time este está associado;
+        TargetEntity: informa qual a entidade estamos associando;
+        FetchType.Lazy: foi escolhido por performace;
+        cascade: ALL para permitir alterações em todos os relacionamentos.
+        Pronto, agora já podemos dizer que o TEAM tem muitos jogadores (uma lista ).
+
+        Usando @ManyToOne
+        Na classe que representa o MANY (do manyToOne), que nesse caso é a Player, teremos uma anotação @ManyToOne na variável de instância que representa o TEAM.
+
+        @Entity
+        public class Player {
+        @Id
+        @GeneratedValue
+        private long id;
+        private String nickName;
+        @ManyToOne
+        @JoinColumn(name="team_id")
+        private Team team;
+        @JoinColumn: informamos o nome que terá o FK-->

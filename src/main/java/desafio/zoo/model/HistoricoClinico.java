@@ -1,6 +1,7 @@
 package desafio.zoo.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 
 import javax.persistence.*;
@@ -21,7 +22,7 @@ public class HistoricoClinico extends PanacheEntityBase {
     public Long id;
 
     @ManyToOne
-    @JoinColumn(name="animalId")
+    @JoinColumn(name = "animalId")
     public Animal animal;
 
     @Column()
@@ -51,25 +52,30 @@ public class HistoricoClinico extends PanacheEntityBase {
     @Column()
     public Float pm;
 
-    @ManyToOne
-    @JoinColumn(name="userId")
+    @ManyToOne()
+    @JsonIgnoreProperties("historicoClinico")
+    @JoinColumn(name = "userId")
+    @GeneratedValue
+    public Usuario usuarioAcao;
+
+    @ManyToOne()
+    @JsonIgnoreProperties("historicoClinico")
+    @JoinColumn(name = "userId")
+    @GeneratedValue
     public Usuario usuario;
 
     @Column()
     public boolean isAtivo;
 
     @Column()
-    public String usuarioAcao;
-
-    @Column()
-    @JsonFormat(pattern="dd/MM/yyyy HH:mm:ss")
+    @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
     public Date dataAcao;
 
     @Column()
-    @JsonFormat(pattern="dd/MM/yyyy HH:mm:ss")
+    @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
     public Date systemDateDeleted;
 
-    public HistoricoClinico(){
+    public HistoricoClinico() {
 
     }
 }

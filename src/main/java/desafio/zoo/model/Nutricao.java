@@ -27,17 +27,17 @@ public class Nutricao extends PanacheEntityBase {
 
     @ManyToOne()
     @JsonIgnoreProperties("nutricao")
-    @JoinColumn(name="animalId")
+    @JoinColumn(name = "animalId")
     @GeneratedValue
     public
     Animal animal;
 
     @Column()
-    @JsonFormat(pattern="dd/MM/yyyy")
+    @JsonFormat(pattern = "dd/MM/yyyy")
     public Date dataInicio;
 
     @Column()
-    @JsonFormat(pattern="dd/MM/yyyy")
+    @JsonFormat(pattern = "dd/MM/yyyy")
     public Date dataFim;
 
     @Column()
@@ -45,25 +45,28 @@ public class Nutricao extends PanacheEntityBase {
 
     @ManyToOne()
     @JsonIgnoreProperties("nutricao")
-    @JoinColumn(name="userId")
+    @JoinColumn(name = "userId")
     @GeneratedValue
-    public Usuario  usuario;
+    public Usuario usuario;
 
     @Column()
     public boolean isAtivo;
 
-    @Column()
-    public String usuarioAcao;
+    @ManyToOne()
+    @JsonIgnoreProperties("nutricao")
+    @JoinColumn(name = "userId")
+    @GeneratedValue
+    public Usuario usuarioAcao;
 
     @Column()
-    @JsonFormat(pattern="dd/MM/yyyy HH:mm:ss")
+    @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
     public Date dataAcao;
 
     @Column()
-    @JsonFormat(pattern="dd/MM/yyyy HH:mm:ss")
+    @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
     public Date systemDateDeleted;
 
-    public Nutricao(){
+    public Nutricao() {
 
     }
 

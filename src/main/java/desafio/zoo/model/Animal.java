@@ -52,8 +52,17 @@ public class Animal extends PanacheEntityBase {
     @Column()
     public boolean isAtivo;
 
-    @Column()
-    public String usuarioAcao;
+    @ManyToOne()
+    @JsonIgnoreProperties("animal")
+    @JoinColumn(name = "userId")
+    @GeneratedValue
+    public Usuario usuarioAcao;
+
+    @ManyToOne()
+    @JsonIgnoreProperties("animal")
+    @JoinColumn(name = "userId")
+    @GeneratedValue
+    public Usuario usuario;
 
     @Column()
     @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
@@ -62,16 +71,16 @@ public class Animal extends PanacheEntityBase {
     @Column()
     @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
     public Date systemDateDeleted;
-   @Column()
+    @Column()
     public String origem;
 
 
     @LazyCollection(LazyCollectionOption.FALSE)
-   @OneToMany(fetch = FetchType.LAZY,targetEntity = Nutricao.class, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "animal")
+    @OneToMany(fetch = FetchType.LAZY, targetEntity = Nutricao.class, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "animal")
     @JsonIgnoreProperties("animal")
-    List<Nutricao> nutricaoList ;
+    List<Nutricao> nutricaoList;
 
-   public Animal(){
+    public Animal() {
 
-   }
+    }
 }

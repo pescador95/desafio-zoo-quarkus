@@ -1,6 +1,7 @@
 package desafio.zoo.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 
 import javax.persistence.*;
@@ -21,11 +22,11 @@ public class EnriquecimentoAmbiental extends PanacheEntityBase {
     public Long id;
 
     @ManyToOne
-    @JoinColumn(name="animalId")
+    @JoinColumn(name = "animalId")
     public Animal animal;
 
     @Column()
-    @JsonFormat(pattern="dd/MM/yyyy HH:mm:ss")
+    @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
     public Date dataEnriquecimento;
 
     @Column()
@@ -34,25 +35,31 @@ public class EnriquecimentoAmbiental extends PanacheEntityBase {
     @Column()
     public String descricaoEnriquecimento;
 
-    @ManyToOne
-    @JoinColumn(name="userId")
+    @ManyToOne()
+    @JsonIgnoreProperties("enriquecimentoAmbiental")
+    @JoinColumn(name = "userId")
+    @GeneratedValue
+    public Usuario usuarioAcao;
+
+    @ManyToOne()
+    @JsonIgnoreProperties("enriquecimentoAmbiental")
+    @JoinColumn(name = "userId")
+    @GeneratedValue
     public Usuario usuario;
 
     @Column()
     public boolean isAtivo;
 
-    @Column()
-    public String usuarioAcao;
 
     @Column()
-    @JsonFormat(pattern="dd/MM/yyyy HH:mm:ss")
+    @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
     public Date dataAcao;
 
     @Column()
-    @JsonFormat(pattern="dd/MM/yyyy HH:mm:ss")
+    @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
     public Date systemDateDeleted;
 
-    public EnriquecimentoAmbiental(){
+    public EnriquecimentoAmbiental() {
 
     }
 }

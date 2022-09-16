@@ -35,7 +35,7 @@ public class Usuario extends PanacheEntityBase {
 
     @Column(nullable = false)
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-   @Password
+    @Password
     public String password;
 
     @Column(nullable = false)
@@ -45,26 +45,30 @@ public class Usuario extends PanacheEntityBase {
     @Column()
     public boolean isAtivo;
 
-    @Column()
-    public String usuarioAcao;
+    @ManyToOne()
+    @JsonIgnoreProperties("usuario")
+    @JoinColumn(name = "userId")
+    @GeneratedValue
+    public Usuario usuarioAcao;
 
     @Column()
-    @JsonFormat(pattern="dd/MM/yyyy HH:mm:ss")
+    @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
     public Date dataAcao;
 
     @Column()
-    @JsonFormat(pattern="dd/MM/yyyy HH:mm:ss")
+    @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
     public Date systemDateDeleted;
 
-   @Column()
-   @Roles
+    @Column()
+    @Roles
     public String roleUsuario;
 
     @LazyCollection(LazyCollectionOption.FALSE)
-    @OneToMany(fetch = FetchType.LAZY,targetEntity = Nutricao.class, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "animal")
+    @OneToMany(fetch = FetchType.LAZY, targetEntity = Nutricao.class, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "animal")
     @JsonIgnoreProperties("usuario")
-     List<Nutricao> nutricaoList ;
-   public Usuario(){
+    List<Nutricao> nutricaoList;
 
-   }
+    public Usuario() {
+
+    }
 }

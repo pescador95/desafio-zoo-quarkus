@@ -15,15 +15,14 @@ public class Nutricao extends PanacheEntityBase {
     @SequenceGenerator(
             name = "nutricaoIdSequence",
             sequenceName = "nutricao_id_seq",
-            allocationSize = 1,
-            initialValue = 1
+            allocationSize = 1
     )
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "nutricaoIdSequence")
     @Id
     public Long id;
 
-    @ManyToOne
-    @JsonIgnoreProperties("animal")
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JsonIgnoreProperties("nutricao")
     @JoinColumn(name="animalId")
     public Animal animal;
 
@@ -55,5 +54,10 @@ public class Nutricao extends PanacheEntityBase {
     @Column()
     @JsonFormat(pattern="dd/MM/yyyy HH:mm:ss")
     public Date systemDateDeleted;
+
+    public Nutricao(){
+
+    }
+
 }
 

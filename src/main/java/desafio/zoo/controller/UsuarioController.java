@@ -15,32 +15,17 @@ import java.util.Objects;
 @ApplicationScoped
 @Transactional
 public class UsuarioController {
-
-
     private Usuario usuario = new Usuario();
-    private Usuario usuarioReturn = new Usuario(); //TODO var criada para retornar obj user pelo método get sem trazer a senha. Estudar para implementar um @JsonIgnoreProperty.
     private List<Usuario> usuarioList = new ArrayList<>();
-    private List<Usuario> usuarioListReturn = new ArrayList<>();
-
 
     public Usuario getUser(@NotNull Usuario pUsuario) {
 
         usuario = Usuario.find("id = ?1 ORDER BY id DESC", pUsuario.id).firstResult();
 
-        if ((!(usuario == null)) && (usuario.isAtivo)) {
-            usuarioReturn = new Usuario();
-            usuarioReturn.id = usuario.id;
-            usuarioReturn.email = usuario.email;
-            usuarioReturn.nome = usuario.nome;
-            usuarioReturn.isAtivo = usuario.isAtivo;
-            usuarioReturn.dataAcao = usuario.dataAcao;
-            usuarioReturn.usuarioAcao = usuario.usuarioAcao;
-            usuarioReturn.roleUsuario = usuario.roleUsuario;
-
-        } else {
+        if (((usuario == null)) && (!usuario.isAtivo)) {
             throw new BadRequestException("Usuário não localizado ou inativo.");
         }
-        return usuarioReturn;
+        return usuario;
 
     }
 
@@ -48,27 +33,10 @@ public class UsuarioController {
 
         usuarioList = Usuario.list("isAtivo = true ORDER BY id DESC");
 
-        usuarioListReturn = new ArrayList<>();
-
-        if ((!usuarioList.isEmpty())) {
-
-            for (Usuario value : usuarioList) {
-                usuarioReturn = new Usuario();
-                usuarioReturn.id = value.id;
-                usuarioReturn.email = value.email;
-                usuarioReturn.nome = value.nome;
-                usuarioReturn.isAtivo = value.isAtivo;
-                usuarioReturn.dataAcao = value.dataAcao;
-                usuarioReturn.usuarioAcao = value.usuarioAcao;
-                usuarioReturn.roleUsuario = value.roleUsuario;
-
-                usuarioListReturn.add(usuarioReturn);
-
-            }
-        } else {
+        if (usuarioList.isEmpty()) {
             throw new BadRequestException("Usuários não localizados ou inativos.");
         }
-        return usuarioListReturn;
+        return usuarioList;
 
     }
 
@@ -76,26 +44,10 @@ public class UsuarioController {
 
         usuarioList = Usuario.list("isAtivo = false ORDER BY id DESC");
 
-        usuarioListReturn = new ArrayList<>();
-
-        if ((!usuarioList.isEmpty())) {
-
-            for (Usuario value : usuarioList) {
-                usuarioReturn = new Usuario();
-                usuarioReturn.id = value.id;
-                usuarioReturn.email = value.email;
-                usuarioReturn.nome = value.nome;
-                usuarioReturn.isAtivo = value.isAtivo;
-                usuarioReturn.dataAcao = value.dataAcao;
-                usuarioReturn.usuarioAcao = value.usuarioAcao;
-                usuarioReturn.roleUsuario = value.roleUsuario;
-
-                usuarioListReturn.add(usuarioReturn);
-            }
-        } else {
+        if (usuarioList.isEmpty()) {
             throw new BadRequestException("Usuários inativos não localizados.");
         }
-        return usuarioListReturn;
+        return usuarioList;
     }
 
     public void addUser(@NotNull Usuario pUsuario) {

@@ -14,8 +14,7 @@ public class EnriquecimentoAmbiental extends PanacheEntityBase {
     @SequenceGenerator(
             name = "enriquecimentoAmbientalIdSequence",
             sequenceName = "enriquecimentoAmbiental_id_seq",
-            allocationSize = 1,
-            initialValue = 1
+            allocationSize = 1
     )
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "enriquecimentoAmbientalIdSequence")
     @Id
@@ -52,5 +51,9 @@ public class EnriquecimentoAmbiental extends PanacheEntityBase {
     @Column()
     @JsonFormat(pattern="dd/MM/yyyy HH:mm:ss")
     public Date systemDateDeleted;
+
+    public EnriquecimentoAmbiental(){
+
+    }
 }
 

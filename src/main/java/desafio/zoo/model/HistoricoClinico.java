@@ -14,8 +14,7 @@ public class HistoricoClinico extends PanacheEntityBase {
     @SequenceGenerator(
             name = "historicoClinicoIdSequence",
             sequenceName = "historicoClinico_id_seq",
-            allocationSize = 1,
-            initialValue = 1
+            allocationSize = 1
     )
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "historicoClinicoIdSequence")
     @Id
@@ -69,5 +68,9 @@ public class HistoricoClinico extends PanacheEntityBase {
     @Column()
     @JsonFormat(pattern="dd/MM/yyyy HH:mm:ss")
     public Date systemDateDeleted;
+
+    public HistoricoClinico(){
+
+    }
 }
 

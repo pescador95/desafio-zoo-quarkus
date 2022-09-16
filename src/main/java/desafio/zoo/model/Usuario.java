@@ -56,4 +56,7 @@ public class Usuario extends PanacheEntityBase {
    @Roles
     public String roleUsuario;
 
+   public Usuario(){
+
+   }
 }

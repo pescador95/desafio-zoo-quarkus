@@ -21,8 +21,10 @@ public class HistoricoEtologico extends PanacheEntityBase {
     @Id
     public Long id;
 
-    @ManyToOne
+    @ManyToOne()
+    @JsonIgnoreProperties("historicoEtologico")
     @JoinColumn(name = "animalId")
+    @GeneratedValue
     public Animal animal;
 
     @Column()
@@ -43,7 +45,7 @@ public class HistoricoEtologico extends PanacheEntityBase {
 
     @ManyToOne()
     @JsonIgnoreProperties("historicoEtologico")
-    @JoinColumn(name = "userId")
+    @JoinColumn(name = "userId", insertable = false, updatable = false)
     @GeneratedValue
     public Usuario usuario;
 

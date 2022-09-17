@@ -14,7 +14,6 @@ import org.hibernate.annotations.LazyCollectionOption;
 import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @Table(name = "usuario")
@@ -45,11 +44,12 @@ public class Usuario extends PanacheEntityBase {
     @Column()
     public boolean isAtivo;
 
-    @ManyToOne()
+   /* @Column()
+    @ManyToOne
     @JsonIgnoreProperties("usuario")
     @JoinColumn(name = "userId")
     @GeneratedValue
-    public Usuario usuarioAcao;
+    public Usuario usuarioAcao;*/ // TODO usuario ação para usuário
 
     @Column()
     @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
@@ -64,9 +64,34 @@ public class Usuario extends PanacheEntityBase {
     public String roleUsuario;
 
     @LazyCollection(LazyCollectionOption.FALSE)
-    @OneToMany(fetch = FetchType.LAZY, targetEntity = Nutricao.class, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "animal")
+    @OneToMany(fetch = FetchType.LAZY, targetEntity = Nutricao.class, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "usuario")
     @JsonIgnoreProperties("usuario")
     List<Nutricao> nutricaoList;
+
+    @LazyCollection(LazyCollectionOption.FALSE)
+    @OneToMany(fetch = FetchType.LAZY, targetEntity = Medicacao.class, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "usuario")
+    @JsonIgnoreProperties("usuario")
+    List<Medicacao> medicacaoList;
+
+    @LazyCollection(LazyCollectionOption.FALSE)
+    @OneToMany(fetch = FetchType.LAZY, targetEntity = HistoricoEtologico.class, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "usuario")
+    @JsonIgnoreProperties("usuario")
+    List<HistoricoEtologico> historicoEtologicoList;
+
+    @LazyCollection(LazyCollectionOption.FALSE)
+    @OneToMany(fetch = FetchType.LAZY, targetEntity = HistoricoClinico.class, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "usuario")
+    @JsonIgnoreProperties("usuario")
+    List<HistoricoClinico> historicoClinicoList;
+
+    @LazyCollection(LazyCollectionOption.FALSE)
+    @OneToMany(fetch = FetchType.LAZY, targetEntity = EnriquecimentoAmbiental.class, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "usuario")
+    @JsonIgnoreProperties("usuario")
+    List<EnriquecimentoAmbiental> enriquecimentoAmbientalList;
+
+    @LazyCollection(LazyCollectionOption.FALSE)
+    @OneToMany(fetch = FetchType.LAZY, targetEntity = Animal.class, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "usuario")
+    @JsonIgnoreProperties("usuario")
+    List<Animal> animalList;
 
     public Usuario() {
 

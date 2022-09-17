@@ -22,7 +22,9 @@ public class HistoricoClinico extends PanacheEntityBase {
     public Long id;
 
     @ManyToOne
+    @JsonIgnoreProperties("historicoClinico")
     @JoinColumn(name = "animalId")
+    @GeneratedValue
     public Animal animal;
 
     @Column()
@@ -32,7 +34,7 @@ public class HistoricoClinico extends PanacheEntityBase {
     public String frequenciaRespiratoria;
 
     @Column()
-    public String frequenciaCariaca;
+    public String frequenciaCardiaca;
 
     @Column()
     public String observacao;
@@ -60,7 +62,7 @@ public class HistoricoClinico extends PanacheEntityBase {
 
     @ManyToOne()
     @JsonIgnoreProperties("historicoClinico")
-    @JoinColumn(name = "userId")
+    @JoinColumn(name = "userId", insertable = false, updatable = false)
     @GeneratedValue
     public Usuario usuario;
 

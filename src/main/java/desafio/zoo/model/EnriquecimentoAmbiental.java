@@ -22,7 +22,9 @@ public class EnriquecimentoAmbiental extends PanacheEntityBase {
     public Long id;
 
     @ManyToOne
+    @JsonIgnoreProperties("enriquecimentoAmbiental")
     @JoinColumn(name = "animalId")
+    @GeneratedValue
     public Animal animal;
 
     @Column()
@@ -43,7 +45,7 @@ public class EnriquecimentoAmbiental extends PanacheEntityBase {
 
     @ManyToOne()
     @JsonIgnoreProperties("enriquecimentoAmbiental")
-    @JoinColumn(name = "userId")
+    @JoinColumn(name = "userId", insertable = false, updatable = false)
     @GeneratedValue
     public Usuario usuario;
 

@@ -22,7 +22,9 @@ public class Medicacao extends PanacheEntityBase {
     public Long id;
 
     @ManyToOne
+    @JsonIgnoreProperties("medicacao")
     @JoinColumn(name = "historicoClinicoId")
+    @GeneratedValue
     public HistoricoClinico historicoClinico;
 
     @Column(nullable = false)
@@ -45,7 +47,7 @@ public class Medicacao extends PanacheEntityBase {
 
     @ManyToOne()
     @JsonIgnoreProperties("medicacao")
-    @JoinColumn(name = "userId")
+    @JoinColumn(name = "userId", insertable = false, updatable = false)
     @GeneratedValue
     public Usuario usuario;
 

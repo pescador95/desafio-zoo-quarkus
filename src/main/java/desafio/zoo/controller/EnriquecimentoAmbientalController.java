@@ -1,6 +1,8 @@
 package desafio.zoo.controller;
 
+import desafio.zoo.model.Animal;
 import desafio.zoo.model.EnriquecimentoAmbiental;
+import desafio.zoo.model.Usuario;
 import org.jetbrains.annotations.NotNull;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -56,15 +58,15 @@ public class EnriquecimentoAmbientalController {
 
         if (enriquecimentoAmbiental == null || !enriquecimentoAmbiental.isAtivo) {
             enriquecimentoAmbiental = new EnriquecimentoAmbiental();
-            enriquecimentoAmbiental.animal = pEnriquecimentoAmbiental.animal;
+            enriquecimentoAmbiental.animal = Animal.findById(pEnriquecimentoAmbiental.animal.id);
             enriquecimentoAmbiental.dataEnriquecimento = pEnriquecimentoAmbiental.dataEnriquecimento;
             enriquecimentoAmbiental.nomeEnriquecimento = pEnriquecimentoAmbiental.nomeEnriquecimento;
             enriquecimentoAmbiental.descricaoEnriquecimento = pEnriquecimentoAmbiental.descricaoEnriquecimento;
             enriquecimentoAmbiental.dataAcao = pEnriquecimentoAmbiental.dataAcao;
             enriquecimentoAmbiental.systemDateDeleted = pEnriquecimentoAmbiental.systemDateDeleted;
             enriquecimentoAmbiental.isAtivo = true;
-            enriquecimentoAmbiental.usuario = pEnriquecimentoAmbiental.usuario;
-            enriquecimentoAmbiental.usuarioAcao = "";
+            enriquecimentoAmbiental.usuario = Usuario.findById(pEnriquecimentoAmbiental.usuario.id);
+            enriquecimentoAmbiental.usuarioAcao = Usuario.findById(pEnriquecimentoAmbiental.usuarioAcao.id);
             enriquecimentoAmbiental.dataAcao = new Date();
 
             enriquecimentoAmbiental.persist();
@@ -89,9 +91,8 @@ public class EnriquecimentoAmbientalController {
             if (!enriquecimentoAmbiental.descricaoEnriquecimento.equals(pEnriquecimentoAmbiental.descricaoEnriquecimento)) {
                 enriquecimentoAmbiental.descricaoEnriquecimento = pEnriquecimentoAmbiental.descricaoEnriquecimento;
             }
-            if (enriquecimentoAmbiental.usuario.equals(pEnriquecimentoAmbiental.usuario)) {
-                enriquecimentoAmbiental.usuario = pEnriquecimentoAmbiental.usuario;
-            }
+
+            enriquecimentoAmbiental.usuarioAcao = Usuario.findById(pEnriquecimentoAmbiental.usuarioAcao.id);
             enriquecimentoAmbiental.dataAcao = new Date();
             enriquecimentoAmbiental.persist();
 
@@ -109,7 +110,7 @@ public class EnriquecimentoAmbientalController {
             if (enriquecimentoAmbiental != null) {
                 enriquecimentoAmbiental.isAtivo = Boolean.FALSE;
                 enriquecimentoAmbiental.dataAcao = new Date();
-                enriquecimentoAmbiental.usuarioAcao = "usuario que deletou";
+                enriquecimentoAmbiental.usuarioAcao = Usuario.findById(pEnriquecimentoAmbiental.usuarioAcao.id);
                 enriquecimentoAmbiental.systemDateDeleted = new Date();
                 enriquecimentoAmbiental.persist();
             } else {

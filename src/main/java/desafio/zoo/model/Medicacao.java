@@ -22,8 +22,8 @@ public class Medicacao extends PanacheEntityBase {
     public Long id;
 
     @ManyToOne
-    @JoinColumn(name = "animalId")
-    public Animal animal;
+    @JoinColumn(name = "historicoClinicoId")
+    public HistoricoClinico historicoClinico;
 
     @Column(nullable = false)
     public String nomeMedicacao;

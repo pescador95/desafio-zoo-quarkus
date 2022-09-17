@@ -2,6 +2,7 @@ package desafio.zoo.controller;
 
 import desafio.zoo.model.Animal;
 import desafio.zoo.model.Nutricao;
+import desafio.zoo.model.Usuario;
 import org.jetbrains.annotations.NotNull;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -26,7 +27,7 @@ public class NutricaoController {
         if (nutricao == null || !nutricao.isAtivo) {
             throw new BadRequestException("Nutrição não foi localizado.");
         }
-    return nutricao;
+        return nutricao;
     }
 
     public List<Nutricao> getNutricaoListAtivos() {
@@ -59,9 +60,9 @@ public class NutricaoController {
             nutricao.isAtivo = true;
             nutricao.dataInicio = pNutricao.dataInicio;
             nutricao.dataFim = pNutricao.dataFim;
-            nutricao.usuario = pNutricao.usuario;
             nutricao.animal = Animal.findById(pNutricao.animal.id);
-            nutricao.usuarioAcao = "";
+            nutricao.usuario = Usuario.findById(pNutricao.usuario.id);
+            nutricao.usuarioAcao = Usuario.findById(pNutricao.usuarioAcao.id);
             nutricao.dataAcao = new Date();
 
             nutricao.persist();
@@ -87,9 +88,13 @@ public class NutricaoController {
             if (!nutricao.descricaoNutricao.equals(pNutricao.descricaoNutricao)) {
                 nutricao.descricaoNutricao = pNutricao.descricaoNutricao;
             }
-            if (nutricao.usuario.equals(pNutricao.usuario)) {
-                nutricao.usuario = pNutricao.usuario;
+            if (!nutricao.animal.equals(pNutricao.animal)) {
+                nutricao.animal = Animal.findById(pNutricao.animal.id);
             }
+
+
+            nutricao.usuarioAcao = Usuario.findById(pNutricao.usuarioAcao.id);
+
             nutricao.dataAcao = new Date();
             nutricao.persist();
 
@@ -107,7 +112,7 @@ public class NutricaoController {
             if (nutricao != null) {
                 nutricao.isAtivo = Boolean.FALSE;
                 nutricao.dataAcao = new Date();
-                nutricao.usuarioAcao = "usuario que deletou";
+                nutricao.usuarioAcao = Usuario.findById(pNutricao.usuarioAcao.id);
                 nutricao.systemDateDeleted = new Date();
                 nutricao.persist();
             } else {

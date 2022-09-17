@@ -82,4 +82,17 @@ public class HistoricoClinicoResources {
         controller.deleteHistoricoClinico(historicoClinicoList);
         return Response.ok().status(200).build();
     }
+
+    @PUT
+    @Path("/reactivate")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes("application/json")
+    public Response reactivateList(List<HistoricoClinico> HistoricoClinicoList, @QueryParam("sort") List<String> sortQuery,
+                               @QueryParam("page") @DefaultValue("0") int pageIndex,
+                               @QueryParam("size") @DefaultValue("20") int pageSize) {
+        page = Page.of(pageIndex, pageSize);
+        controller.reactivateHistoricoClinico(historicoClinicoList);
+        return Response.ok().status(200).build();
+    }
 }
+

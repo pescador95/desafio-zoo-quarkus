@@ -7,10 +7,8 @@ import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @Table(name = "animal")
@@ -60,7 +58,7 @@ public class Animal extends PanacheEntityBase {
 
     @ManyToOne()
     @JsonIgnoreProperties("animal")
-    @JoinColumn(name = "userId")
+    @JoinColumn(name = "userId", insertable = false, updatable = false)
     @GeneratedValue
     public Usuario usuario;
 
@@ -79,6 +77,21 @@ public class Animal extends PanacheEntityBase {
     @OneToMany(fetch = FetchType.LAZY, targetEntity = Nutricao.class, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "animal")
     @JsonIgnoreProperties("animal")
     List<Nutricao> nutricaoList;
+
+    @LazyCollection(LazyCollectionOption.FALSE)
+    @OneToMany(fetch = FetchType.LAZY, targetEntity = HistoricoEtologico.class, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "animal")
+    @JsonIgnoreProperties("animal")
+    List<HistoricoEtologico> historicoEtologicoList;
+
+    @LazyCollection(LazyCollectionOption.FALSE)
+    @OneToMany(fetch = FetchType.LAZY, targetEntity = HistoricoClinico.class, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "animal")
+    @JsonIgnoreProperties("animal")
+    List<HistoricoClinico> historicoClinicoList;
+
+    @LazyCollection(LazyCollectionOption.FALSE)
+    @OneToMany(fetch = FetchType.LAZY, targetEntity = EnriquecimentoAmbiental.class, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "animal")
+    @JsonIgnoreProperties("animal")
+    List<EnriquecimentoAmbiental> enriquecimentoAmbientalList;
 
     public Animal() {
 

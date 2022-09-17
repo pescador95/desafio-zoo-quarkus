@@ -4,6 +4,7 @@ import desafio.zoo.controller.AnimalController;
 import desafio.zoo.model.Animal;
 import io.quarkus.panache.common.Page;
 
+import javax.annotation.security.PermitAll;
 import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -76,11 +77,26 @@ public class AnimalResources {
     @Path("/delete")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
-    public Response deleteList(List<Animal> AnimalList, @QueryParam("sort") List<String> sortQuery,
+    @PermitAll
+    public Response deleteList(List<Animal> animalList, @QueryParam("sort") List<String> sortQuery,
                                @QueryParam("page") @DefaultValue("0") int pageIndex,
                                @QueryParam("size") @DefaultValue("20") int pageSize) {
         page = Page.of(pageIndex, pageSize);
         controller.deleteAnimal(animalList);
         return Response.ok().status(200).build();
     }
+
+    @PUT
+    @Path("/reactivate")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes("application/json")
+    @PermitAll
+    public Response reactivateList(List<Animal> animalList, @QueryParam("sort") List<String> sortQuery,
+                               @QueryParam("page") @DefaultValue("0") int pageIndex,
+                               @QueryParam("size") @DefaultValue("20") int pageSize) {
+        page = Page.of(pageIndex, pageSize);
+        controller.reactivateAnimal(animalList);
+        return Response.ok().status(200).build();
+    }
 }
+

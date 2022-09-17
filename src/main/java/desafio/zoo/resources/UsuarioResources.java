@@ -90,4 +90,16 @@ public class UsuarioResources {
         controller.deleteUser(usuarioList);
         return Response.ok().status(200).build();
     }
+    @PUT
+    @Path("/reactivate")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes("application/json")
+    @PermitAll
+    public Response reactivate(List<Usuario> usuarioList, @QueryParam("sort") List<String> sortQuery,
+                               @QueryParam("page") @DefaultValue("0") int pageIndex,
+                               @QueryParam("size") @DefaultValue("20") int pageSize) {
+        page = Page.of(pageIndex, pageSize);
+        controller.reactivateUser(usuarioList);
+        return Response.ok().status(200).build();
+    }
 }

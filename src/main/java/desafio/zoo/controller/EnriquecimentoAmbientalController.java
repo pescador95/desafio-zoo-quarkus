@@ -8,6 +8,7 @@ import org.jetbrains.annotations.NotNull;
 import javax.enterprise.context.ApplicationScoped;
 import javax.transaction.Transactional;
 import javax.ws.rs.BadRequestException;
+import javax.ws.rs.NotFoundException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -24,10 +25,10 @@ public class EnriquecimentoAmbientalController {
 
     public EnriquecimentoAmbiental getEnriquecimentoAmbiental(@NotNull EnriquecimentoAmbiental pEnriquecimentoAmbiental) {
 
-        enriquecimentoAmbiental = EnriquecimentoAmbiental.find("id = ?1 and dataEnriquecimento = ?2 ORDER BY id DESC", pEnriquecimentoAmbiental.id, pEnriquecimentoAmbiental.dataEnriquecimento).firstResult();
+        enriquecimentoAmbiental = EnriquecimentoAmbiental.find("id = ?1 ORDER BY id DESC", pEnriquecimentoAmbiental.id).firstResult();
 
-        if (enriquecimentoAmbiental == null || !enriquecimentoAmbiental.isAtivo) {
-            throw new BadRequestException("Enriquecimento Ambiental não localizado.");
+        if (enriquecimentoAmbiental == null) {
+            throw new NotFoundException("Enriquecimento Ambiental não localizado.");//TODO organizar mensagem
         }
         return enriquecimentoAmbiental;
     }
@@ -37,7 +38,7 @@ public class EnriquecimentoAmbientalController {
         enriquecimentoAmbientalList = EnriquecimentoAmbiental.list("isAtivo = true ORDER BY id DESC");
 
         if (enriquecimentoAmbientalList.isEmpty()) {
-            throw new BadRequestException("Enriquecimentos Ambientais não localizados.");
+            throw new NotFoundException("Enriquecimentos Ambientais não localizados.");//TODO organizar mensagem
         }
         return enriquecimentoAmbientalList;
     }
@@ -47,24 +48,44 @@ public class EnriquecimentoAmbientalController {
         enriquecimentoAmbientalList = EnriquecimentoAmbiental.list("isAtivo = false ORDER BY id DESC");
 
         if (enriquecimentoAmbientalList.isEmpty()) {
-            throw new BadRequestException("Enriquecimentos Ambientais inativos não localizados.");
+            throw new NotFoundException("Enriquecimentos Ambientais inativos não localizados.");//TODO organizar mensagem
         }
         return enriquecimentoAmbientalList;
     }
 
     public void addEnriquecimentoAmbiental(@NotNull EnriquecimentoAmbiental pEnriquecimentoAmbiental) {
 
-        enriquecimentoAmbiental = EnriquecimentoAmbiental.find("animal = ?1 and dataEnriquecimento = ?2 and isAtivo = true ORDER BY id DESC", pEnriquecimentoAmbiental.animal, pEnriquecimentoAmbiental.dataEnriquecimento).firstResult();
+        enriquecimentoAmbiental = EnriquecimentoAmbiental.find("animal = ?1 and dataEnriquecimento = ?2 and nomeEnriquecimento = ?3 and descricaoEnriquecimento = ?4 and isAtivo = true ORDER BY id DESC", pEnriquecimentoAmbiental.animal, pEnriquecimentoAmbiental.dataEnriquecimento, pEnriquecimentoAmbiental.nomeEnriquecimento, pEnriquecimentoAmbiental.descricaoEnriquecimento).firstResult();
 
-        if (enriquecimentoAmbiental == null || !enriquecimentoAmbiental.isAtivo) {
+        if (enriquecimentoAmbiental == null) {
             enriquecimentoAmbiental = new EnriquecimentoAmbiental();
-            enriquecimentoAmbiental.animal = Animal.findById(pEnriquecimentoAmbiental.animal.id);
-            enriquecimentoAmbiental.dataEnriquecimento = pEnriquecimentoAmbiental.dataEnriquecimento;
-            enriquecimentoAmbiental.nomeEnriquecimento = pEnriquecimentoAmbiental.nomeEnriquecimento;
-            enriquecimentoAmbiental.descricaoEnriquecimento = pEnriquecimentoAmbiental.descricaoEnriquecimento;
-            enriquecimentoAmbiental.dataAcao = pEnriquecimentoAmbiental.dataAcao;
-            enriquecimentoAmbiental.systemDateDeleted = pEnriquecimentoAmbiental.systemDateDeleted;
-            enriquecimentoAmbiental.isAtivo = true;
+
+            if (pEnriquecimentoAmbiental.animal != null) {
+                enriquecimentoAmbiental.animal = Animal.findById(pEnriquecimentoAmbiental.animal.id);
+            } else {
+                throw new BadRequestException("Por favor, preencha o Animal do Enriquecimento Ambiental corretamente!"); //TODO organizar mensagem
+            }
+            if (pEnriquecimentoAmbiental.dataEnriquecimento != null) {
+                enriquecimentoAmbiental.dataEnriquecimento = pEnriquecimentoAmbiental.dataEnriquecimento;
+
+            } else {
+                throw new BadRequestException("Por favor, preencha a Data do Enriquecimento Ambiental corretamente!");//TODO organizar mensagem
+            }
+            if (pEnriquecimentoAmbiental.nomeEnriquecimento != null) {
+                enriquecimentoAmbiental.nomeEnriquecimento = pEnriquecimentoAmbiental.nomeEnriquecimento;
+
+            } else {
+                throw new BadRequestException("Por favor, preencha o Nome do Enriquecimento Ambiental corretamente!");//TODO organizar mensagem
+            }
+
+            if (pEnriquecimentoAmbiental.descricaoEnriquecimento != null) {
+                enriquecimentoAmbiental.descricaoEnriquecimento = pEnriquecimentoAmbiental.descricaoEnriquecimento;
+
+            } else {
+                throw new BadRequestException("Por favor, preencha a Descrição do Enriquecimento Ambiental corretamente!");//TODO organizar mensagem
+            }
+
+            enriquecimentoAmbiental.isAtivo = Boolean.TRUE;
             enriquecimentoAmbiental.usuario = Usuario.findById(pEnriquecimentoAmbiental.usuario.id);
             enriquecimentoAmbiental.usuarioAcao = Usuario.findById(pEnriquecimentoAmbiental.usuarioAcao.id);
             enriquecimentoAmbiental.dataAcao = new Date();
@@ -72,32 +93,41 @@ public class EnriquecimentoAmbientalController {
             enriquecimentoAmbiental.persist();
 
         } else {
-            throw new BadRequestException("Enriquecimento Ambiental já cadastrado!");
+            throw new BadRequestException("Enriquecimento Ambiental já cadastrado!");//TODO organizar mensagem
         }
 
     }
 
     public void updateEnriquecimentoAmbiental(@NotNull EnriquecimentoAmbiental pEnriquecimentoAmbiental) {
 
-        enriquecimentoAmbiental = EnriquecimentoAmbiental.find("id = ?1 and dataEnriquecimento = ?2 and isAtivo = true ORDER BY id DESC", pEnriquecimentoAmbiental.id, pEnriquecimentoAmbiental.dataEnriquecimento).firstResult();
+        enriquecimentoAmbiental = EnriquecimentoAmbiental.find("id = ?1 and dataEnriquecimento = ?2 and isAtivo = true and nomeEnriquecimento = ?3 and descricaoEnriquecimento = ?4 ORDER BY id DESC", pEnriquecimentoAmbiental.id, pEnriquecimentoAmbiental.dataEnriquecimento, pEnriquecimentoAmbiental.nomeEnriquecimento, pEnriquecimentoAmbiental.descricaoEnriquecimento).firstResult();
 
-        if (!(enriquecimentoAmbiental == null) && enriquecimentoAmbiental.id.equals(pEnriquecimentoAmbiental.id) && enriquecimentoAmbiental.isAtivo) {
-            if (!Objects.equals(enriquecimentoAmbiental.dataEnriquecimento, pEnriquecimentoAmbiental.dataEnriquecimento)) {
-                enriquecimentoAmbiental.dataEnriquecimento = pEnriquecimentoAmbiental.dataEnriquecimento;
-            }
-            if (!enriquecimentoAmbiental.nomeEnriquecimento.equals(pEnriquecimentoAmbiental.nomeEnriquecimento)) {
-                enriquecimentoAmbiental.nomeEnriquecimento = pEnriquecimentoAmbiental.nomeEnriquecimento;
-            }
-            if (!enriquecimentoAmbiental.descricaoEnriquecimento.equals(pEnriquecimentoAmbiental.descricaoEnriquecimento)) {
-                enriquecimentoAmbiental.descricaoEnriquecimento = pEnriquecimentoAmbiental.descricaoEnriquecimento;
-            }
+        if (enriquecimentoAmbiental != null) {
 
-            enriquecimentoAmbiental.usuarioAcao = Usuario.findById(pEnriquecimentoAmbiental.usuarioAcao.id);
-            enriquecimentoAmbiental.dataAcao = new Date();
-            enriquecimentoAmbiental.persist();
-
+            if (pEnriquecimentoAmbiental.dataEnriquecimento == null && pEnriquecimentoAmbiental.nomeEnriquecimento == null && pEnriquecimentoAmbiental.descricaoEnriquecimento == null) {
+                throw new BadRequestException("Informe os dados para atualizar o Enriquecimento Ambiental.");//TODO organizar mensagem
+            } else {
+                if (pEnriquecimentoAmbiental.dataEnriquecimento != null) {
+                    if (!Objects.equals(enriquecimentoAmbiental.dataEnriquecimento, pEnriquecimentoAmbiental.dataEnriquecimento)) {
+                        enriquecimentoAmbiental.dataEnriquecimento = pEnriquecimentoAmbiental.dataEnriquecimento;
+                    }
+                }
+                if (pEnriquecimentoAmbiental.nomeEnriquecimento != null) {
+                    if (!enriquecimentoAmbiental.nomeEnriquecimento.equals(pEnriquecimentoAmbiental.nomeEnriquecimento)) {
+                        enriquecimentoAmbiental.nomeEnriquecimento = pEnriquecimentoAmbiental.nomeEnriquecimento;
+                    }
+                }
+                if (pEnriquecimentoAmbiental.descricaoEnriquecimento != null) {
+                    if (!enriquecimentoAmbiental.descricaoEnriquecimento.equals(pEnriquecimentoAmbiental.descricaoEnriquecimento)) {
+                        enriquecimentoAmbiental.descricaoEnriquecimento = pEnriquecimentoAmbiental.descricaoEnriquecimento;
+                    }
+                }
+                enriquecimentoAmbiental.usuarioAcao = Usuario.findById(pEnriquecimentoAmbiental.usuarioAcao.id);
+                enriquecimentoAmbiental.dataAcao = new Date();
+                enriquecimentoAmbiental.persist();
+            }
         } else {
-            throw new BadRequestException("Não foi possível atualizar o Enriquecimento Ambiental.");
+            throw new BadRequestException("Não foi possível atualizar o Enriquecimento Ambiental.");//TODO organizar mensagem
 
         }
     }
@@ -105,16 +135,45 @@ public class EnriquecimentoAmbientalController {
     public void deleteEnriquecimentoAmbiental(@NotNull List<EnriquecimentoAmbiental> enriquecimentoAmbientalList) {
 
         enriquecimentoAmbientalList.forEach((pEnriquecimentoAmbiental) -> {
-            enriquecimentoAmbiental = EnriquecimentoAmbiental.find("id = ?1 and dataEnriquecimento = ?2 and isAtivo = true ORDER BY id DESC", pEnriquecimentoAmbiental.id, pEnriquecimentoAmbiental.dataEnriquecimento).firstResult();
+            enriquecimentoAmbiental = EnriquecimentoAmbiental.find("id = ?1 and isAtivo = true ORDER BY id DESC", pEnriquecimentoAmbiental.id).firstResult();
 
             if (enriquecimentoAmbiental != null) {
                 enriquecimentoAmbiental.isAtivo = Boolean.FALSE;
                 enriquecimentoAmbiental.dataAcao = new Date();
-                enriquecimentoAmbiental.usuarioAcao = Usuario.findById(pEnriquecimentoAmbiental.usuarioAcao.id);
+                if (pEnriquecimentoAmbiental.usuarioAcao != null) {
+                    enriquecimentoAmbiental.usuarioAcao = Usuario.findById(pEnriquecimentoAmbiental.usuarioAcao.id);
+                }
                 enriquecimentoAmbiental.systemDateDeleted = new Date();
                 enriquecimentoAmbiental.persist();
             } else {
-                throw new BadRequestException("Não foi possível deletar o Enriquecimento Ambiental.");
+                if (enriquecimentoAmbientalList.size() <= 1) {
+                    throw new NotFoundException("Enriquecimento Ambiental não localizado ou já excluído.");//TODO organizar mensagem
+                } else {
+                    throw new NotFoundException("Enriquecimentos Ambientais não localizados ou já excluídos.");//TODO organizar mensagem
+                }
+            }
+        });
+    }
+
+    public void reactivateEnriquecimentoAmbiental(@NotNull List<EnriquecimentoAmbiental> enriquecimentoAmbientalList) {
+
+        enriquecimentoAmbientalList.forEach((pEnriquecimentoAmbiental) -> {
+            enriquecimentoAmbiental = EnriquecimentoAmbiental.find("id = ?1 and isAtivo = false ORDER BY id DESC", pEnriquecimentoAmbiental.id).firstResult();
+
+            if (enriquecimentoAmbiental != null) {
+                enriquecimentoAmbiental.isAtivo = Boolean.TRUE;
+                enriquecimentoAmbiental.dataAcao = new Date();
+                if (pEnriquecimentoAmbiental.usuarioAcao != null) {
+                    enriquecimentoAmbiental.usuarioAcao = Usuario.findById(pEnriquecimentoAmbiental.usuarioAcao.id);
+                }
+                enriquecimentoAmbiental.systemDateDeleted = null;
+                enriquecimentoAmbiental.persist();
+            } else {
+                if (enriquecimentoAmbientalList.size() <= 1) {
+                    throw new NotFoundException("Enriquecimento Ambiental não localizados ou já reativado.");//TODO organizar mensagem
+                } else {
+                    throw new NotFoundException("Enriquecimentos Ambientais não localizados ou já reativados.");//TODO organizar mensagem
+                }
             }
         });
     }

@@ -61,7 +61,7 @@ public class UsuarioController {
             usuario.password = BcryptUtil.bcryptHash(pUsuario.password);
             usuario.isAtivo = true;
             usuario.roleUsuario = pUsuario.roleUsuario;
-            usuario.usuarioAcao = "";
+            usuario.usuarioAcao = Usuario.findById(pUsuario.usuarioAcao.id);
             usuario.dataAcao = new Date();
             usuario.persist();
 
@@ -88,8 +88,10 @@ public class UsuarioController {
             if (!Objects.equals(usuario.roleUsuario, pUsuario.roleUsuario)) {
                 usuario.roleUsuario = pUsuario.roleUsuario;
             }
-            usuario.usuarioAcao = "";
+            usuario.usuarioAcao = Usuario.findById(pUsuario.usuarioAcao.id);
+
             usuario.dataAcao = new Date();
+
             usuario.persist();
 
         } else {
@@ -106,7 +108,7 @@ public class UsuarioController {
             if (usuario != null) {
                 usuario.isAtivo = Boolean.FALSE;
                 usuario.dataAcao = new Date();
-                usuario.usuarioAcao = "usuario que deletou";
+                usuario.usuarioAcao = Usuario.findById(pUsuario.usuarioAcao.id);
                 usuario.systemDateDeleted = new Date();
                 usuario.persist();
             } else {

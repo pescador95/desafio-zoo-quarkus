@@ -1,6 +1,9 @@
 package desafio.zoo.controller;
 
+import desafio.zoo.model.Animal;
+import desafio.zoo.model.HistoricoClinico;
 import desafio.zoo.model.Medicacao;
+import desafio.zoo.model.Usuario;
 import org.jetbrains.annotations.NotNull;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -17,6 +20,7 @@ import java.util.Objects;
 public class MedicacaoController {
 
     public Medicacao medicacao;
+    public Usuario usuario;
     List<Medicacao> medicacaoList = new ArrayList<>();
 
 
@@ -52,18 +56,18 @@ public class MedicacaoController {
 
     public void addMedicacao(@NotNull Medicacao pMedicacao) {
 
-        medicacao = Medicacao.find("animal = ?1 and isAtivo = true ORDER BY id DESC", pMedicacao.animal).firstResult();
+        medicacao = Medicacao.find("historicoClinico = ?1 and isAtivo = true ORDER BY id DESC", pMedicacao.historicoClinico).firstResult();
 
         if (medicacao == null || !medicacao.isAtivo) {
             medicacao = new Medicacao();
-            medicacao.animal = pMedicacao.animal;
+            medicacao.historicoClinico = HistoricoClinico.findById(pMedicacao.historicoClinico.id);
             medicacao.nomeMedicacao = pMedicacao.nomeMedicacao;
             medicacao.viaAdministracao = pMedicacao.viaAdministracao;
             medicacao.posologia = pMedicacao.posologia;
             medicacao.frequencia = pMedicacao.frequencia;
             medicacao.isAtivo = true;
-            medicacao.usuario = pMedicacao.usuario;
-            medicacao.usuarioAcao = "";
+            medicacao.usuario = Usuario.findById(pMedicacao.usuario.id);
+            medicacao.usuarioAcao = Usuario.findById(pMedicacao.usuarioAcao.id);
             medicacao.dataAcao = new Date();
 
             medicacao.persist();
@@ -92,9 +96,10 @@ public class MedicacaoController {
             if (!Objects.equals(medicacao.frequencia, pMedicacao.frequencia)) {
                 medicacao.frequencia = pMedicacao.frequencia;
             }
-            if (medicacao.usuario.equals(pMedicacao.usuario)) {
-                medicacao.usuario = pMedicacao.usuario;
+            if (!medicacao.historicoClinico.equals(pMedicacao.historicoClinico)) {
+                medicacao.historicoClinico = HistoricoClinico.findById(pMedicacao.historicoClinico.id);
             }
+            medicacao.usuarioAcao = Usuario.findById(pMedicacao.usuarioAcao.id);
             medicacao.dataAcao = new Date();
             medicacao.persist();
 
@@ -112,7 +117,7 @@ public class MedicacaoController {
             if (medicacao != null) {
                 medicacao.isAtivo = Boolean.FALSE;
                 medicacao.dataAcao = new Date();
-                medicacao.usuarioAcao = "usuario que deletou";
+                medicacao.usuarioAcao = Usuario.findById(pMedicacao.usuarioAcao.id);
                 medicacao.systemDateDeleted = new Date();
                 medicacao.persist();
             } else {

@@ -1,6 +1,8 @@
 package desafio.zoo.controller;
 
+import desafio.zoo.model.Animal;
 import desafio.zoo.model.HistoricoClinico;
+import desafio.zoo.model.Usuario;
 import org.jetbrains.annotations.NotNull;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -17,7 +19,6 @@ public class HistoricoClinicoController {
 
     public HistoricoClinico historicoClinico;
     List<HistoricoClinico> historicoClinicoList = new ArrayList<>();
-
 
 
     public HistoricoClinico getHistoricoClinico(@NotNull HistoricoClinico pHistoricoClinico) {
@@ -56,7 +57,7 @@ public class HistoricoClinicoController {
 
         if (historicoClinico == null || !historicoClinico.isAtivo) {
             historicoClinico = new HistoricoClinico();
-            historicoClinico.animal = pHistoricoClinico.animal;
+            historicoClinico.animal = Animal.findById(pHistoricoClinico.animal.id);
             historicoClinico.etco2 = pHistoricoClinico.etco2;
             historicoClinico.spo2 = pHistoricoClinico.spo2;
             historicoClinico.temperaturaAnimal = pHistoricoClinico.temperaturaAnimal;
@@ -69,8 +70,8 @@ public class HistoricoClinicoController {
             historicoClinico.dataAcao = pHistoricoClinico.dataAcao;
             historicoClinico.systemDateDeleted = pHistoricoClinico.systemDateDeleted;
             historicoClinico.isAtivo = true;
-            historicoClinico.usuario = pHistoricoClinico.usuario;
-            historicoClinico.usuarioAcao = "";
+            historicoClinico.usuario = Usuario.findById(pHistoricoClinico.usuario.id);
+            historicoClinico.usuarioAcao = Usuario.findById(pHistoricoClinico.usuarioAcao.id);
             historicoClinico.dataAcao = new Date();
 
             historicoClinico.persist();
@@ -114,9 +115,10 @@ public class HistoricoClinicoController {
             if (!historicoClinico.pm.equals(pHistoricoClinico.pm)) {
                 historicoClinico.pm = pHistoricoClinico.pm;
             }
-            if (historicoClinico.usuario.equals(pHistoricoClinico.usuario)) {
-                historicoClinico.usuario = pHistoricoClinico.usuario;
+            if(!historicoClinico.animal.equals(pHistoricoClinico.animal)){
+                historicoClinico.animal = Animal.findById(pHistoricoClinico.animal.id);
             }
+            historicoClinico.usuarioAcao = Usuario.findById(pHistoricoClinico.usuarioAcao.id);
             historicoClinico.dataAcao = new Date();
             historicoClinico.persist();
 
@@ -134,7 +136,7 @@ public class HistoricoClinicoController {
             if (historicoClinico != null) {
                 historicoClinico.isAtivo = Boolean.FALSE;
                 historicoClinico.dataAcao = new Date();
-                historicoClinico.usuarioAcao = "usuario que deletou";
+                historicoClinico.usuarioAcao = Usuario.findById(pHistoricoClinico.usuarioAcao.id);
                 historicoClinico.systemDateDeleted = new Date();
                 historicoClinico.persist();
             } else {

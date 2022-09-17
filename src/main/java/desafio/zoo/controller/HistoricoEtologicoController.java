@@ -1,6 +1,8 @@
 package desafio.zoo.controller;
 
+import desafio.zoo.model.Animal;
 import desafio.zoo.model.HistoricoEtologico;
+import desafio.zoo.model.Usuario;
 import org.jetbrains.annotations.NotNull;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -18,7 +20,6 @@ public class HistoricoEtologicoController {
 
     public HistoricoEtologico historicoEtologico;
     List<HistoricoEtologico> historicoEtologicoList = new ArrayList<>();
-
 
 
     public HistoricoEtologico getHistoricoEtologico(@NotNull HistoricoEtologico pHistoricoEtologico) {
@@ -58,15 +59,15 @@ public class HistoricoEtologicoController {
 
         if (historicoEtologico == null || !historicoEtologico.isAtivo) {
             historicoEtologico = new HistoricoEtologico();
-            historicoEtologico.animal = pHistoricoEtologico.animal;
+            historicoEtologico.animal = Animal.findById(pHistoricoEtologico.animal.id);
             historicoEtologico.dataEtologico = pHistoricoEtologico.dataEtologico;
-            historicoEtologico.nomeEtologico   = pHistoricoEtologico.nomeEtologico  ;
+            historicoEtologico.nomeEtologico = pHistoricoEtologico.nomeEtologico;
             historicoEtologico.descricaoEtologico = pHistoricoEtologico.descricaoEtologico;
             historicoEtologico.dataAcao = pHistoricoEtologico.dataAcao;
             historicoEtologico.systemDateDeleted = pHistoricoEtologico.systemDateDeleted;
             historicoEtologico.isAtivo = true;
-            historicoEtologico.usuario = pHistoricoEtologico.usuario;
-            historicoEtologico.usuarioAcao = "";
+            historicoEtologico.usuario = Usuario.findById(pHistoricoEtologico.usuario.id);
+            historicoEtologico.usuarioAcao = Usuario.findById(pHistoricoEtologico.usuarioAcao.id);
             historicoEtologico.dataAcao = new Date();
 
             historicoEtologico.persist();
@@ -91,9 +92,12 @@ public class HistoricoEtologicoController {
             if (!historicoEtologico.descricaoEtologico.equals(pHistoricoEtologico.descricaoEtologico)) {
                 historicoEtologico.descricaoEtologico = pHistoricoEtologico.descricaoEtologico;
             }
-            if (historicoEtologico.usuario.equals(pHistoricoEtologico.usuario)) {
-                historicoEtologico.usuario = pHistoricoEtologico.usuario;
+            if (!historicoEtologico.animal.equals(pHistoricoEtologico.animal)){
+                historicoEtologico.animal = Animal.findById(pHistoricoEtologico.animal.id);
             }
+            historicoEtologico.usuarioAcao = Usuario.findById(pHistoricoEtologico.usuarioAcao.id);
+            ;
+
             historicoEtologico.dataAcao = new Date();
             historicoEtologico.persist();
 
@@ -111,7 +115,8 @@ public class HistoricoEtologicoController {
             if (historicoEtologico != null) {
                 historicoEtologico.isAtivo = Boolean.FALSE;
                 historicoEtologico.dataAcao = new Date();
-                historicoEtologico.usuarioAcao = "usuario que deletou";
+                historicoEtologico.usuarioAcao = Usuario.findById(pHistoricoEtologico.usuarioAcao.id);
+                ;
                 historicoEtologico.systemDateDeleted = new Date();
                 historicoEtologico.persist();
             } else {

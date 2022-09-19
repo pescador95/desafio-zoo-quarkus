@@ -1,5 +1,7 @@
 package desafio.zoo.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import javax.enterprise.context.ApplicationScoped;
 import java.util.Date;
 
@@ -7,8 +9,11 @@ import java.util.Date;
 public class Auth {
     public String email;
 
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     public String password;
+    public String roleUsuario;
 
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     public Usuario usuario;
     public String accessToken;
     public Date expireDateAccessToken;

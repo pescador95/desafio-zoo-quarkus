@@ -4,6 +4,7 @@ import desafio.zoo.controller.HistoricoEtologicoController;
 import desafio.zoo.model.HistoricoEtologico;
 import io.quarkus.panache.common.Page;
 
+import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -24,6 +25,7 @@ public class HistoricoEtologicoResources {
     @Path("/get")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
+    @RolesAllowed({ "veterinario", "biologo", "dev" })
     public Response get(HistoricoEtologico pHistoricoEtologico) {
         historicoEtologico = controller.getHistoricoEtologico(pHistoricoEtologico);
         return Response.ok(historicoEtologico).status(200).build();
@@ -33,6 +35,7 @@ public class HistoricoEtologicoResources {
     @Path("/getListAtivos")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
+    @RolesAllowed({ "veterinario", "biologo", "dev" })
     public Response listAtivos(@QueryParam("sort") List<String> sortQuery,
                                @QueryParam("page") @DefaultValue("0") int pageIndex,
                                @QueryParam("size") @DefaultValue("20") int pageSize) {
@@ -45,6 +48,7 @@ public class HistoricoEtologicoResources {
     @Path("/getListInativos")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
+    @RolesAllowed({ "veterinario", "biologo", "dev" })
     public Response listInativos(@QueryParam("sort") List<String> sortQuery,
                                  @QueryParam("page") @DefaultValue("0") int pageIndex,
                                  @QueryParam("size") @DefaultValue("20") int pageSize) {
@@ -57,6 +61,7 @@ public class HistoricoEtologicoResources {
     @Path("/create")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
+    @RolesAllowed({ "veterinario", "biologo", "dev" })
     public Response add(HistoricoEtologico pHistoricoEtologico) {
         controller.addHistoricoEtologico(pHistoricoEtologico);
         return Response.ok().status(201).build();
@@ -66,6 +71,7 @@ public class HistoricoEtologicoResources {
     @Path("/update")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
+    @RolesAllowed({ "veterinario", "biologo", "dev" })
     public Response update(HistoricoEtologico pHistoricoEtologico) {
         controller.updateHistoricoEtologico(pHistoricoEtologico);
         return Response.ok().status(200).build();
@@ -75,6 +81,7 @@ public class HistoricoEtologicoResources {
     @Path("/delete")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
+    @RolesAllowed({ "veterinario", "biologo", "dev" })
     public Response deleteList(List<HistoricoEtologico> historicoEtologicoList, @QueryParam("sort") List<String> sortQuery,
                                @QueryParam("page") @DefaultValue("0") int pageIndex,
                                @QueryParam("size") @DefaultValue("20") int pageSize) {
@@ -87,6 +94,7 @@ public class HistoricoEtologicoResources {
     @Path("/reactivate")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
+    @RolesAllowed({ "veterinario", "biologo", "dev" })
     public Response reactivateList(List<HistoricoEtologico> historicoEtologicoList, @QueryParam("sort") List<String> sortQuery,
                                @QueryParam("page") @DefaultValue("0") int pageIndex,
                                @QueryParam("size") @DefaultValue("20") int pageSize) {

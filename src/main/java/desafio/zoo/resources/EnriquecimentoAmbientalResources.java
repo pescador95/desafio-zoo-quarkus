@@ -4,6 +4,7 @@ import desafio.zoo.controller.EnriquecimentoAmbientalController;
 import desafio.zoo.model.EnriquecimentoAmbiental;
 import io.quarkus.panache.common.Page;
 
+import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -25,6 +26,7 @@ public class EnriquecimentoAmbientalResources {
     @Path("/get")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
+    @RolesAllowed({ "veterinario", "biologo", "dev" })
     public Response get(EnriquecimentoAmbiental pEnriquecimentoAmbiental) {
         EnriquecimentoAmbiental = controller.getEnriquecimentoAmbiental(pEnriquecimentoAmbiental);
         return Response.ok(EnriquecimentoAmbiental).status(200).build();
@@ -34,6 +36,7 @@ public class EnriquecimentoAmbientalResources {
     @Path("/getListAtivos")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
+    @RolesAllowed({ "veterinario", "biologo", "dev" })
     public Response listAtivos(@QueryParam("sort") List<String> sortQuery,
                                @QueryParam("page") @DefaultValue("0") int pageIndex,
                                @QueryParam("size") @DefaultValue("20") int pageSize) {
@@ -46,6 +49,7 @@ public class EnriquecimentoAmbientalResources {
     @Path("/getListInativos")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
+    @RolesAllowed({ "veterinario", "biologo", "dev" })
     public Response listInativos(@QueryParam("sort") List<String> sortQuery,
                                  @QueryParam("page") @DefaultValue("0") int pageIndex,
                                  @QueryParam("size") @DefaultValue("20") int pageSize) {
@@ -58,6 +62,7 @@ public class EnriquecimentoAmbientalResources {
     @Path("/create")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
+    @RolesAllowed({ "veterinario", "biologo", "dev" })
     public Response add(EnriquecimentoAmbiental pEnriquecimentoAmbiental) {
         controller.addEnriquecimentoAmbiental(pEnriquecimentoAmbiental);
         return Response.ok().status(201).build();
@@ -67,6 +72,7 @@ public class EnriquecimentoAmbientalResources {
     @Path("/update")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
+    @RolesAllowed({ "veterinario", "biologo", "dev" })
     public Response update(EnriquecimentoAmbiental pEnriquecimentoAmbiental) {
         controller.updateEnriquecimentoAmbiental(pEnriquecimentoAmbiental);
         return Response.ok().status(200).build();
@@ -76,6 +82,7 @@ public class EnriquecimentoAmbientalResources {
     @Path("/delete")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
+    @RolesAllowed({ "veterinario", "biologo", "dev" })
     public Response deleteList(List<EnriquecimentoAmbiental> enriquecimentoAmbientalList, @QueryParam("sort") List<String> sortQuery,
                                @QueryParam("page") @DefaultValue("0") int pageIndex,
                                @QueryParam("size") @DefaultValue("20") int pageSize) {
@@ -87,6 +94,7 @@ public class EnriquecimentoAmbientalResources {
     @Path("/reactivate")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
+    @RolesAllowed({ "veterinario", "biologo", "dev" })
     public Response reactivateList(List<EnriquecimentoAmbiental> enriquecimentoAmbientalList, @QueryParam("sort") List<String> sortQuery,
                                @QueryParam("page") @DefaultValue("0") int pageIndex,
                                @QueryParam("size") @DefaultValue("20") int pageSize) {

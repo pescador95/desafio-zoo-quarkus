@@ -4,6 +4,7 @@ import desafio.zoo.controller.MedicacaoController;
 import desafio.zoo.model.Medicacao;
 import io.quarkus.panache.common.Page;
 
+import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -24,6 +25,7 @@ public class MedicacaoResources {
     @Path("/get")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
+    @RolesAllowed({ "veterinario", "biologo", "dev" })
     public Response get(Medicacao pMedicacao) {
         medicacao = controller.getMedicacao(pMedicacao);
         return Response.ok(medicacao).status(200).build();
@@ -33,6 +35,7 @@ public class MedicacaoResources {
     @Path("/getListAtivos")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
+    @RolesAllowed({ "veterinario", "biologo", "dev" })
     public Response listAtivos(@QueryParam("sort") List<String> sortQuery,
                                @QueryParam("page") @DefaultValue("0") int pageIndex,
                                @QueryParam("size") @DefaultValue("20") int pageSize) {
@@ -45,6 +48,7 @@ public class MedicacaoResources {
     @Path("/getListInativos")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
+    @RolesAllowed({ "veterinario", "biologo", "dev" })
     public Response listInativos(@QueryParam("sort") List<String> sortQuery,
                                  @QueryParam("page") @DefaultValue("0") int pageIndex,
                                  @QueryParam("size") @DefaultValue("20") int pageSize) {
@@ -57,6 +61,7 @@ public class MedicacaoResources {
     @Path("/create")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
+    @RolesAllowed({ "veterinario", "biologo", "dev" })
     public Response add(Medicacao pMedicacao) {
         controller.addMedicacao(pMedicacao);
         return Response.ok().status(201).build();
@@ -66,6 +71,7 @@ public class MedicacaoResources {
     @Path("/update")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
+    @RolesAllowed({ "veterinario", "biologo", "dev" })
     public Response update(Medicacao pMedicacao) {
         controller.updateMedicacao(pMedicacao);
         return Response.ok().status(200).build();
@@ -75,6 +81,7 @@ public class MedicacaoResources {
     @Path("/delete")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
+    @RolesAllowed({ "veterinario", "biologo", "dev" })
     public Response deleteList(List<Medicacao> medicacaoList, @QueryParam("sort") List<String> sortQuery,
                                @QueryParam("page") @DefaultValue("0") int pageIndex,
                                @QueryParam("size") @DefaultValue("20") int pageSize) {
@@ -87,6 +94,7 @@ public class MedicacaoResources {
     @Path("/reactivate")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
+    @RolesAllowed({ "veterinario", "biologo", "dev" })
     public Response reactivateList(List<Medicacao> medicacaoList, @QueryParam("sort") List<String> sortQuery,
                                @QueryParam("page") @DefaultValue("0") int pageIndex,
                                @QueryParam("size") @DefaultValue("20") int pageSize) {

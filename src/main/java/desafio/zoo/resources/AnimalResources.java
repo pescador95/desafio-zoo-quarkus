@@ -4,7 +4,7 @@ import desafio.zoo.controller.AnimalController;
 import desafio.zoo.model.Animal;
 import io.quarkus.panache.common.Page;
 
-import javax.annotation.security.PermitAll;
+import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -26,6 +26,7 @@ public class AnimalResources {
     @Path("/get")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
+    @RolesAllowed({ "veterinario", "biologo", "dev" })
     public Response get(Animal pAnimal) {
         animal = controller.getAnimal(pAnimal);
         return Response.ok(animal).status(200).build();
@@ -35,6 +36,7 @@ public class AnimalResources {
     @Path("/getListAtivos")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
+    @RolesAllowed({ "veterinario", "biologo", "dev" })
     public Response listAtivos(@QueryParam("sort") List<String> sortQuery,
                                @QueryParam("page") @DefaultValue("0") int pageIndex,
                                @QueryParam("size") @DefaultValue("20") int pageSize) {
@@ -47,6 +49,7 @@ public class AnimalResources {
     @Path("/getListInativos")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
+    @RolesAllowed({ "veterinario", "biologo", "dev" })
     public Response listInativos(@QueryParam("sort") List<String> sortQuery,
                                  @QueryParam("page") @DefaultValue("0") int pageIndex,
                                  @QueryParam("size") @DefaultValue("20") int pageSize) {
@@ -59,6 +62,7 @@ public class AnimalResources {
     @Path("/create")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
+    @RolesAllowed({ "veterinario", "biologo", "dev" })
     public Response add(Animal pAnimal) {
         controller.addAnimal(pAnimal);
         return Response.ok().status(201).build();
@@ -68,6 +72,7 @@ public class AnimalResources {
     @Path("/update")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
+    @RolesAllowed({ "veterinario", "biologo", "dev" })
     public Response update(Animal pAnimal) {
         controller.updateAnimal(pAnimal);
         return Response.ok().status(200).build();
@@ -77,7 +82,7 @@ public class AnimalResources {
     @Path("/delete")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
-    @PermitAll
+    @RolesAllowed({ "veterinario", "biologo", "dev" })
     public Response deleteList(List<Animal> animalList, @QueryParam("sort") List<String> sortQuery,
                                @QueryParam("page") @DefaultValue("0") int pageIndex,
                                @QueryParam("size") @DefaultValue("20") int pageSize) {
@@ -90,7 +95,7 @@ public class AnimalResources {
     @Path("/reactivate")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
-    @PermitAll
+    @RolesAllowed({ "veterinario", "biologo", "dev" })
     public Response reactivateList(List<Animal> animalList, @QueryParam("sort") List<String> sortQuery,
                                @QueryParam("page") @DefaultValue("0") int pageIndex,
                                @QueryParam("size") @DefaultValue("20") int pageSize) {

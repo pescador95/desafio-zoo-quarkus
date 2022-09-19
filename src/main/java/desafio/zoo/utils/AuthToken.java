@@ -19,7 +19,7 @@ public class AuthToken {
     public String GenerateAccessToken(Usuario pUsuario) {
         String accessToken = Jwt.issuer(this.issuer)
                 .upn(pUsuario.email)
-                .groups(new HashSet<>(Arrays.asList("Usuario", "Admin")))
+                .groups(new HashSet<>(Arrays.asList("veterinario", "biologo", "dev")))
                 .expiresAt(Instant.now().plus(Duration.ofMinutes(10)))
                 .sign();
         return accessToken;

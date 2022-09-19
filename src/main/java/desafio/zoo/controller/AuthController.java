@@ -2,6 +2,7 @@ package desafio.zoo.controller;
 
 import desafio.zoo.model.Usuario;
 import desafio.zoo.utils.AuthToken;
+import io.quarkus.elytron.security.common.BcryptUtil;
 import io.smallrye.jwt.auth.principal.JWTParser;
 import io.smallrye.jwt.auth.principal.ParseException;
 import desafio.zoo.model.Auth;
@@ -36,7 +37,7 @@ public class AuthController {
             throw new BadRequestException("email ou senha incorretas");
         }
 
-        System.out.print("Iniciando login com usuário: " + usuario.email + "\n"); // todo log
+        System.out.print("\n"+ "Iniciando login com usuário: " + usuario.email + "..." + "\n" + "Bem vindo, "+ usuario.nome + "!"); // todo log
         String accessToken = token.GenerateAccessToken(usuario);
         String refreshToken = token.GenerateRefreshToken(usuario);
 
@@ -51,9 +52,12 @@ public class AuthController {
         }
 
         Auth auth = new Auth();
-        auth.usuario = usuario;
+        auth.email = usuario.email;
+        auth.password = BcryptUtil.bcryptHash(usuario.password);
+        auth.roleUsuario = usuario.roleUsuario;
         auth.accessToken = accessToken;
         auth.refreshToken = refreshToken;
+        auth.usuario = usuario;
         auth.expireDateAccessToken = new Date(ACTOKEN * 1000); // milisec -> sec -> Date
         auth.expireDateRefreshToken = new Date(RFTOKEN * 1000); // milisec -> sec -> Date
         return auth;

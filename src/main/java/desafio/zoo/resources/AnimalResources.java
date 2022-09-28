@@ -4,6 +4,7 @@ import desafio.zoo.controller.AnimalController;
 import desafio.zoo.model.Animal;
 import io.quarkus.panache.common.Page;
 
+import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.ws.rs.*;
@@ -38,6 +39,19 @@ public class AnimalResources {
     @Consumes("application/json")
     @RolesAllowed({ "veterinario", "biologo", "dev" })
     public Response listAtivos(@QueryParam("sort") List<String> sortQuery,
+                               @QueryParam("page") @DefaultValue("0") int pageIndex,
+                               @QueryParam("size") @DefaultValue("20") int pageSize) {
+        page = Page.of(pageIndex, pageSize);
+        animalList = controller.getAnimalListAtivos();
+        return Response.ok(animalList).status(200).build();
+    }
+
+    @GET
+    @Path("/getListAtivos2")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes("application/json")
+    @PermitAll
+    public Response listAtivos2(@QueryParam("sort") List<String> sortQuery,
                                @QueryParam("page") @DefaultValue("0") int pageIndex,
                                @QueryParam("size") @DefaultValue("20") int pageSize) {
         page = Page.of(pageIndex, pageSize);

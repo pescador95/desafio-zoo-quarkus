@@ -68,10 +68,10 @@ public class AuthController {
         Usuario usuario = null;
         Date expireDate = null;
         try {
-            String login = parser.parse(data.refreshToken).getClaim("upn");
+            String email = parser.parse(data.refreshToken).getClaim("upn");
             long expireDateOldToken = parser.parse(data.refreshToken).getClaim("exp");
 
-            usuario = Usuario.find("email", login).firstResult();
+            usuario = Usuario.find("email", email).firstResult();
             expireDate = new Date(expireDateOldToken * 1000); // milsec to sec
 
             if (expireDate.after(new Date()) && usuario != null) {
@@ -103,7 +103,7 @@ public class AuthController {
             auth.expireDateRefreshToken = new Date(RFTOKEN * 1000); // milisec -> sec -> Date
             return auth;
         } else {
-            throw new BadRequestException("Credenciais incorretas!");
+            throw new BadRequestException("Credenciais incorretas");
         }
     }
 }

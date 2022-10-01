@@ -24,17 +24,17 @@ public class AnimalResources {
 
 
     @GET
-    @Path("/get")
+    @Path("{id}")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
     @RolesAllowed({ "veterinario", "biologo", "dev" })
-    public Response get(Animal pAnimal) {
-        animal = controller.getAnimal(pAnimal);
+    public Response get(@PathParam("pId") Long pId) {
+        animal = animal.findById(pId);
         return Response.ok(animal).status(200).build();
     }
 
     @GET
-    @Path("/getListAtivos")
+    @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
     @RolesAllowed({ "veterinario", "biologo", "dev" })
@@ -60,7 +60,7 @@ public class AnimalResources {
     }
 
     @GET
-    @Path("/getListInativos")
+    @Path("/inativos")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
     @RolesAllowed({ "veterinario", "biologo", "dev" })

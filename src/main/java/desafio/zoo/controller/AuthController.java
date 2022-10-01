@@ -96,6 +96,8 @@ public class AuthController {
                 throw new BadRequestException("Credenciais incorretas!");
             }
             Auth auth = new Auth();
+            auth.email = usuario.email;
+            auth.roleUsuario = usuario.roleUsuario;
             auth.usuario = usuario;
             auth.accessToken = accessToken;
             auth.expireDateAccessToken = new Date(ACTOKEN * 1000); // milisec -> sec -> Date

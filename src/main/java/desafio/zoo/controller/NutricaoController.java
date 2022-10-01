@@ -19,18 +19,6 @@ public class NutricaoController {
 
     public Nutricao nutricao;
     List<Nutricao> nutricaoList = new ArrayList<>();
-
-
-    public Nutricao getNutricao(@NotNull Nutricao pNutricao) {
-
-        nutricao = Nutricao.find("id = ?1 ORDER BY id DESC", pNutricao.id).firstResult();
-
-        if (nutricao == null || !nutricao.isAtivo) {
-            throw new NotFoundException("Nutrição não foi localizado.");//TODO organizar mensagem
-        }
-        return nutricao;
-    }
-
     public List<Nutricao> getNutricaoListAtivos() {
 
         nutricaoList = Nutricao.list("isAtivo = true ORDER BY id DESC");

@@ -33,7 +33,7 @@ public class AuthResources {
     }
 
     @POST
-    @Path("/refresh_token")
+    @Path("/refresh")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
     @PermitAll

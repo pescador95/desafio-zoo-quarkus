@@ -21,16 +21,6 @@ public class AnimalController {
     public Animal animal;
     List<Animal> animalList = new ArrayList<>();
 
-    public Animal getAnimal(@NotNull Animal pAnimal) {
-
-        animal = Animal.find("id = ?1 ORDER BY id DESC", pAnimal.id).firstResult();
-
-        if (animal == null || !animal.isAtivo) {
-            throw new NotFoundException("Animal não localizado.");
-        }
-        return animal;
-    }
-
     public List<Animal> getAnimalListAtivos() {
 
         animalList = Animal.list("isAtivo = true ORDER BY id DESC");

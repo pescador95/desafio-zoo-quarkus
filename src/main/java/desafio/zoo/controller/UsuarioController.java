@@ -15,20 +15,9 @@ import java.util.Objects;
 
 @ApplicationScoped
 @Transactional
-public class UsuarioController {
+public class UsuarioController<pId> {
     private Usuario usuario = new Usuario();
     private List<Usuario> usuarioList = new ArrayList<>();
-
-    public Usuario getUser(@NotNull Usuario pUsuario) {
-
-        usuario = Usuario.find("id = ?1 ORDER BY id DESC", pUsuario.id).firstResult();
-
-        if (((usuario == null)) && (!usuario.isAtivo)) {
-            throw new NotFoundException("Usuário não localizado ou inativo.");//TODO organizar mensagem
-        }
-        return usuario;
-
-    }
 
     public List<Usuario> getUserListAtivos() {
 

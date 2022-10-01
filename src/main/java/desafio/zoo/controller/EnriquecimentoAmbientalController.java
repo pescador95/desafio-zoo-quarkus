@@ -22,17 +22,6 @@ public class EnriquecimentoAmbientalController {
     public EnriquecimentoAmbiental enriquecimentoAmbiental;
     List<EnriquecimentoAmbiental> enriquecimentoAmbientalList = new ArrayList<>();
 
-
-    public EnriquecimentoAmbiental getEnriquecimentoAmbiental(@NotNull EnriquecimentoAmbiental pEnriquecimentoAmbiental) {
-
-        enriquecimentoAmbiental = EnriquecimentoAmbiental.find("id = ?1 ORDER BY id DESC", pEnriquecimentoAmbiental.id).firstResult();
-
-        if (enriquecimentoAmbiental == null) {
-            throw new NotFoundException("Enriquecimento Ambiental não localizado.");//TODO organizar mensagem
-        }
-        return enriquecimentoAmbiental;
-    }
-
     public List<EnriquecimentoAmbiental> getEnriquecimentoAmbientalListAtivos() {
 
         enriquecimentoAmbientalList = EnriquecimentoAmbiental.list("isAtivo = true ORDER BY id DESC");

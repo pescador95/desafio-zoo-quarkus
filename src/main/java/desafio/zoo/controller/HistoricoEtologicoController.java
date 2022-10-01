@@ -22,18 +22,6 @@ public class HistoricoEtologicoController {
     public HistoricoEtologico historicoEtologico;
     List<HistoricoEtologico> historicoEtologicoList = new ArrayList<>();
 
-
-    public HistoricoEtologico getHistoricoEtologico(@NotNull HistoricoEtologico pHistoricoEtologico) {
-
-        historicoEtologico = HistoricoEtologico.find("id = ?1 ORDER BY id DESC", pHistoricoEtologico.id).firstResult();
-
-        if (historicoEtologico == null || !historicoEtologico.isAtivo) {
-            throw new NotFoundException("Histórico Etológico não localizado.");
-        }
-        return historicoEtologico;
-    }
-
-
     public List<HistoricoEtologico> getHistoricoEtologicoListAtivos() {
 
         historicoEtologicoList = HistoricoEtologico.list("isAtivo = true ORDER BY id DESC");

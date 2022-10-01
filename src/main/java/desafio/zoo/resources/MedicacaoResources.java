@@ -22,17 +22,17 @@ public class MedicacaoResources {
     Page page;
 
     @GET
-    @Path("/get")
+    @Path("{id}")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
     @RolesAllowed({ "veterinario", "biologo", "dev" })
-    public Response get(Medicacao pMedicacao) {
-        medicacao = controller.getMedicacao(pMedicacao);
+    public Response get(@PathParam("pId") Long pId) {
+        medicacao = medicacao.findById(pId);
         return Response.ok(medicacao).status(200).build();
     }
 
     @GET
-    @Path("/getListAtivos")
+    @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
     @RolesAllowed({ "veterinario", "biologo", "dev" })
@@ -45,7 +45,7 @@ public class MedicacaoResources {
     }
 
     @GET
-    @Path("/getListInativos")
+    @Path("/inativos")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
     @RolesAllowed({ "veterinario", "biologo", "dev" })

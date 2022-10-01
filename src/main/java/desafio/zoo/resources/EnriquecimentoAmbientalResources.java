@@ -17,23 +17,23 @@ public class EnriquecimentoAmbientalResources {
 
     @Inject
     EnriquecimentoAmbientalController controller;
-    EnriquecimentoAmbiental EnriquecimentoAmbiental;
+    EnriquecimentoAmbiental enriquecimentoAmbiental;
     List<EnriquecimentoAmbiental> enriquecimentoAmbientalList;
     Page page;
 
 
     @GET
-    @Path("/get")
+    @Path("{id}")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
     @RolesAllowed({ "veterinario", "biologo", "dev" })
-    public Response get(EnriquecimentoAmbiental pEnriquecimentoAmbiental) {
-        EnriquecimentoAmbiental = controller.getEnriquecimentoAmbiental(pEnriquecimentoAmbiental);
-        return Response.ok(EnriquecimentoAmbiental).status(200).build();
+    public Response get(@PathParam("pId") Long pId) {
+        enriquecimentoAmbiental = enriquecimentoAmbiental.findById(pId);
+        return Response.ok(enriquecimentoAmbiental).status(200).build();
     }
 
     @GET
-    @Path("/getListAtivos")
+    @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
     @RolesAllowed({ "veterinario", "biologo", "dev" })
@@ -46,7 +46,7 @@ public class EnriquecimentoAmbientalResources {
     }
 
     @GET
-    @Path("/getListInativos")
+    @Path("/inativos")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
     @RolesAllowed({ "veterinario", "biologo", "dev" })

@@ -22,17 +22,17 @@ public class HistoricoEtologicoResources {
     Page page;
 
     @GET
-    @Path("/get")
+    @Path("{id}")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
     @RolesAllowed({ "veterinario", "biologo", "dev" })
-    public Response get(HistoricoEtologico pHistoricoEtologico) {
-        historicoEtologico = controller.getHistoricoEtologico(pHistoricoEtologico);
+    public Response get(@PathParam("pId") Long pId) {
+        historicoEtologico = historicoEtologico.findById(pId);
         return Response.ok(historicoEtologico).status(200).build();
     }
 
     @GET
-    @Path("/getListAtivos")
+    @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
     @RolesAllowed({ "veterinario", "biologo", "dev" })
@@ -45,7 +45,7 @@ public class HistoricoEtologicoResources {
     }
 
     @GET
-    @Path("/getListInativos")
+    @Path("/inativos")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
     @RolesAllowed({ "veterinario", "biologo", "dev" })

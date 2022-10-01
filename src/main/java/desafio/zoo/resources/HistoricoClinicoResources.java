@@ -17,22 +17,22 @@ public class HistoricoClinicoResources {
 
     @Inject
     HistoricoClinicoController controller;
-    HistoricoClinico HistoricoClinico;
+    HistoricoClinico historicoClinico;
     List<HistoricoClinico> historicoClinicoList;
     Page page;
 
     @GET
-    @Path("/get")
+    @Path("{id}")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
     @RolesAllowed({ "veterinario", "biologo", "dev" })
-    public Response get(HistoricoClinico pHistoricoClinico) {
-        HistoricoClinico = controller.getHistoricoClinico(pHistoricoClinico);
-        return Response.ok(HistoricoClinico).status(200).build();
+    public Response get(@PathParam("pId") Long pId) {
+        historicoClinico = historicoClinico.findById(pId);
+        return Response.ok(historicoClinico).status(200).build();
     }
 
     @GET
-    @Path("/getListAtivos")
+    @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
     @RolesAllowed({ "veterinario", "biologo", "dev" })
@@ -45,7 +45,7 @@ public class HistoricoClinicoResources {
     }
 
     @GET
-    @Path("/getListInativos")
+    @Path("/inativos")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
     @RolesAllowed({ "veterinario", "biologo", "dev" })

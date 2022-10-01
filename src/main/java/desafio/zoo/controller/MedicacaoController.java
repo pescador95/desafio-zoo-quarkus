@@ -23,17 +23,6 @@ public class MedicacaoController {
     public Usuario usuario;
     List<Medicacao> medicacaoList = new ArrayList<>();
 
-
-    public Medicacao getMedicacao(@NotNull Medicacao pMedicacao) {
-
-        medicacao = Medicacao.find("id = ?1 ORDER BY id DESC", pMedicacao.id).firstResult();
-
-        if (medicacao == null || !medicacao.isAtivo) {
-            throw new NotFoundException("Medicação não localizada.");//TODO organizar mensagem
-        }
-        return medicacao;
-    }
-
     public List<Medicacao> getMedicacaoListAtivos() {
 
         medicacaoList = Medicacao.list("isAtivo = true ORDER BY id DESC");//TODO organizar mensagem

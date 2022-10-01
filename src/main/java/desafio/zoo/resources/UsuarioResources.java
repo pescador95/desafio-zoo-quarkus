@@ -23,17 +23,17 @@ public class UsuarioResources {
     JsonWebToken jwt;
 
     @GET
-    @Path("/get")
+    @Path("{id}")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
     @RolesAllowed({ "veterinario", "biologo", "dev" })
-    public Response get(Usuario pUsuario) {
-        usuario = controller.getUser(pUsuario);
+    public Response getUserById(@PathParam("id") Long pId) {
+        usuario = usuario.findById(pId);
         return Response.ok(usuario).status(200).build();
     }
 
     @GET
-    @Path("/getListAtivos")
+    @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
     @RolesAllowed({ "veterinario", "biologo", "dev" })
@@ -46,7 +46,7 @@ public class UsuarioResources {
     }
 
     @GET
-    @Path("/getListInativos")
+    @Path("/inativos")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
     @RolesAllowed({ "veterinario", "biologo", "dev" })

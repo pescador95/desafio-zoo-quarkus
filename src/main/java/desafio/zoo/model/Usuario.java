@@ -96,4 +96,6 @@ public class Usuario extends PanacheEntityBase {
     public Usuario() {
 
     }
+
+
 }

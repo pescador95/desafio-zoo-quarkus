@@ -15,9 +15,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
 
 
-@Path("/")
-@Consumes(MediaType.APPLICATION_JSON)
-@Produces(MediaType.APPLICATION_JSON)
+@Path("/auth")
 public class AuthResources {
 
     @Inject
@@ -25,7 +23,9 @@ public class AuthResources {
     Auth auth;
 
     @POST
-    @Path("/auth")
+    @Path("/")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes("application/json")
     @PermitAll
     public Response auth(Auth data) {
         auth = authController.login(data);
@@ -33,7 +33,9 @@ public class AuthResources {
     }
 
     @POST
-    @Path("/auth/refresh_token")
+    @Path("/refresh")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes("application/json")
     @PermitAll
     public Response refreshToken(Auth data, @Context SecurityContext context) {
         auth = authController.refreshToken(data, context);

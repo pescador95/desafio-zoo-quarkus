@@ -21,17 +21,6 @@ public class HistoricoClinicoController {
     public HistoricoClinico historicoClinico;
     List<HistoricoClinico> historicoClinicoList = new ArrayList<>();
 
-
-    public HistoricoClinico getHistoricoClinico(@NotNull HistoricoClinico pHistoricoClinico) {
-
-        historicoClinico = HistoricoClinico.find("id = ?1 ORDER BY id DESC", pHistoricoClinico.id).firstResult();
-
-        if (historicoClinico == null || !historicoClinico.isAtivo) {
-            throw new NotFoundException("Histórico Clínico não localizado.");//TODO organizar mensagem
-        }
-        return historicoClinico;
-    }
-
     public List<HistoricoClinico> getHistoricoClinicoListAtivos() {
 
         historicoClinicoList = HistoricoClinico.list("isAtivo = true ORDER BY id DESC");

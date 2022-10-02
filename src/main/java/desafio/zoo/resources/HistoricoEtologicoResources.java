@@ -2,6 +2,8 @@ package desafio.zoo.resources;
 
 import desafio.zoo.controller.HistoricoEtologicoController;
 import desafio.zoo.model.HistoricoEtologico;
+import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
+import io.quarkus.hibernate.orm.panache.PanacheQuery;
 import io.quarkus.panache.common.Page;
 
 import javax.annotation.security.RolesAllowed;
@@ -18,16 +20,13 @@ public class HistoricoEtologicoResources {
     @Inject
     HistoricoEtologicoController controller;
     HistoricoEtologico historicoEtologico;
-    List<HistoricoEtologico> historicoEtologicoList;
-    Page page;
-
     @GET
     @Path("{id}")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
     @RolesAllowed({ "veterinario", "biologo", "dev" })
     public Response getHistoricoEtologicoById(@PathParam("id") Long pId) {
-        historicoEtologico = historicoEtologico.findById(pId);
+        historicoEtologico = PanacheEntityBase.findById(pId);
         return Response.ok(historicoEtologico).status(200).build();
     }
 
@@ -39,9 +38,8 @@ public class HistoricoEtologicoResources {
     public Response listAtivos(@QueryParam("sort") List<String> sortQuery,
                                @QueryParam("page") @DefaultValue("0") int pageIndex,
                                @QueryParam("size") @DefaultValue("20") int pageSize) {
-        page = Page.of(pageIndex, pageSize);
-        historicoEtologicoList = controller.getHistoricoEtologicoListAtivos();
-        return Response.ok(historicoEtologicoList).status(200).build();
+        PanacheQuery<HistoricoEtologico> historicoEtologico =  HistoricoEtologico.find("isAtivo", true);
+        return Response.ok(historicoEtologico.page(Page.of(pageIndex,pageSize)).list()).status(200).build();
     }
 
     @GET
@@ -52,9 +50,8 @@ public class HistoricoEtologicoResources {
     public Response listInativos(@QueryParam("sort") List<String> sortQuery,
                                  @QueryParam("page") @DefaultValue("0") int pageIndex,
                                  @QueryParam("size") @DefaultValue("20") int pageSize) {
-        page = Page.of(pageIndex, pageSize);
-        historicoEtologicoList = controller.getHistoricoEtologicoListInativos();
-        return Response.ok(historicoEtologicoList).status(200).build();
+        PanacheQuery<HistoricoEtologico> historicoEtologico =  HistoricoEtologico.find("isAtivo", false);
+        return Response.ok(historicoEtologico.page(Page.of(pageIndex,pageSize)).list()).status(200).build();
     }
 
     @POST
@@ -82,10 +79,7 @@ public class HistoricoEtologicoResources {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
     @RolesAllowed({ "veterinario", "biologo", "dev" })
-    public Response deleteList(List<HistoricoEtologico> historicoEtologicoList, @QueryParam("sort") List<String> sortQuery,
-                               @QueryParam("page") @DefaultValue("0") int pageIndex,
-                               @QueryParam("size") @DefaultValue("20") int pageSize) {
-        page = Page.of(pageIndex, pageSize);
+    public Response deleteList(List<HistoricoEtologico> historicoEtologicoList) {
         controller.deleteHistoricoEtologico(historicoEtologicoList);
         return Response.ok().status(200).build();
     }
@@ -95,10 +89,7 @@ public class HistoricoEtologicoResources {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
     @RolesAllowed({ "veterinario", "biologo", "dev" })
-    public Response reactivateList(List<HistoricoEtologico> historicoEtologicoList, @QueryParam("sort") List<String> sortQuery,
-                               @QueryParam("page") @DefaultValue("0") int pageIndex,
-                               @QueryParam("size") @DefaultValue("20") int pageSize) {
-        page = Page.of(pageIndex, pageSize);
+    public Response reactivateList(List<HistoricoEtologico> historicoEtologicoList) {
         controller.reactivateHistoricoEtologico(historicoEtologicoList);
         return Response.ok().status(200).build();
     }

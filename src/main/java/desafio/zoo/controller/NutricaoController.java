@@ -9,7 +9,6 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.transaction.Transactional;
 import javax.ws.rs.BadRequestException;
 import javax.ws.rs.NotFoundException;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -18,27 +17,6 @@ import java.util.List;
 public class NutricaoController {
 
     public Nutricao nutricao;
-    List<Nutricao> nutricaoList = new ArrayList<>();
-    public List<Nutricao> getNutricaoListAtivos() {
-
-        nutricaoList = Nutricao.list("isAtivo = true ORDER BY id DESC");
-
-        if (nutricaoList.isEmpty()) {
-            throw new NotFoundException("Lista de Nutrições não localizadas.");//TODO organizar mensagem
-        }
-        return nutricaoList;
-    }
-
-    public List<Nutricao> getNutricaoListInativos() {
-
-        nutricaoList = Nutricao.list("isAtivo = false ORDER BY id DESC");
-
-        if (nutricaoList.isEmpty()) {
-            throw new NotFoundException("Lista de Nutrições inativas não localizadas.");//TODO organizar mensagem
-        }
-        return nutricaoList;
-    }
-
     public void addNutricao(@NotNull Nutricao pNutricao) {
 
         nutricao = Nutricao.find("animal = ?1 and isAtivo = true ORDER BY id DESC", pNutricao.animal).firstResult();

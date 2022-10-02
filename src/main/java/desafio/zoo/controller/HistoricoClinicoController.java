@@ -9,7 +9,6 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.transaction.Transactional;
 import javax.ws.rs.BadRequestException;
 import javax.ws.rs.NotFoundException;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -19,28 +18,6 @@ import java.util.List;
 public class HistoricoClinicoController {
 
     public HistoricoClinico historicoClinico;
-    List<HistoricoClinico> historicoClinicoList = new ArrayList<>();
-
-    public List<HistoricoClinico> getHistoricoClinicoListAtivos() {
-
-        historicoClinicoList = HistoricoClinico.list("isAtivo = true ORDER BY id DESC");
-
-        if (historicoClinicoList.isEmpty()) {
-            throw new NotFoundException("Históricos Clínicos não localizados.");//TODO organizar mensagem
-        }
-        return historicoClinicoList;
-    }
-
-    public List<HistoricoClinico> getHistoricoClinicoListInativos() {
-
-        historicoClinicoList = HistoricoClinico.list("isAtivo = false ORDER BY id DESC");
-
-        if (historicoClinicoList.isEmpty()) {
-            throw new NotFoundException("Históricos Clínicos inativos não localizados.");//TODO organizar mensagem
-        }
-        return historicoClinicoList;
-    }
-
     public void addHistoricoClinico(@NotNull HistoricoClinico pHistoricoClinico) {
 
         historicoClinico = HistoricoClinico.find("animal = ?1 and isAtivo = true ORDER BY id DESC", pHistoricoClinico.animal).firstResult();

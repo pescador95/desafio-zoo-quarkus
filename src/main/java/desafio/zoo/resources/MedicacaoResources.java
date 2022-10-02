@@ -2,6 +2,8 @@ package desafio.zoo.resources;
 
 import desafio.zoo.controller.MedicacaoController;
 import desafio.zoo.model.Medicacao;
+import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
+import io.quarkus.hibernate.orm.panache.PanacheQuery;
 import io.quarkus.panache.common.Page;
 
 import javax.annotation.security.RolesAllowed;
@@ -18,16 +20,13 @@ public class MedicacaoResources {
     @Inject
     MedicacaoController controller;
     Medicacao medicacao;
-    List<Medicacao> medicacaoList;
-    Page page;
-
     @GET
     @Path("{id}")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
     @RolesAllowed({ "veterinario", "biologo", "dev" })
     public Response getMedicacaoById(@PathParam("id") Long pId) {
-        medicacao = medicacao.findById(pId);
+        medicacao = PanacheEntityBase.findById(pId);
         return Response.ok(medicacao).status(200).build();
     }
 
@@ -39,9 +38,8 @@ public class MedicacaoResources {
     public Response listAtivos(@QueryParam("sort") List<String> sortQuery,
                                @QueryParam("page") @DefaultValue("0") int pageIndex,
                                @QueryParam("size") @DefaultValue("20") int pageSize) {
-        page = Page.of(pageIndex, pageSize);
-        medicacaoList = controller.getMedicacaoListAtivos();
-        return Response.ok(medicacaoList).status(200).build();
+        PanacheQuery<Medicacao> medicacao =  Medicacao.find("isAtivo", true);
+        return Response.ok(medicacao.page(Page.of(pageIndex,pageSize)).list()).status(200).build();
     }
 
     @GET
@@ -52,9 +50,8 @@ public class MedicacaoResources {
     public Response listInativos(@QueryParam("sort") List<String> sortQuery,
                                  @QueryParam("page") @DefaultValue("0") int pageIndex,
                                  @QueryParam("size") @DefaultValue("20") int pageSize) {
-        page = Page.of(pageIndex, pageSize);
-        medicacaoList = controller.getMedicacaoListInativos();
-        return Response.ok(medicacaoList).status(200).build();
+        PanacheQuery<Medicacao> medicacao =  Medicacao.find("isAtivo", false);
+        return Response.ok(medicacao.page(Page.of(pageIndex,pageSize)).list()).status(200).build();
     }
 
     @POST
@@ -82,10 +79,7 @@ public class MedicacaoResources {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
     @RolesAllowed({ "veterinario", "biologo", "dev" })
-    public Response deleteList(List<Medicacao> medicacaoList, @QueryParam("sort") List<String> sortQuery,
-                               @QueryParam("page") @DefaultValue("0") int pageIndex,
-                               @QueryParam("size") @DefaultValue("20") int pageSize) {
-        page = Page.of(pageIndex, pageSize);
+    public Response deleteList(List<Medicacao> medicacaoList) {
         controller.deleteMedicacao(medicacaoList);
         return Response.ok().status(200).build();
     }
@@ -95,10 +89,7 @@ public class MedicacaoResources {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
     @RolesAllowed({ "veterinario", "biologo", "dev" })
-    public Response reactivateList(List<Medicacao> medicacaoList, @QueryParam("sort") List<String> sortQuery,
-                               @QueryParam("page") @DefaultValue("0") int pageIndex,
-                               @QueryParam("size") @DefaultValue("20") int pageSize) {
-        page = Page.of(pageIndex, pageSize);
+    public Response reactivateList(List<Medicacao> medicacaoList) {
         controller.reactivateMedicacao(medicacaoList);
         return Response.ok().status(200).build();
     }

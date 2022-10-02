@@ -2,8 +2,9 @@ package desafio.zoo.resources;
 
 import desafio.zoo.controller.UsuarioController;
 import desafio.zoo.model.Usuario;
+import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
+import io.quarkus.hibernate.orm.panache.PanacheQuery;
 import io.quarkus.panache.common.Page;
-import org.eclipse.microprofile.jwt.JsonWebToken;
 
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
@@ -18,17 +19,13 @@ public class UsuarioResources {
     @Inject
     UsuarioController controller;
     Usuario usuario;
-    List<Usuario> usuarioList;
-    Page page;
-    JsonWebToken jwt;
-
     @GET
     @Path("{id}")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
     @RolesAllowed({ "veterinario", "biologo", "dev" })
     public Response getUserById(@PathParam("id") Long pId) {
-        usuario = usuario.findById(pId);
+        usuario = PanacheEntityBase.findById(pId);
         return Response.ok(usuario).status(200).build();
     }
 
@@ -40,9 +37,8 @@ public class UsuarioResources {
     public Response listAtivos(@QueryParam("sort") List<String> sortQuery,
             @QueryParam("page") @DefaultValue("0") int pageIndex,
             @QueryParam("size") @DefaultValue("20") int pageSize) {
-        page = Page.of(pageIndex, pageSize);
-        usuarioList = controller.getUserListAtivos();
-        return Response.ok(usuarioList).status(200).build();
+        PanacheQuery<Usuario> usuario =  Usuario.find("isAtivo", true);
+        return Response.ok(usuario.page(Page.of(pageIndex,pageSize)).list()).status(200).build();
     }
 
     @GET
@@ -53,9 +49,8 @@ public class UsuarioResources {
     public Response listInativos(@QueryParam("sort") List<String> sortQuery,
             @QueryParam("page") @DefaultValue("0") int pageIndex,
             @QueryParam("size") @DefaultValue("20") int pageSize) {
-        page = Page.of(pageIndex, pageSize);
-        usuarioList = controller.getUserListInativos();
-        return Response.ok(usuarioList).status(200).build();
+        PanacheQuery<Usuario> usuario =  Usuario.find("isAtivo", false);
+        return Response.ok(usuario.page(Page.of(pageIndex,pageSize)).list()).status(200).build();
     }
 
     @POST
@@ -84,10 +79,7 @@ public class UsuarioResources {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
     @RolesAllowed({ "veterinario", "biologo", "dev" })
-    public Response deleteList(List<Usuario> usuarioList, @QueryParam("sort") List<String> sortQuery,
-            @QueryParam("page") @DefaultValue("0") int pageIndex,
-            @QueryParam("size") @DefaultValue("20") int pageSize) {
-        page = Page.of(pageIndex, pageSize);
+    public Response deleteList(List<Usuario> usuarioList) {
         controller.deleteUser(usuarioList);
         return Response.ok().status(200).build();
     }
@@ -97,10 +89,7 @@ public class UsuarioResources {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
     @RolesAllowed({ "veterinario", "biologo", "dev" })
-    public Response reactivate(List<Usuario> usuarioList, @QueryParam("sort") List<String> sortQuery,
-            @QueryParam("page") @DefaultValue("0") int pageIndex,
-            @QueryParam("size") @DefaultValue("20") int pageSize) {
-        page = Page.of(pageIndex, pageSize);
+    public Response reactivate(List<Usuario> usuarioList) {
         controller.reactivateUser(usuarioList);
         return Response.ok().status(200).build();
     }

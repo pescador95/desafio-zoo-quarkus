@@ -9,7 +9,6 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.transaction.Transactional;
 import javax.ws.rs.BadRequestException;
 import javax.ws.rs.NotFoundException;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -21,29 +20,7 @@ public class MedicacaoController {
 
     public Medicacao medicacao;
     public Usuario usuario;
-    List<Medicacao> medicacaoList = new ArrayList<>();
-
-    public List<Medicacao> getMedicacaoListAtivos() {
-
-        medicacaoList = Medicacao.list("isAtivo = true ORDER BY id DESC");//TODO organizar mensagem
-
-        if (medicacaoList.isEmpty()) {
-            throw new NotFoundException("Medicações não localizadas.");//TODO organizar mensagem
-        }
-        return medicacaoList;
-    }
-
-    public List<Medicacao> getMedicacaoListInativos() {
-
-        medicacaoList = Medicacao.list("isAtivo = false ORDER BY id DESC");//TODO organizar mensagem
-
-        if (medicacaoList.isEmpty()) {
-            throw new NotFoundException("Medicações inativas não localizadas.");//TODO organizar mensagem
-        }
-        return medicacaoList;
-    }
-
-    public void addMedicacao(@NotNull Medicacao pMedicacao) {
+       public void addMedicacao(@NotNull Medicacao pMedicacao) {
 
         medicacao = Medicacao.find("historicoClinico = ?1 and isAtivo = true ORDER BY id DESC", pMedicacao.historicoClinico).firstResult();
 //TODO verificar quais props são obrigatórias na criação.

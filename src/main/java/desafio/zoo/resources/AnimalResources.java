@@ -28,7 +28,7 @@ public class AnimalResources {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
     @RolesAllowed({ "veterinario", "biologo", "dev" })
-    public Response get(@PathParam("pId") Long pId) {
+    public Response getAnimalById(@PathParam("id") Long pId) {
         animal = animal.findById(pId);
         return Response.ok(animal).status(200).build();
     }

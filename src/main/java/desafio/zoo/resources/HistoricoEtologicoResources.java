@@ -26,7 +26,7 @@ public class HistoricoEtologicoResources {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
     @RolesAllowed({ "veterinario", "biologo", "dev" })
-    public Response get(@PathParam("pId") Long pId) {
+    public Response getHistoricoEtologicoById(@PathParam("id") Long pId) {
         historicoEtologico = historicoEtologico.findById(pId);
         return Response.ok(historicoEtologico).status(200).build();
     }

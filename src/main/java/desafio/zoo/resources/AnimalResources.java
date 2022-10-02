@@ -48,7 +48,7 @@ public class AnimalResources {
     public Response listInativos(@QueryParam("sort") List<String> sortQuery,
                                  @QueryParam("page") @DefaultValue("0") int pageIndex,
                                  @QueryParam("size") @DefaultValue("20") int pageSize) {
-        PanacheQuery<Animal> animais =  Animal.find("isAtivo ORDER BY id DESC", false);
+        PanacheQuery<Animal> animais =  Animal.find("isAtivo", false);
         return Response.ok(animais.page(Page.of(pageIndex,pageSize)).list()).status(200).build();
     }
 

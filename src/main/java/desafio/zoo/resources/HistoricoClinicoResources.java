@@ -1,7 +1,10 @@
 package desafio.zoo.resources;
 
 import desafio.zoo.controller.HistoricoClinicoController;
+import desafio.zoo.model.Animal;
 import desafio.zoo.model.HistoricoClinico;
+import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
+import io.quarkus.hibernate.orm.panache.PanacheQuery;
 import io.quarkus.panache.common.Page;
 
 import javax.annotation.security.RolesAllowed;
@@ -19,7 +22,6 @@ public class HistoricoClinicoResources {
     HistoricoClinicoController controller;
     HistoricoClinico historicoClinico;
     List<HistoricoClinico> historicoClinicoList;
-    Page page;
 
     @GET
     @Path("{id}")
@@ -27,7 +29,7 @@ public class HistoricoClinicoResources {
     @Consumes("application/json")
     @RolesAllowed({ "veterinario", "biologo", "dev" })
     public Response getHistoricoClinicoById(@PathParam("id") Long pId) {
-        historicoClinico = historicoClinico.findById(pId);
+        historicoClinico = PanacheEntityBase.findById(pId);
         return Response.ok(historicoClinico).status(200).build();
     }
 
@@ -39,9 +41,8 @@ public class HistoricoClinicoResources {
     public Response listAtivos(@QueryParam("sort") List<String> sortQuery,
                                @QueryParam("page") @DefaultValue("0") int pageIndex,
                                @QueryParam("size") @DefaultValue("20") int pageSize) {
-        page = Page.of(pageIndex, pageSize);
-        historicoClinicoList = controller.getHistoricoClinicoListAtivos();
-        return Response.ok(historicoClinicoList).status(200).build();
+        PanacheQuery<HistoricoClinico> historicoClinico =  HistoricoClinico.find("isAtivo", true);
+        return Response.ok(historicoClinico.page(Page.of(pageIndex,pageSize)).list()).status(200).build();
     }
 
     @GET
@@ -52,9 +53,8 @@ public class HistoricoClinicoResources {
     public Response listInativos(@QueryParam("sort") List<String> sortQuery,
                                  @QueryParam("page") @DefaultValue("0") int pageIndex,
                                  @QueryParam("size") @DefaultValue("20") int pageSize) {
-        page = Page.of(pageIndex, pageSize);
-        historicoClinicoList = controller.getHistoricoClinicoListInativos();
-        return Response.ok(historicoClinicoList).status(200).build();
+        PanacheQuery<HistoricoClinico> historicoClinico =  Animal.find("isAtivo", false);
+        return Response.ok(historicoClinico.page(Page.of(pageIndex,pageSize)).list()).status(200).build();
     }
 
     @POST
@@ -82,10 +82,7 @@ public class HistoricoClinicoResources {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
     @RolesAllowed({ "veterinario", "biologo", "dev" })
-    public Response deleteList(List<HistoricoClinico> HistoricoClinicoList, @QueryParam("sort") List<String> sortQuery,
-                               @QueryParam("page") @DefaultValue("0") int pageIndex,
-                               @QueryParam("size") @DefaultValue("20") int pageSize) {
-        page = Page.of(pageIndex, pageSize);
+    public Response deleteList(List<HistoricoClinico> HistoricoClinicoList) {
         controller.deleteHistoricoClinico(historicoClinicoList);
         return Response.ok().status(200).build();
     }
@@ -95,10 +92,7 @@ public class HistoricoClinicoResources {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
     @RolesAllowed({ "veterinario", "biologo", "dev" })
-    public Response reactivateList(List<HistoricoClinico> HistoricoClinicoList, @QueryParam("sort") List<String> sortQuery,
-                               @QueryParam("page") @DefaultValue("0") int pageIndex,
-                               @QueryParam("size") @DefaultValue("20") int pageSize) {
-        page = Page.of(pageIndex, pageSize);
+    public Response reactivateList(List<HistoricoClinico> HistoricoClinicoList) {
         controller.reactivateHistoricoClinico(historicoClinicoList);
         return Response.ok().status(200).build();
     }

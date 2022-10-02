@@ -2,6 +2,8 @@ package desafio.zoo.resources;
 
 import desafio.zoo.controller.EnriquecimentoAmbientalController;
 import desafio.zoo.model.EnriquecimentoAmbiental;
+import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
+import io.quarkus.hibernate.orm.panache.PanacheQuery;
 import io.quarkus.panache.common.Page;
 
 import javax.annotation.security.RolesAllowed;
@@ -18,20 +20,15 @@ public class EnriquecimentoAmbientalResources {
     @Inject
     EnriquecimentoAmbientalController controller;
     EnriquecimentoAmbiental enriquecimentoAmbiental;
-    List<EnriquecimentoAmbiental> enriquecimentoAmbientalList;
-    Page page;
-
-
     @GET
     @Path("{id}")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
     @RolesAllowed({ "veterinario", "biologo", "dev" })
     public Response getEnriquecimentoAmbientalById(@PathParam("id") Long pId) {
-        enriquecimentoAmbiental = enriquecimentoAmbiental.findById(pId);
+        enriquecimentoAmbiental = PanacheEntityBase.findById(pId);
         return Response.ok(enriquecimentoAmbiental).status(200).build();
     }
-
     @GET
     @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
@@ -40,9 +37,8 @@ public class EnriquecimentoAmbientalResources {
     public Response listAtivos(@QueryParam("sort") List<String> sortQuery,
                                @QueryParam("page") @DefaultValue("0") int pageIndex,
                                @QueryParam("size") @DefaultValue("20") int pageSize) {
-        page = Page.of(pageIndex, pageSize);
-        enriquecimentoAmbientalList = controller.getEnriquecimentoAmbientalListAtivos();
-        return Response.ok(enriquecimentoAmbientalList).status(200).build();
+        PanacheQuery<EnriquecimentoAmbiental> enriquecimentoAmbiental =  EnriquecimentoAmbiental.find("isAtivo", true);
+        return Response.ok(enriquecimentoAmbiental.page(Page.of(pageIndex,pageSize)).list()).status(200).build();
     }
 
     @GET
@@ -53,9 +49,8 @@ public class EnriquecimentoAmbientalResources {
     public Response listInativos(@QueryParam("sort") List<String> sortQuery,
                                  @QueryParam("page") @DefaultValue("0") int pageIndex,
                                  @QueryParam("size") @DefaultValue("20") int pageSize) {
-        page = Page.of(pageIndex, pageSize);
-        enriquecimentoAmbientalList = controller.getEnriquecimentoAmbientalListInativos();
-        return Response.ok(enriquecimentoAmbientalList).status(200).build();
+        PanacheQuery<EnriquecimentoAmbiental> enriquecimentoAmbiental =  EnriquecimentoAmbiental.find("isAtivo", false);
+        return Response.ok(enriquecimentoAmbiental.page(Page.of(pageIndex,pageSize)).list()).status(200).build();
     }
 
     @POST
@@ -83,10 +78,7 @@ public class EnriquecimentoAmbientalResources {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
     @RolesAllowed({ "veterinario", "biologo", "dev" })
-    public Response deleteList(List<EnriquecimentoAmbiental> enriquecimentoAmbientalList, @QueryParam("sort") List<String> sortQuery,
-                               @QueryParam("page") @DefaultValue("0") int pageIndex,
-                               @QueryParam("size") @DefaultValue("20") int pageSize) {
-        page = Page.of(pageIndex, pageSize);
+    public Response deleteList(List<EnriquecimentoAmbiental> enriquecimentoAmbientalList) {
         controller.deleteEnriquecimentoAmbiental(enriquecimentoAmbientalList);
         return Response.ok().status(200).build();
     }
@@ -95,10 +87,7 @@ public class EnriquecimentoAmbientalResources {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
     @RolesAllowed({ "veterinario", "biologo", "dev" })
-    public Response reactivateList(List<EnriquecimentoAmbiental> enriquecimentoAmbientalList, @QueryParam("sort") List<String> sortQuery,
-                               @QueryParam("page") @DefaultValue("0") int pageIndex,
-                               @QueryParam("size") @DefaultValue("20") int pageSize) {
-        page = Page.of(pageIndex, pageSize);
+    public Response reactivateList(List<EnriquecimentoAmbiental> enriquecimentoAmbientalList) {
         controller.reactivateEnriquecimentoAmbiental(enriquecimentoAmbientalList);
         return Response.ok().status(200).build();
     }

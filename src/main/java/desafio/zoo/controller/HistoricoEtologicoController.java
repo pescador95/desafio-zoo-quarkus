@@ -9,7 +9,6 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.transaction.Transactional;
 import javax.ws.rs.BadRequestException;
 import javax.ws.rs.NotFoundException;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -20,28 +19,6 @@ import java.util.Objects;
 public class HistoricoEtologicoController {
 
     public HistoricoEtologico historicoEtologico;
-    List<HistoricoEtologico> historicoEtologicoList = new ArrayList<>();
-
-    public List<HistoricoEtologico> getHistoricoEtologicoListAtivos() {
-
-        historicoEtologicoList = HistoricoEtologico.list("isAtivo = true ORDER BY id DESC");
-
-        if (historicoEtologicoList.isEmpty()) {
-            throw new NotFoundException("Históricos Etológicos não localizados.");
-        }
-        return historicoEtologicoList;
-    }
-
-    public List<HistoricoEtologico> getHistoricoEtologicoListInativos() {
-
-        historicoEtologicoList = HistoricoEtologico.list("isAtivo = false ORDER BY id DESC");
-
-        if (historicoEtologicoList.isEmpty()) {
-            throw new NotFoundException("Históricos Etológicos inativos não localizados.");
-        }
-        return historicoEtologicoList;
-    }
-
     public void addHistoricoEtologico(@NotNull HistoricoEtologico pHistoricoEtologico) {
 
         historicoEtologico = HistoricoEtologico.find("animal = ?1 and isAtivo = true ORDER BY id DESC", pHistoricoEtologico.animal).firstResult();

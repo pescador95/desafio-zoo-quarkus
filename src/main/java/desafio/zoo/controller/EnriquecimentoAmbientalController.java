@@ -9,7 +9,6 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.transaction.Transactional;
 import javax.ws.rs.BadRequestException;
 import javax.ws.rs.NotFoundException;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -20,28 +19,6 @@ import java.util.Objects;
 public class EnriquecimentoAmbientalController {
 
     public EnriquecimentoAmbiental enriquecimentoAmbiental;
-    List<EnriquecimentoAmbiental> enriquecimentoAmbientalList = new ArrayList<>();
-
-    public List<EnriquecimentoAmbiental> getEnriquecimentoAmbientalListAtivos() {
-
-        enriquecimentoAmbientalList = EnriquecimentoAmbiental.list("isAtivo = true ORDER BY id DESC");
-
-        if (enriquecimentoAmbientalList.isEmpty()) {
-            throw new NotFoundException("Enriquecimentos Ambientais não localizados.");//TODO organizar mensagem
-        }
-        return enriquecimentoAmbientalList;
-    }
-
-    public List<EnriquecimentoAmbiental> getEnriquecimentoAmbientalListInativos() {
-
-        enriquecimentoAmbientalList = EnriquecimentoAmbiental.list("isAtivo = false ORDER BY id DESC");
-
-        if (enriquecimentoAmbientalList.isEmpty()) {
-            throw new NotFoundException("Enriquecimentos Ambientais inativos não localizados.");//TODO organizar mensagem
-        }
-        return enriquecimentoAmbientalList;
-    }
-
     public void addEnriquecimentoAmbiental(@NotNull EnriquecimentoAmbiental pEnriquecimentoAmbiental) {
 
         enriquecimentoAmbiental = EnriquecimentoAmbiental.find("animal = ?1 and dataEnriquecimento = ?2 and nomeEnriquecimento = ?3 and descricaoEnriquecimento = ?4 and isAtivo = true ORDER BY id DESC", pEnriquecimentoAmbiental.animal, pEnriquecimentoAmbiental.dataEnriquecimento, pEnriquecimentoAmbiental.nomeEnriquecimento, pEnriquecimentoAmbiental.descricaoEnriquecimento).firstResult();

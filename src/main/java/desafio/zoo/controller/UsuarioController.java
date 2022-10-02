@@ -8,7 +8,6 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.transaction.Transactional;
 import javax.ws.rs.BadRequestException;
 import javax.ws.rs.NotFoundException;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -17,29 +16,6 @@ import java.util.Objects;
 @Transactional
 public class UsuarioController<pId> {
     private Usuario usuario = new Usuario();
-    private List<Usuario> usuarioList = new ArrayList<>();
-
-    public List<Usuario> getUserListAtivos() {
-
-        usuarioList = Usuario.list("isAtivo = true ORDER BY id DESC");
-
-        if (usuarioList.isEmpty()) {
-            throw new NotFoundException("Usuários não localizados ou inativos.");//TODO organizar mensagem
-        }
-        return usuarioList;
-
-    }
-
-    public List<Usuario> getUserListInativos() {
-
-        usuarioList = Usuario.list("isAtivo = false ORDER BY id DESC");
-
-        if (usuarioList.isEmpty()) {
-            throw new NotFoundException("Usuários inativos não localizados.");//TODO organizar mensagem
-        }
-        return usuarioList;
-    }
-
     public void addUser(@NotNull Usuario pUsuario) {
 
         usuario = Usuario.find("email = ?1 and isAtivo = true ORDER BY id DESC", pUsuario.email).firstResult();

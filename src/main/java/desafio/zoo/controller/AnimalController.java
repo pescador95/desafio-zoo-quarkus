@@ -8,7 +8,6 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.transaction.Transactional;
 import javax.ws.rs.BadRequestException;
 import javax.ws.rs.NotFoundException;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -19,28 +18,6 @@ import java.util.Objects;
 public class AnimalController {
 
     public Animal animal;
-    List<Animal> animalList = new ArrayList<>();
-
-    public List<Animal> getAnimalListAtivos() {
-
-        animalList = Animal.list("isAtivo = true ORDER BY id DESC");
-
-        if (animalList.isEmpty()) {
-            throw new NotFoundException("Animais não localizados ou inativos.");
-        }
-        return animalList;
-    }
-
-    public List<Animal> getAnimalListInativos() {
-
-        animalList = Animal.list("isAtivo = false ORDER BY id DESC");
-
-        if (animalList.isEmpty()) {
-            throw new NotFoundException("Animais inativos não localizados.");
-        }
-        return animalList;
-    }
-
     public void addAnimal(@NotNull Animal pAnimal) {
 
         animal = Animal.find("identificacao = ?1 and isAtivo = true ORDER BY id DESC", pAnimal.identificacao).firstResult();

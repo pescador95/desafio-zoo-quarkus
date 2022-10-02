@@ -26,7 +26,7 @@ public class NutricaoResources {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
     @RolesAllowed({ "veterinario", "biologo", "dev" })
-    public Response get(@PathParam("pId") Long pId) {
+    public Response getNutricaoById(@PathParam("id") Long pId) {
         nutricao = nutricao.findById(pId);
         return Response.ok(nutricao).status(200).build();
     }

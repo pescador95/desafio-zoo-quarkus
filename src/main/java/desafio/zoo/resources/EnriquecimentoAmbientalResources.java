@@ -27,7 +27,7 @@ public class EnriquecimentoAmbientalResources {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
     @RolesAllowed({ "veterinario", "biologo", "dev" })
-    public Response get(@PathParam("pId") Long pId) {
+    public Response getEnriquecimentoAmbientalById(@PathParam("id") Long pId) {
         enriquecimentoAmbiental = enriquecimentoAmbiental.findById(pId);
         return Response.ok(enriquecimentoAmbiental).status(200).build();
     }

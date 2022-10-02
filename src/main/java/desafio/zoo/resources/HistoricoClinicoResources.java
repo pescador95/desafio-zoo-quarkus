@@ -26,7 +26,7 @@ public class HistoricoClinicoResources {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
     @RolesAllowed({ "veterinario", "biologo", "dev" })
-    public Response get(@PathParam("pId") Long pId) {
+    public Response getHistoricoClinicoById(@PathParam("id") Long pId) {
         historicoClinico = historicoClinico.findById(pId);
         return Response.ok(historicoClinico).status(200).build();
     }

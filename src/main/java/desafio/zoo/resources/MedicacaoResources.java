@@ -2,15 +2,18 @@ package desafio.zoo.resources;
 
 import desafio.zoo.controller.MedicacaoController;
 import desafio.zoo.model.Medicacao;
-import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import io.quarkus.hibernate.orm.panache.PanacheQuery;
 import io.quarkus.panache.common.Page;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.SecurityContext;
+import java.security.Principal;
 import java.util.List;
 
 
@@ -24,63 +27,70 @@ public class MedicacaoResources {
     @Path("{id}")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
-    @RolesAllowed({ "veterinario", "biologo", "dev" })
-    public Response getMedicacaoById(@PathParam("id") Long pId) {
-        medicacao = PanacheEntityBase.findById(pId);
+    @RolesAllowed({"veterinario", "biologo", "dev"})
+    public Response getById(@PathParam("id") Long pId) {
+        medicacao = Medicacao.findById(pId);
         return Response.ok(medicacao).status(200).build();
     }
-
+    @GET
+    @Path("/count")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes("application/json")
+    @RolesAllowed({ "veterinario", "biologo", "dev" })
+    public Response count(@QueryParam("ativo") @DefaultValue("true")  Boolean ativo) {
+        long medicacao = Medicacao.count("isAtivo = ?1", ativo);
+        return Response.ok(medicacao).status(200).build();
+    }
     @GET
     @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
-    @RolesAllowed({ "veterinario", "biologo", "dev" })
-    public Response listAtivos(@QueryParam("sort") List<String> sortQuery,
+    @RolesAllowed({"veterinario", "biologo", "dev"})
+    public Response list(@QueryParam("sort") String sortQuery,
                                @QueryParam("page") @DefaultValue("0") int pageIndex,
-                               @QueryParam("size") @DefaultValue("20") int pageSize) {
-        PanacheQuery<Medicacao> medicacao =  Medicacao.find("isAtivo", true);
-        return Response.ok(medicacao.page(Page.of(pageIndex,pageSize)).list()).status(200).build();
+                               @QueryParam("size") @DefaultValue("20") int pageSize,
+                               @QueryParam("ativo") @DefaultValue("true") Boolean ativo) {
+        PanacheQuery<Medicacao> medicacao;
+        if(sortQuery.equals("desc")) {
+            medicacao = Medicacao.find("isAtivo = ?1 order by id desc", ativo);
+        }else{
+            medicacao = Medicacao.find("isAtivo = ?1 order by id asc", ativo);
+        }
+        return Response.ok(medicacao.page(Page.of(pageIndex, pageSize)).list()).status(200).build();
     }
-
-    @GET
-    @Path("/inativos")
-    @Produces(MediaType.APPLICATION_JSON)
-    @Consumes("application/json")
-    @RolesAllowed({ "veterinario", "biologo", "dev" })
-    public Response listInativos(@QueryParam("sort") List<String> sortQuery,
-                                 @QueryParam("page") @DefaultValue("0") int pageIndex,
-                                 @QueryParam("size") @DefaultValue("20") int pageSize) {
-        PanacheQuery<Medicacao> medicacao =  Medicacao.find("isAtivo", false);
-        return Response.ok(medicacao.page(Page.of(pageIndex,pageSize)).list()).status(200).build();
-    }
-
     @POST
-    @Path("/create")
+    @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
     @RolesAllowed({ "veterinario", "biologo", "dev" })
-    public Response add(Medicacao pMedicacao) {
-        controller.addMedicacao(pMedicacao);
+    public Response add(Medicacao pMedicacao, @Context @NotNull SecurityContext context) {
+        Principal json = context.getUserPrincipal();
+        String email = json.getName();
+        controller.addMedicacao(pMedicacao, email);
         return Response.ok().status(201).build();
     }
 
     @PUT
-    @Path("/update")
+    @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
     @RolesAllowed({ "veterinario", "biologo", "dev" })
-    public Response update(Medicacao pMedicacao) {
-        controller.updateMedicacao(pMedicacao);
+    public Response update(Medicacao pMedicacao, @Context @NotNull SecurityContext context) {
+        Principal json = context.getUserPrincipal();
+        String email = json.getName();
+        controller.updateMedicacao(pMedicacao, email);
         return Response.ok().status(200).build();
     }
 
     @DELETE
-    @Path("/delete")
+    @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
     @RolesAllowed({ "veterinario", "biologo", "dev" })
-    public Response deleteList(List<Medicacao> medicacaoList) {
-        controller.deleteMedicacao(medicacaoList);
+    public Response deleteList(List<Long> pListMedicacao, @Context @NotNull SecurityContext context) {
+        Principal json = context.getUserPrincipal();
+        String email = json.getName();
+        controller.deleteMedicacao(pListMedicacao, email);
         return Response.ok().status(200).build();
     }
 
@@ -89,8 +99,10 @@ public class MedicacaoResources {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
     @RolesAllowed({ "veterinario", "biologo", "dev" })
-    public Response reactivateList(List<Medicacao> medicacaoList) {
-        controller.reactivateMedicacao(medicacaoList);
+    public Response reactivateList(List<Long> pListMedicacao, @Context @NotNull SecurityContext context) {
+        Principal json = context.getUserPrincipal();
+        String email = json.getName();
+        controller.reactivateMedicacao(pListMedicacao, email);
         return Response.ok().status(200).build();
     }
 }

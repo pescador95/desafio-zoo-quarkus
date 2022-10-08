@@ -2,15 +2,18 @@ package desafio.zoo.resources;
 
 import desafio.zoo.controller.HistoricoEtologicoController;
 import desafio.zoo.model.HistoricoEtologico;
-import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import io.quarkus.hibernate.orm.panache.PanacheQuery;
 import io.quarkus.panache.common.Page;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.SecurityContext;
+import java.security.Principal;
 import java.util.List;
 
 
@@ -25,42 +28,45 @@ public class HistoricoEtologicoResources {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
     @RolesAllowed({ "veterinario", "biologo", "dev" })
-    public Response getHistoricoEtologicoById(@PathParam("id") Long pId) {
-        historicoEtologico = PanacheEntityBase.findById(pId);
+    public Response getById(@PathParam("id") Long pId) {
+        historicoEtologico = HistoricoEtologico.findById(pId);
         return Response.ok(historicoEtologico).status(200).build();
     }
-
+    @GET
+    @Path("/count")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes("application/json")
+    @RolesAllowed({ "veterinario", "biologo", "dev" })
+    public Response count(@QueryParam("ativo") @DefaultValue("true")  Boolean ativo) {
+        long historicoEtologico = HistoricoEtologico.count("isAtivo = ?1", ativo);
+        return Response.ok(historicoEtologico).status(200).build();
+    }
     @GET
     @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
     @RolesAllowed({ "veterinario", "biologo", "dev" })
-    public Response listAtivos(@QueryParam("sort") List<String> sortQuery,
+    public Response list(@QueryParam("sort") String sortQuery,
                                @QueryParam("page") @DefaultValue("0") int pageIndex,
-                               @QueryParam("size") @DefaultValue("20") int pageSize) {
-        PanacheQuery<HistoricoEtologico> historicoEtologico =  HistoricoEtologico.find("isAtivo", true);
+                               @QueryParam("size") @DefaultValue("20") int pageSize,
+                         @QueryParam("ativo") @DefaultValue("true") Boolean ativo) {
+        PanacheQuery<HistoricoEtologico> historicoEtologico;
+        if(sortQuery.equals("desc")) {
+            historicoEtologico = HistoricoEtologico.find("isAtivo = ?1 order by id desc", ativo);
+        }else{
+            historicoEtologico = HistoricoEtologico.find("isAtivo = ?1 order by id asc", ativo);
+        }
         return Response.ok(historicoEtologico.page(Page.of(pageIndex,pageSize)).list()).status(200).build();
     }
-
-    @GET
-    @Path("/inativos")
-    @Produces(MediaType.APPLICATION_JSON)
-    @Consumes("application/json")
-    @RolesAllowed({ "veterinario", "biologo", "dev" })
-    public Response listInativos(@QueryParam("sort") List<String> sortQuery,
-                                 @QueryParam("page") @DefaultValue("0") int pageIndex,
-                                 @QueryParam("size") @DefaultValue("20") int pageSize) {
-        PanacheQuery<HistoricoEtologico> historicoEtologico =  HistoricoEtologico.find("isAtivo", false);
-        return Response.ok(historicoEtologico.page(Page.of(pageIndex,pageSize)).list()).status(200).build();
-    }
-
     @POST
-    @Path("/create")
+    @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
     @RolesAllowed({ "veterinario", "biologo", "dev" })
-    public Response add(HistoricoEtologico pHistoricoEtologico) {
-        controller.addHistoricoEtologico(pHistoricoEtologico);
+    public Response add(HistoricoEtologico pHistoricoEtologico, @Context @NotNull SecurityContext context) {
+        Principal json = context.getUserPrincipal();
+        String email = json.getName();
+        controller.addHistoricoEtologico(pHistoricoEtologico, email);
         return Response.ok().status(201).build();
     }
 
@@ -69,8 +75,10 @@ public class HistoricoEtologicoResources {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
     @RolesAllowed({ "veterinario", "biologo", "dev" })
-    public Response update(HistoricoEtologico pHistoricoEtologico) {
-        controller.updateHistoricoEtologico(pHistoricoEtologico);
+    public Response update(HistoricoEtologico pHistoricoEtologico, @Context @NotNull SecurityContext context) {
+        Principal json = context.getUserPrincipal();
+        String email = json.getName();
+        controller.updateHistoricoEtologico(pHistoricoEtologico, email);
         return Response.ok().status(200).build();
     }
 
@@ -79,8 +87,10 @@ public class HistoricoEtologicoResources {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
     @RolesAllowed({ "veterinario", "biologo", "dev" })
-    public Response deleteList(List<HistoricoEtologico> historicoEtologicoList) {
-        controller.deleteHistoricoEtologico(historicoEtologicoList);
+    public Response deleteList(List<Long> pListHistoricoEtologico, @Context @NotNull SecurityContext context) {
+        Principal json = context.getUserPrincipal();
+        String email = json.getName();
+        controller.deleteHistoricoEtologico(pListHistoricoEtologico, email);
         return Response.ok().status(200).build();
     }
 
@@ -89,8 +99,10 @@ public class HistoricoEtologicoResources {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
     @RolesAllowed({ "veterinario", "biologo", "dev" })
-    public Response reactivateList(List<HistoricoEtologico> historicoEtologicoList) {
-        controller.reactivateHistoricoEtologico(historicoEtologicoList);
+    public Response reactivateList(List<Long> pListHistoricoEtologico, @Context @NotNull SecurityContext context) {
+        Principal json = context.getUserPrincipal();
+        String email = json.getName();
+        controller.reactivateHistoricoEtologico(pListHistoricoEtologico, email);
         return Response.ok().status(200).build();
     }
 }

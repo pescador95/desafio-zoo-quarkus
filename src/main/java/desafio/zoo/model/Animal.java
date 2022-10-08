@@ -41,7 +41,7 @@ public class Animal extends PanacheEntityBase {
     public String sexo;
 
     @Column()
-    @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
+    @JsonFormat(pattern = "dd/MM/yyyy")
     public Date dataEntrada;
 
     @Column()

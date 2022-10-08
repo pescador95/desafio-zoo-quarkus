@@ -16,7 +16,7 @@ import java.util.Objects;
 @Transactional
 public class UsuarioController<pId> {
     private Usuario usuario = new Usuario();
-    public void addUser(@NotNull Usuario pUsuario) {
+    public void addUser(@NotNull Usuario pUsuario, String email) {
 
         usuario = Usuario.find("email = ?1 and isAtivo = true ORDER BY id DESC", pUsuario.email).firstResult();
 
@@ -56,7 +56,7 @@ public class UsuarioController<pId> {
     }
 
 
-    public void updateUser(@NotNull Usuario pUsuario) {
+    public void updateUser(@NotNull Usuario pUsuario, String email) {
 
         usuario = Usuario.find("id = ?1 and isAtivo = true ORDER BY id DESC", pUsuario.id).firstResult();
 
@@ -95,10 +95,10 @@ public class UsuarioController<pId> {
         }
     }
 
-    public void deleteUser(@NotNull List<Usuario> usuarioList) {
+    public void deleteUser(@NotNull List<Long> pListIdusuario, String email) {
 
-        usuarioList.forEach((pUsuario) -> {
-            Usuario usuario = Usuario.find("id = ?1 and isAtivo = true ORDER BY id DESC", pUsuario.id).firstResult();
+        pListIdusuario.forEach((pUsuario) -> {
+            Usuario usuario = Usuario.find("id = ?1 and isAtivo = true ORDER BY id DESC", pUsuario).firstResult();
 
             if (usuario != null) {
                 usuario.isAtivo = Boolean.FALSE;
@@ -107,7 +107,7 @@ public class UsuarioController<pId> {
                 usuario.systemDateDeleted = new Date();
                 usuario.persist();
             } else {
-                if (usuarioList.size() <= 1) {
+                if (pListIdusuario.size() <= 1) {
                     throw new NotFoundException("Usuário não localizado ou já excluído.");//TODO organizar mensagem
                 } else {
                     throw new NotFoundException("Usuários não localizados ou já excluídos.");//TODO organizar mensagem
@@ -117,10 +117,10 @@ public class UsuarioController<pId> {
         });
     }
 
-    public void reactivateUser(@NotNull List<Usuario> usuarioList) {
+    public void reactivateUser(@NotNull List<Long> pListIdusuario, String email) {
 
-        usuarioList.forEach((pUsuario) -> {
-            Usuario usuario = Usuario.find("id = ?1 and isAtivo = false ORDER BY id DESC", pUsuario.id).firstResult();
+        pListIdusuario.forEach((pUsuario) -> {
+            Usuario usuario = Usuario.find("id = ?1 and isAtivo = false ORDER BY id DESC", pUsuario).firstResult();
 
             if (usuario != null) {
                 usuario.isAtivo = Boolean.TRUE;
@@ -129,7 +129,7 @@ public class UsuarioController<pId> {
                 usuario.systemDateDeleted = null;
                 usuario.persist();
             } else {
-                if (usuarioList.size() <= 1) {
+                if (pListIdusuario.size() <= 1) {
                     throw new NotFoundException("Usuário inativo não localizado ou já reativado.");//TODO organizar mensagem
                 } else {
                     throw new NotFoundException("Usuários inativos não localizados ou já reativados.");//TODO organizar mensagem

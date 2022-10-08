@@ -18,7 +18,7 @@ import java.util.Objects;
 public class AnimalController {
 
     public Animal animal;
-    public void addAnimal(@NotNull Animal pAnimal) {
+    public void addAnimal(@NotNull Animal pAnimal, String email) {
 
         animal = Animal.find("identificacao = ?1 and isAtivo = true ORDER BY id DESC", pAnimal.identificacao).firstResult();
 
@@ -63,8 +63,8 @@ public class AnimalController {
             }
 
             animal.isAtivo = Boolean.TRUE;
-            animal.usuario = Usuario.findById(pAnimal.usuario.id);
-            animal.usuarioAcao = Usuario.findById(pAnimal.usuarioAcao.id);
+            animal.usuario = Usuario.find("email = ?1", email).firstResult();
+            animal.usuarioAcao = Usuario.find("email = ?1", email).firstResult();
             animal.dataAcao = new Date();
 
             animal.persist();
@@ -72,10 +72,9 @@ public class AnimalController {
         } else {
             throw new BadRequestException("Animal já cadastrado!");//TODO organizar mensagem
         }
-
     }
 
-    public void updateAnimal(@NotNull Animal pAnimal) {
+    public void updateAnimal(@NotNull Animal pAnimal, String email) {
 
         animal = Animal.find("id = ?1 and isAtivo = true ORDER BY id DESC", pAnimal.id).firstResult();
 
@@ -124,7 +123,7 @@ public class AnimalController {
                         animal.origem = pAnimal.origem;
                     }
                 }
-                animal.usuarioAcao = Usuario.findById(pAnimal.usuarioAcao.id);
+                animal.usuarioAcao = Usuario.find("email = ?1", email).firstResult();
                 animal.dataAcao = new Date();
                 animal.persist();
             }
@@ -133,19 +132,19 @@ public class AnimalController {
         }
     }
 
-    public void deleteAnimal(@NotNull List<Animal> animalList) {
+    public void deleteAnimal(@NotNull List<Long> pListIdAnimal, String email) {
 
-        animalList.forEach((pAnimal) -> {
-            Animal animal = Animal.find("id = ?1 and isAtivo = true ORDER BY id DESC", pAnimal.id).firstResult();
+        pListIdAnimal.forEach((pAnimal) -> {
+            Animal animal = Animal.find("id = ?1 and isAtivo = true ORDER BY id DESC", pAnimal).firstResult();
 
             if (animal != null) {
                 animal.isAtivo = Boolean.FALSE;
                 animal.dataAcao = new Date();
-                animal.usuarioAcao = Usuario.findById(pAnimal.usuarioAcao.id);
+               animal.usuarioAcao = Usuario.find("email = ?1", email).firstResult();
                 animal.systemDateDeleted = new Date();
                 animal.persist();
             } else {
-                if (animalList.size() <= 1) {
+                if (pListIdAnimal.size() <= 1) {
                     throw new NotFoundException("Animal não localizados ou já reativado.");//TODO organizar mensagem
                 } else {
                     throw new NotFoundException("Animais não localizados ou já reativados.");//TODO organizar mensagem
@@ -154,19 +153,19 @@ public class AnimalController {
         });
     }
 
-    public void reactivateAnimal(@NotNull List<Animal> animalList) {
+    public void reactivateAnimal(@NotNull List<Long> pListIdAnimal, String email) {
 
-        animalList.forEach((pAnimal) -> {
-            Animal animal = Animal.find("id = ?1 and isAtivo = false ORDER BY id DESC", pAnimal.id).firstResult();
+        pListIdAnimal.forEach((pAnimal) -> {
+            Animal animal = Animal.find("id = ?1 and isAtivo = false ORDER BY id DESC", pAnimal).firstResult();
 
             if (animal != null) {
                 animal.isAtivo = Boolean.TRUE;
                 animal.dataAcao = new Date();
-                animal.usuarioAcao = Usuario.findById(pAnimal.usuarioAcao.id);
+                animal.usuarioAcao = Usuario.find("email = ?1", email).firstResult();
                 animal.systemDateDeleted = null;
                 animal.persist();
             } else {
-                if (animalList.size() <= 1) {
+                if (pListIdAnimal.size() <= 1) {
                     throw new NotFoundException("Animal não localizado ou já reativado.");//TODO organizar mensagem
                 } else {
                     throw new NotFoundException("Animais não localizados ou já reativados.");//TODO organizar mensagem
@@ -174,5 +173,6 @@ public class AnimalController {
             }
         });
     }
+
 }
 

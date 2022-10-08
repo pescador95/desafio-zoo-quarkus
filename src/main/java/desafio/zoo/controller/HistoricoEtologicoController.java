@@ -19,7 +19,7 @@ import java.util.Objects;
 public class HistoricoEtologicoController {
 
     public HistoricoEtologico historicoEtologico;
-    public void addHistoricoEtologico(@NotNull HistoricoEtologico pHistoricoEtologico) {
+    public void addHistoricoEtologico(@NotNull HistoricoEtologico pHistoricoEtologico, String email) {
 
         historicoEtologico = HistoricoEtologico.find("animal = ?1 and isAtivo = true ORDER BY id DESC", pHistoricoEtologico.animal).firstResult();
 
@@ -50,8 +50,8 @@ public class HistoricoEtologicoController {
             }
 
             historicoEtologico.isAtivo = Boolean.TRUE;
-            historicoEtologico.usuario = Usuario.findById(pHistoricoEtologico.usuario.id);
-            historicoEtologico.usuarioAcao = Usuario.findById(pHistoricoEtologico.usuarioAcao.id);
+            historicoEtologico.usuario = Usuario.find("email = ?1", email).firstResult();
+            historicoEtologico.usuarioAcao = Usuario.find("email = ?1", email).firstResult();
             historicoEtologico.dataAcao = new Date();
 
             historicoEtologico.persist();
@@ -62,7 +62,7 @@ public class HistoricoEtologicoController {
 
     }
 
-    public void updateHistoricoEtologico(@NotNull HistoricoEtologico pHistoricoEtologico) {
+    public void updateHistoricoEtologico(@NotNull HistoricoEtologico pHistoricoEtologico, String email) {
 
         historicoEtologico = HistoricoEtologico.find("id = ?1 and isAtivo = true ORDER BY id DESC", pHistoricoEtologico.id).firstResult();
 
@@ -91,7 +91,7 @@ public class HistoricoEtologicoController {
                     }
                 }
 
-                historicoEtologico.usuarioAcao = Usuario.findById(pHistoricoEtologico.usuarioAcao.id);
+                historicoEtologico.usuarioAcao =Usuario.find("email = ?1", email).firstResult();
                 historicoEtologico.dataAcao = new Date();
                 historicoEtologico.persist();
             }
@@ -101,21 +101,19 @@ public class HistoricoEtologicoController {
         }
     }
 
-    public void deleteHistoricoEtologico(@NotNull List<HistoricoEtologico> historicoEtologicoList) {
+    public void deleteHistoricoEtologico(List<Long> pListHistoricoEtologico, String email) {
 
-        historicoEtologicoList.forEach((pHistoricoEtologico) -> {
-            historicoEtologico = HistoricoEtologico.find("id = ?1 and isAtivo = true ORDER BY id DESC", pHistoricoEtologico.id).firstResult();
+        pListHistoricoEtologico.forEach((pHistoricoEtologico) -> {
+            historicoEtologico = HistoricoEtologico.find("id = ?1 and isAtivo = true ORDER BY id DESC", pHistoricoEtologico).firstResult();
 
             if (historicoEtologico != null) {
                 historicoEtologico.isAtivo = Boolean.FALSE;
                 historicoEtologico.dataAcao = new Date();
-                if(pHistoricoEtologico.usuarioAcao != null) {
-                    historicoEtologico.usuarioAcao = Usuario.findById(pHistoricoEtologico.usuarioAcao.id);
-                }
+                historicoEtologico.usuarioAcao = Usuario.find("email = ?1", email).firstResult();
                 historicoEtologico.systemDateDeleted = new Date();
                 historicoEtologico.persist();
             } else {
-                if (historicoEtologicoList.size() <= 1) {
+                if (pListHistoricoEtologico.size() <= 1) {
                     throw new NotFoundException("Histórico Etológico não localizado ou já excluído.");//TODO organizar mensagem
                 } else {
                     throw new NotFoundException("Históricos Etológico não localizados ou já excluídos.");//TODO organizar mensagem
@@ -125,21 +123,19 @@ public class HistoricoEtologicoController {
     }
 
 
-    public void reactivateHistoricoEtologico(@NotNull List<HistoricoEtologico> historicoEtologicoList) {
+    public void reactivateHistoricoEtologico(List<Long> pListHistoricoEtologico, String email) {
 
-        historicoEtologicoList.forEach((pHistoricoEtologico) -> {
-            historicoEtologico = HistoricoEtologico.find("id = ?1 and isAtivo = false ORDER BY id DESC", pHistoricoEtologico.id).firstResult();
+        pListHistoricoEtologico.forEach((pHistoricoEtologico) -> {
+            historicoEtologico = HistoricoEtologico.find("id = ?1 and isAtivo = false ORDER BY id DESC", pHistoricoEtologico).firstResult();
 
             if (historicoEtologico != null) {
                 historicoEtologico.isAtivo = Boolean.TRUE;
                 historicoEtologico.dataAcao = new Date();
-                if(pHistoricoEtologico.usuarioAcao != null) {
-                    historicoEtologico.usuarioAcao = Usuario.findById(pHistoricoEtologico.usuarioAcao.id);
-                }
+                historicoEtologico.usuarioAcao = Usuario.find("email = ?1", email).firstResult();
                 historicoEtologico.systemDateDeleted = null;
                 historicoEtologico.persist();
             } else {
-                if (historicoEtologicoList.size() <= 1) {
+                if (pListHistoricoEtologico.size() <= 1) {
                     throw new NotFoundException("Histórico Etológico não localizado ou já reativado.");//TODO organizar mensagem
                 } else {
                     throw new NotFoundException("Históricos Etológico não localizados ou já reativados.");//TODO organizar mensagem

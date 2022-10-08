@@ -2,15 +2,18 @@ package desafio.zoo.resources;
 
 import desafio.zoo.controller.AnimalController;
 import desafio.zoo.model.Animal;
-import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import io.quarkus.hibernate.orm.panache.PanacheQuery;
 import io.quarkus.panache.common.Page;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.SecurityContext;
+import java.security.Principal;
 import java.util.List;
 
 
@@ -25,70 +28,78 @@ public class AnimalResources {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
     @RolesAllowed({ "veterinario", "biologo", "dev" })
-    public Response getAnimalById(@PathParam("id") Long pId) {
-        animal = PanacheEntityBase.findById(pId);
+    public Response getById(@PathParam("id") Long pId) {
+        animal = Animal.findById(pId);
         return Response.ok(animal).status(200).build();
+    }
+    @GET
+    @Path("/count")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes("application/json")
+    @RolesAllowed({ "veterinario", "biologo", "dev" })
+    public Response count(@QueryParam("ativo") @DefaultValue("true")  Boolean ativo) {
+        long animais = Animal.count("isAtivo = ?1", ativo);
+        return Response.ok(animais).status(200).build();
     }
     @GET
     @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
     @RolesAllowed({ "veterinario", "biologo", "dev" })
-    public Response listAtivos(@QueryParam("sort") List<String> sortQuery,
+    public Response list(@QueryParam("sort") @DefaultValue("desc") @NotNull String sortQuery,
                                @QueryParam("page") @DefaultValue("0") int pageIndex,
-                               @QueryParam("size") @DefaultValue("20") int pageSize) {
-         PanacheQuery<Animal> animais =  Animal.find("isAtivo", true);
-        return Response.ok(animais.page(Page.of(pageIndex,pageSize)).list()).status(200).build();
+                               @QueryParam("size") @DefaultValue("20") int pageSize,
+                               @QueryParam("ativo") @DefaultValue("true") Boolean ativo) {
+        PanacheQuery<Animal> animais;
+        if(sortQuery.equals("desc")) {
+            animais = Animal.find("isAtivo = ?1 order by id desc", ativo);
+        } else {
+            animais = Animal.find("isAtivo = ?1 order by id asc", ativo);
+        }
+        return Response.ok(animais.page(Page.of(pageIndex, pageSize)).list()).status(200).build();
     }
-    @GET
-    @Path("/inativos")
-    @Produces(MediaType.APPLICATION_JSON)
-    @Consumes("application/json")
-    @RolesAllowed({ "veterinario", "biologo", "dev" })
-    public Response listInativos(@QueryParam("sort") List<String> sortQuery,
-                                 @QueryParam("page") @DefaultValue("0") int pageIndex,
-                                 @QueryParam("size") @DefaultValue("20") int pageSize) {
-        PanacheQuery<Animal> animais =  Animal.find("isAtivo", false);
-        return Response.ok(animais.page(Page.of(pageIndex,pageSize)).list()).status(200).build();
-    }
-
     @POST
-    @Path("/create")
+    @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
     @RolesAllowed({ "veterinario", "biologo", "dev" })
-    public Response add(Animal pAnimal) {
-        controller.addAnimal(pAnimal);
+    public Response add(Animal pAnimal, @Context @NotNull SecurityContext context) {
+        Principal json = context.getUserPrincipal();
+        String email = json.getName();
+        controller.addAnimal(pAnimal, email);
         return Response.ok().status(201).build();
     }
-
     @PUT
-    @Path("/update")
+    @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
     @RolesAllowed({ "veterinario", "biologo", "dev" })
-    public Response update(Animal pAnimal) {
-        controller.updateAnimal(pAnimal);
+    public Response update(Animal pAnimal, @Context @NotNull SecurityContext context) {
+        Principal json = context.getUserPrincipal();
+        String email = json.getName();
+        controller.updateAnimal(pAnimal, email);
         return Response.ok().status(200).build();
     }
-
     @DELETE
-    @Path("/delete")
+    @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
     @RolesAllowed({ "veterinario", "biologo", "dev" })
-    public Response deleteList(List<Animal> animalList) {
-        controller.deleteAnimal(animalList);
+    public Response deleteList(List<Long> pListIdAnimal, @Context @NotNull SecurityContext context) {
+        Principal json = context.getUserPrincipal();
+        String email = json.getName();
+        controller.deleteAnimal(pListIdAnimal, email);
         return Response.ok().status(200).build();
     }
-
     @PUT
     @Path("/reactivate")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
     @RolesAllowed({ "veterinario", "biologo", "dev" })
-    public Response reactivateList(List<Animal> animalList) {
-        controller.reactivateAnimal(animalList);
+    public Response reactivateList(List<Long> pListIdAnimal, @Context @NotNull SecurityContext context) {
+        Principal json = context.getUserPrincipal();
+        String email = json.getName();
+        controller.reactivateAnimal(pListIdAnimal, email);
         return Response.ok().status(200).build();
     }
 }

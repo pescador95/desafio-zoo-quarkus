@@ -18,7 +18,7 @@ import java.util.List;
 public class HistoricoClinicoController {
 
     public HistoricoClinico historicoClinico;
-    public void addHistoricoClinico(@NotNull HistoricoClinico pHistoricoClinico) {
+    public void addHistoricoClinico(@NotNull HistoricoClinico pHistoricoClinico, String email) {
 
         historicoClinico = HistoricoClinico.find("animal = ?1 and isAtivo = true ORDER BY id DESC", pHistoricoClinico.animal).firstResult();
 
@@ -78,8 +78,8 @@ public class HistoricoClinicoController {
             }
 
             historicoClinico.isAtivo = Boolean.TRUE;
-            historicoClinico.usuario = Usuario.findById(pHistoricoClinico.usuario.id);
-            historicoClinico.usuarioAcao = Usuario.findById(pHistoricoClinico.usuarioAcao.id);
+            historicoClinico.usuario = Usuario.find("email = ?1", email).firstResult();
+            historicoClinico.usuarioAcao = Usuario.find("email = ?1", email).firstResult();
             historicoClinico.dataAcao = new Date();
 
             historicoClinico.persist();
@@ -90,7 +90,7 @@ public class HistoricoClinicoController {
 
     }
 
-    public void updateHistoricoClinico(@NotNull HistoricoClinico pHistoricoClinico) {
+    public void updateHistoricoClinico(@NotNull HistoricoClinico pHistoricoClinico, String email) {
 
         historicoClinico = HistoricoClinico.find("id = ?1 and isAtivo = true ORDER BY id DESC", pHistoricoClinico.id).firstResult();
 
@@ -149,11 +149,7 @@ public class HistoricoClinicoController {
                         historicoClinico.animal = Animal.findById(pHistoricoClinico.animal.id);
                     }
                 }
-                if (pHistoricoClinico.usuarioAcao != null) {
-                    if (historicoClinico.usuarioAcao != null && !historicoClinico.usuarioAcao.equals(pHistoricoClinico.usuarioAcao)) {
-                    historicoClinico.usuarioAcao = Usuario.findById(pHistoricoClinico.usuarioAcao.id);
-                }
-            }
+                historicoClinico.usuarioAcao = Usuario.find("email = ?1", email).firstResult();
                 historicoClinico.dataAcao = new Date();
                 historicoClinico.persist();
             }
@@ -163,19 +159,19 @@ public class HistoricoClinicoController {
         }
     }
 
-    public void deleteHistoricoClinico(@NotNull List<HistoricoClinico> historicoClinicoList) {
+    public void deleteHistoricoClinico(List<Long> pListIdHistoricoClinico, String email) {
 
-        historicoClinicoList.forEach((pHistoricoClinico) -> {
-            historicoClinico = HistoricoClinico.find("id = ?1 and isAtivo = true ORDER BY id DESC", pHistoricoClinico.id).firstResult();
+        pListIdHistoricoClinico.forEach((pHistoricoClinico) -> {
+            historicoClinico = HistoricoClinico.find("id = ?1 and isAtivo = true ORDER BY id DESC", pHistoricoClinico).firstResult();
 
             if (historicoClinico != null) {
                 historicoClinico.isAtivo = Boolean.FALSE;
                 historicoClinico.dataAcao = new Date();
-                historicoClinico.usuarioAcao = Usuario.findById(pHistoricoClinico.usuarioAcao.id);
+                historicoClinico.usuarioAcao = Usuario.find("email = ?1", email).firstResult();
                 historicoClinico.systemDateDeleted = new Date();
                 historicoClinico.persist();
             } else {
-                if (historicoClinicoList.size() <= 1) {
+                if (pListIdHistoricoClinico.size() <= 1) {
                     throw new NotFoundException("Histórico Clínico não localizado ou já excluído.");//TODO organizar mensagem
                 } else {
                     throw new NotFoundException("Históricos Clínico não localizados ou já excluídos.");//TODO organizar mensagem
@@ -184,19 +180,19 @@ public class HistoricoClinicoController {
         });
     }
 
-    public void reactivateHistoricoClinico(@NotNull List<HistoricoClinico> historicoClinicoList) {
+    public void reactivateHistoricoClinico(@NotNull List<Long> pListIdHistoricoClinico, String email) {
 
-        historicoClinicoList.forEach((pHistoricoClinico) -> {
-            historicoClinico = HistoricoClinico.find("id = ?1 and isAtivo = false ORDER BY id DESC", pHistoricoClinico.id).firstResult();
+        pListIdHistoricoClinico.forEach((pHistoricoClinico) -> {
+            historicoClinico = HistoricoClinico.find("id = ?1 and isAtivo = false ORDER BY id DESC", pHistoricoClinico).firstResult();
 
             if (historicoClinico != null) {
                 historicoClinico.isAtivo = Boolean.TRUE;
                 historicoClinico.dataAcao = new Date();
-                historicoClinico.usuarioAcao = Usuario.findById(pHistoricoClinico.usuarioAcao.id);
+                historicoClinico.usuarioAcao = Usuario.find("email = ?1", email).firstResult();
                 historicoClinico.systemDateDeleted = null;
                 historicoClinico.persist();
             } else {
-                if (historicoClinicoList.size() <= 1) {
+                if (pListIdHistoricoClinico.size() <= 1) {
                     throw new NotFoundException("Histórico Clínico não localizado ou já reativado.");//TODO organizar mensagem
                 } else {
                     throw new NotFoundException("Históricos Clínico não localizados ou já reativados.");//TODO organizar mensagem

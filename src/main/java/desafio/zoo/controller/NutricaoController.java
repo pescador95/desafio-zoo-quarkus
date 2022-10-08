@@ -17,7 +17,7 @@ import java.util.List;
 public class NutricaoController {
 
     public Nutricao nutricao;
-    public void addNutricao(@NotNull Nutricao pNutricao) {
+    public void addNutricao(@NotNull Nutricao pNutricao, String email) {
 
         nutricao = Nutricao.find("animal = ?1 and isAtivo = true ORDER BY id DESC", pNutricao.animal).firstResult();
         //TODO verificar quais props são obrigatórias na criação.
@@ -50,8 +50,8 @@ public class NutricaoController {
                 throw new BadRequestException("Por favor, preencha o Animal da Nutrição corretamente!");//TODO organizar mensagem
             }
 
-            nutricao.usuario = Usuario.findById(pNutricao.usuario.id);
-            nutricao.usuarioAcao = Usuario.findById(pNutricao.usuarioAcao.id);
+            nutricao.usuario = Usuario.find("email = ?1", email).firstResult();
+            nutricao.usuarioAcao = Usuario.find("email = ?1", email).firstResult();
             nutricao.dataAcao = new Date();
 
             nutricao.persist();
@@ -62,7 +62,7 @@ public class NutricaoController {
 
     }
 
-    public void updateNutricao(@NotNull Nutricao pNutricao) {
+    public void updateNutricao(@NotNull Nutricao pNutricao, String email) {
 
         nutricao = Nutricao.find("id = ?1 and isAtivo = true ORDER BY id DESC", pNutricao.id).firstResult();
 
@@ -91,7 +91,7 @@ public class NutricaoController {
                     }
                 }
 
-                nutricao.usuarioAcao = Usuario.findById(pNutricao.usuarioAcao.id);
+                nutricao.usuarioAcao = Usuario.find("email = ?1", email).firstResult();
                 nutricao.dataAcao = new Date();
                 nutricao.persist();
             }
@@ -101,19 +101,19 @@ public class NutricaoController {
         }
     }
 
-    public void deleteNutricao(@NotNull List<Nutricao> nutricaoList) {
+    public void deleteNutricao(List<Long> pListIdnutricao, String email) {
 
-        nutricaoList.forEach((pNutricao) -> {
-            nutricao = Nutricao.find("id = ?1 and isAtivo = true ORDER BY id DESC", pNutricao.id).firstResult();
+        pListIdnutricao.forEach((pNutricao) -> {
+            nutricao = Nutricao.find("id = ?1 and isAtivo = true ORDER BY id DESC", pNutricao).firstResult();
 
             if (nutricao != null) {
                 nutricao.isAtivo = Boolean.FALSE;
                 nutricao.dataAcao = new Date();
-                nutricao.usuarioAcao = Usuario.findById(pNutricao.usuarioAcao.id);
+                nutricao.usuarioAcao = Usuario.find("email = ?1", email).firstResult();
                 nutricao.systemDateDeleted = new Date();
                 nutricao.persist();
             } else {
-                if (nutricaoList.size() <= 1) {
+                if (pListIdnutricao.size() <= 1) {
                     throw new NotFoundException("Ficha de Nutrição não localizada ou já excluída.");//TODO organizar mensagem
                 } else {
                     throw new NotFoundException("Fichas de Nutrição não localizadas ou já excluídas.");//TODO organizar mensagem
@@ -122,15 +122,15 @@ public class NutricaoController {
         });
     }
 
-    public void reactivateNutricao(@NotNull List<Nutricao> nutricaoList) {
+    public void reactivateNutricao(List<Long> nutricaoList, String email) {
 
         nutricaoList.forEach((pNutricao) -> {
-            nutricao = Nutricao.find("id = ?1 and isAtivo = false ORDER BY id DESC", pNutricao.id).firstResult();
+            nutricao = Nutricao.find("id = ?1 and isAtivo = false ORDER BY id DESC", pNutricao).firstResult();
 
             if (nutricao != null) {
                 nutricao.isAtivo = Boolean.TRUE;
                 nutricao.dataAcao = new Date();
-                nutricao.usuarioAcao = Usuario.findById(pNutricao.usuarioAcao.id);
+                nutricao.usuarioAcao = Usuario.find("email = ?1", email).firstResult();
                 nutricao.systemDateDeleted = null;
                 nutricao.persist();
             } else {

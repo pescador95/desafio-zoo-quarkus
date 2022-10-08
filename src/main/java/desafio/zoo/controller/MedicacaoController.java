@@ -20,7 +20,7 @@ public class MedicacaoController {
 
     public Medicacao medicacao;
     public Usuario usuario;
-       public void addMedicacao(@NotNull Medicacao pMedicacao) {
+       public void addMedicacao(@NotNull Medicacao pMedicacao, String email) {
 
         medicacao = Medicacao.find("historicoClinico = ?1 and isAtivo = true ORDER BY id DESC", pMedicacao.historicoClinico).firstResult();
 //TODO verificar quais props são obrigatórias na criação.
@@ -53,8 +53,8 @@ public class MedicacaoController {
                 throw new BadRequestException("Por favor, preencha a Frequência da Medicação corretamente!");//TODO organizar mensagem
             }
             medicacao.isAtivo = Boolean.TRUE;
-            medicacao.usuario = Usuario.findById(pMedicacao.usuario.id);
-            medicacao.usuarioAcao = Usuario.findById(pMedicacao.usuarioAcao.id);
+            medicacao.usuario = Usuario.find("email = ?1", email).firstResult();
+            medicacao.usuarioAcao = Usuario.find("email = ?1", email).firstResult();
             medicacao.dataAcao = new Date();
 
             medicacao.persist();
@@ -65,7 +65,7 @@ public class MedicacaoController {
 
     }
 
-    public void updateMedicacao(@NotNull Medicacao pMedicacao) {
+    public void updateMedicacao(@NotNull Medicacao pMedicacao, String email) {
 
         medicacao = Medicacao.find("id = ?1 and isAtivo = true ORDER BY id DESC", pMedicacao.id).firstResult();
 
@@ -97,7 +97,7 @@ public class MedicacaoController {
                         medicacao.historicoClinico = HistoricoClinico.findById(pMedicacao.historicoClinico.id);
                     }
                 }
-                medicacao.usuarioAcao = Usuario.findById(pMedicacao.usuarioAcao.id);
+                medicacao.usuarioAcao = Usuario.find("email = ?1", email).firstResult();
                 medicacao.dataAcao = new Date();
                 medicacao.persist();
             }
@@ -107,21 +107,19 @@ public class MedicacaoController {
         }
     }
 
-    public void deleteMedicacao(@NotNull List<Medicacao> medicacaoList) {
+    public void deleteMedicacao(List<Long> pListMedicacao, String email) {
 
-        medicacaoList.forEach((pMedicacao) -> {
-            medicacao = Medicacao.find("id = ?1 and isAtivo = true ORDER BY id DESC", pMedicacao.id).firstResult();
+        pListMedicacao.forEach((pMedicacao) -> {
+            medicacao = Medicacao.find("id = ?1 and isAtivo = true ORDER BY id DESC", pMedicacao).firstResult();
 
             if (medicacao != null) {
                 medicacao.isAtivo = Boolean.FALSE;
                 medicacao.dataAcao = new Date();
-                if (pMedicacao.usuarioAcao != null) {
-                    medicacao.usuarioAcao = Usuario.findById(pMedicacao.usuarioAcao.id);
-                }
+                medicacao.usuarioAcao = Usuario.find("email = ?1", email).firstResult();
                 medicacao.systemDateDeleted = new Date();
                 medicacao.persist();
             } else {
-                if (medicacaoList.size() <= 1) {
+                if (pListMedicacao.size() <= 1) {
                     throw new NotFoundException("Medicação não localizada ou já excluída.");//TODO organizar mensagem
                 } else {
                     throw new NotFoundException("Medicações não localizadas ou já excluídas.");//TODO organizar mensagem
@@ -130,21 +128,19 @@ public class MedicacaoController {
         });
     }
 
-    public void reactivateMedicacao(@NotNull List<Medicacao> medicacaoList) {
+    public void reactivateMedicacao(List<Long> pListMedicacao, String email) {
 
-        medicacaoList.forEach((pMedicacao) -> {
-            medicacao = Medicacao.find("id = ?1 and isAtivo = false ORDER BY id DESC", pMedicacao.id).firstResult();
+        pListMedicacao.forEach((pMedicacao) -> {
+            medicacao = Medicacao.find("id = ?1 and isAtivo = false ORDER BY id DESC", pMedicacao).firstResult();
 
             if (medicacao != null) {
                 medicacao.isAtivo = Boolean.TRUE;
                 medicacao.dataAcao = new Date();
-                if (pMedicacao.usuarioAcao != null) {
-                    medicacao.usuarioAcao = Usuario.findById(pMedicacao.usuarioAcao.id);
-                }
+                medicacao.usuarioAcao = Usuario.find("email = ?1", email).firstResult();
                 medicacao.systemDateDeleted = null;
                 medicacao.persist();
             } else {
-                if (medicacaoList.size() <= 1) {
+                if (pListMedicacao.size() <= 1) {
                     throw new NotFoundException("Medicação não localizada ou já reativada.");//TODO organizar mensagem
                 } else {
                     throw new NotFoundException("Medicações não localizadas ou já reativadas.");//TODO organizar mensagem

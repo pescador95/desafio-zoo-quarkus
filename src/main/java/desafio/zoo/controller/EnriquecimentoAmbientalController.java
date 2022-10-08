@@ -19,7 +19,7 @@ import java.util.Objects;
 public class EnriquecimentoAmbientalController {
 
     public EnriquecimentoAmbiental enriquecimentoAmbiental;
-    public void addEnriquecimentoAmbiental(@NotNull EnriquecimentoAmbiental pEnriquecimentoAmbiental) {
+    public void addEnriquecimentoAmbiental(@NotNull EnriquecimentoAmbiental pEnriquecimentoAmbiental, String email) {
 
         enriquecimentoAmbiental = EnriquecimentoAmbiental.find("animal = ?1 and dataEnriquecimento = ?2 and nomeEnriquecimento = ?3 and descricaoEnriquecimento = ?4 and isAtivo = true ORDER BY id DESC", pEnriquecimentoAmbiental.animal, pEnriquecimentoAmbiental.dataEnriquecimento, pEnriquecimentoAmbiental.nomeEnriquecimento, pEnriquecimentoAmbiental.descricaoEnriquecimento).firstResult();
 
@@ -52,8 +52,8 @@ public class EnriquecimentoAmbientalController {
             }
 
             enriquecimentoAmbiental.isAtivo = Boolean.TRUE;
-            enriquecimentoAmbiental.usuario = Usuario.findById(pEnriquecimentoAmbiental.usuario.id);
-            enriquecimentoAmbiental.usuarioAcao = Usuario.findById(pEnriquecimentoAmbiental.usuarioAcao.id);
+            enriquecimentoAmbiental.usuario = Usuario.find("email = ?1", email).firstResult();
+            enriquecimentoAmbiental.usuarioAcao = Usuario.find("email = ?1", email).firstResult();
             enriquecimentoAmbiental.dataAcao = new Date();
 
             enriquecimentoAmbiental.persist();
@@ -64,7 +64,7 @@ public class EnriquecimentoAmbientalController {
 
     }
 
-    public void updateEnriquecimentoAmbiental(@NotNull EnriquecimentoAmbiental pEnriquecimentoAmbiental) {
+    public void updateEnriquecimentoAmbiental(@NotNull EnriquecimentoAmbiental pEnriquecimentoAmbiental, String email) {
 
         enriquecimentoAmbiental = EnriquecimentoAmbiental.find("id = ?1 and dataEnriquecimento = ?2 and isAtivo = true and nomeEnriquecimento = ?3 and descricaoEnriquecimento = ?4 ORDER BY id DESC", pEnriquecimentoAmbiental.id, pEnriquecimentoAmbiental.dataEnriquecimento, pEnriquecimentoAmbiental.nomeEnriquecimento, pEnriquecimentoAmbiental.descricaoEnriquecimento).firstResult();
 
@@ -88,7 +88,7 @@ public class EnriquecimentoAmbientalController {
                         enriquecimentoAmbiental.descricaoEnriquecimento = pEnriquecimentoAmbiental.descricaoEnriquecimento;
                     }
                 }
-                enriquecimentoAmbiental.usuarioAcao = Usuario.findById(pEnriquecimentoAmbiental.usuarioAcao.id);
+                enriquecimentoAmbiental.usuarioAcao = Usuario.find("email = ?1", email).firstResult();
                 enriquecimentoAmbiental.dataAcao = new Date();
                 enriquecimentoAmbiental.persist();
             }
@@ -98,21 +98,19 @@ public class EnriquecimentoAmbientalController {
         }
     }
 
-    public void deleteEnriquecimentoAmbiental(@NotNull List<EnriquecimentoAmbiental> enriquecimentoAmbientalList) {
+    public void deleteEnriquecimentoAmbiental(List<Long> pListEnriquecimentoAmbiental, String email) {
 
-        enriquecimentoAmbientalList.forEach((pEnriquecimentoAmbiental) -> {
-            enriquecimentoAmbiental = EnriquecimentoAmbiental.find("id = ?1 and isAtivo = true ORDER BY id DESC", pEnriquecimentoAmbiental.id).firstResult();
+        pListEnriquecimentoAmbiental.forEach((pEnriquecimentoAmbiental) -> {
+            enriquecimentoAmbiental = EnriquecimentoAmbiental.find("id = ?1 and isAtivo = true ORDER BY id DESC", pEnriquecimentoAmbiental).firstResult();
 
             if (enriquecimentoAmbiental != null) {
                 enriquecimentoAmbiental.isAtivo = Boolean.FALSE;
                 enriquecimentoAmbiental.dataAcao = new Date();
-                if (pEnriquecimentoAmbiental.usuarioAcao != null) {
-                    enriquecimentoAmbiental.usuarioAcao = Usuario.findById(pEnriquecimentoAmbiental.usuarioAcao.id);
-                }
+                enriquecimentoAmbiental.usuarioAcao = Usuario.find("email = ?1", email).firstResult();
                 enriquecimentoAmbiental.systemDateDeleted = new Date();
                 enriquecimentoAmbiental.persist();
             } else {
-                if (enriquecimentoAmbientalList.size() <= 1) {
+                if (pListEnriquecimentoAmbiental.size() <= 1) {
                     throw new NotFoundException("Enriquecimento Ambiental não localizado ou já excluído.");//TODO organizar mensagem
                 } else {
                     throw new NotFoundException("Enriquecimentos Ambientais não localizados ou já excluídos.");//TODO organizar mensagem
@@ -121,21 +119,19 @@ public class EnriquecimentoAmbientalController {
         });
     }
 
-    public void reactivateEnriquecimentoAmbiental(@NotNull List<EnriquecimentoAmbiental> enriquecimentoAmbientalList) {
+    public void reactivateEnriquecimentoAmbiental(List<Long> pListEnriquecimentoAmbiental, String email) {
 
-        enriquecimentoAmbientalList.forEach((pEnriquecimentoAmbiental) -> {
-            enriquecimentoAmbiental = EnriquecimentoAmbiental.find("id = ?1 and isAtivo = false ORDER BY id DESC", pEnriquecimentoAmbiental.id).firstResult();
+        pListEnriquecimentoAmbiental.forEach((pEnriquecimentoAmbiental) -> {
+            enriquecimentoAmbiental = EnriquecimentoAmbiental.find("id = ?1 and isAtivo = false ORDER BY id DESC", pEnriquecimentoAmbiental).firstResult();
 
             if (enriquecimentoAmbiental != null) {
                 enriquecimentoAmbiental.isAtivo = Boolean.TRUE;
                 enriquecimentoAmbiental.dataAcao = new Date();
-                if (pEnriquecimentoAmbiental.usuarioAcao != null) {
-                    enriquecimentoAmbiental.usuarioAcao = Usuario.findById(pEnriquecimentoAmbiental.usuarioAcao.id);
-                }
+                enriquecimentoAmbiental.usuarioAcao = Usuario.find("email = ?1", email).firstResult();
                 enriquecimentoAmbiental.systemDateDeleted = null;
                 enriquecimentoAmbiental.persist();
             } else {
-                if (enriquecimentoAmbientalList.size() <= 1) {
+                if (pListEnriquecimentoAmbiental.size() <= 1) {
                     throw new NotFoundException("Enriquecimento Ambiental não localizados ou já reativado.");//TODO organizar mensagem
                 } else {
                     throw new NotFoundException("Enriquecimentos Ambientais não localizados ou já reativados.");//TODO organizar mensagem

@@ -19,9 +19,14 @@ import java.util.Objects;
 public class EnriquecimentoAmbientalController {
 
     public EnriquecimentoAmbiental enriquecimentoAmbiental;
+
     public void addEnriquecimentoAmbiental(@NotNull EnriquecimentoAmbiental pEnriquecimentoAmbiental, String email) {
 
-        enriquecimentoAmbiental = EnriquecimentoAmbiental.find("animal = ?1 and dataEnriquecimento = ?2 and nomeEnriquecimento = ?3 and descricaoEnriquecimento = ?4 and isAtivo = true ORDER BY id DESC", pEnriquecimentoAmbiental.animal, pEnriquecimentoAmbiental.dataEnriquecimento, pEnriquecimentoAmbiental.nomeEnriquecimento, pEnriquecimentoAmbiental.descricaoEnriquecimento).firstResult();
+        enriquecimentoAmbiental = EnriquecimentoAmbiental.find(
+                "animal = ?1 and dataEnriquecimento = ?2 and nomeEnriquecimento = ?3 and descricaoEnriquecimento = ?4 and isAtivo = true ORDER BY id DESC",
+                pEnriquecimentoAmbiental.animal, pEnriquecimentoAmbiental.dataEnriquecimento,
+                pEnriquecimentoAmbiental.nomeEnriquecimento, pEnriquecimentoAmbiental.descricaoEnriquecimento)
+                .firstResult();
 
         if (enriquecimentoAmbiental == null) {
             enriquecimentoAmbiental = new EnriquecimentoAmbiental();
@@ -29,26 +34,27 @@ public class EnriquecimentoAmbientalController {
             if (pEnriquecimentoAmbiental.animal != null) {
                 enriquecimentoAmbiental.animal = Animal.findById(pEnriquecimentoAmbiental.animal.id);
             } else {
-                throw new BadRequestException("Por favor, preencha o Animal do Enriquecimento Ambiental corretamente!"); //TODO organizar mensagem
+                throw new BadRequestException("Por favor, preencha o Animal do Enriquecimento Ambiental corretamente!");
             }
             if (pEnriquecimentoAmbiental.dataEnriquecimento != null) {
                 enriquecimentoAmbiental.dataEnriquecimento = pEnriquecimentoAmbiental.dataEnriquecimento;
 
             } else {
-                throw new BadRequestException("Por favor, preencha a Data do Enriquecimento Ambiental corretamente!");//TODO organizar mensagem
+                throw new BadRequestException("Por favor, preencha a Data do Enriquecimento Ambiental corretamente!");
             }
             if (pEnriquecimentoAmbiental.nomeEnriquecimento != null) {
                 enriquecimentoAmbiental.nomeEnriquecimento = pEnriquecimentoAmbiental.nomeEnriquecimento;
 
             } else {
-                throw new BadRequestException("Por favor, preencha o Nome do Enriquecimento Ambiental corretamente!");//TODO organizar mensagem
+                throw new BadRequestException("Por favor, preencha o Nome do Enriquecimento Ambiental corretamente!");
             }
 
             if (pEnriquecimentoAmbiental.descricaoEnriquecimento != null) {
                 enriquecimentoAmbiental.descricaoEnriquecimento = pEnriquecimentoAmbiental.descricaoEnriquecimento;
 
             } else {
-                throw new BadRequestException("Por favor, preencha a Descrição do Enriquecimento Ambiental corretamente!");//TODO organizar mensagem
+                throw new BadRequestException(
+                        "Por favor, preencha a Descrição do Enriquecimento Ambiental corretamente!");
             }
 
             enriquecimentoAmbiental.isAtivo = Boolean.TRUE;
@@ -59,32 +65,41 @@ public class EnriquecimentoAmbientalController {
             enriquecimentoAmbiental.persist();
 
         } else {
-            throw new BadRequestException("Enriquecimento Ambiental já cadastrado!");//TODO organizar mensagem
+            throw new BadRequestException("Enriquecimento Ambiental já cadastrado!");
         }
 
     }
 
     public void updateEnriquecimentoAmbiental(@NotNull EnriquecimentoAmbiental pEnriquecimentoAmbiental, String email) {
 
-        enriquecimentoAmbiental = EnriquecimentoAmbiental.find("id = ?1 and dataEnriquecimento = ?2 and isAtivo = true and nomeEnriquecimento = ?3 and descricaoEnriquecimento = ?4 ORDER BY id DESC", pEnriquecimentoAmbiental.id, pEnriquecimentoAmbiental.dataEnriquecimento, pEnriquecimentoAmbiental.nomeEnriquecimento, pEnriquecimentoAmbiental.descricaoEnriquecimento).firstResult();
+        enriquecimentoAmbiental = EnriquecimentoAmbiental.find(
+                "id = ?1 and dataEnriquecimento = ?2 and isAtivo = true and nomeEnriquecimento = ?3 and descricaoEnriquecimento = ?4 ORDER BY id DESC",
+                pEnriquecimentoAmbiental.id, pEnriquecimentoAmbiental.dataEnriquecimento,
+                pEnriquecimentoAmbiental.nomeEnriquecimento, pEnriquecimentoAmbiental.descricaoEnriquecimento)
+                .firstResult();
 
         if (enriquecimentoAmbiental != null) {
 
-            if (pEnriquecimentoAmbiental.dataEnriquecimento == null && pEnriquecimentoAmbiental.nomeEnriquecimento == null && pEnriquecimentoAmbiental.descricaoEnriquecimento == null) {
-                throw new BadRequestException("Informe os dados para atualizar o Enriquecimento Ambiental.");//TODO organizar mensagem
+            if (pEnriquecimentoAmbiental.dataEnriquecimento == null
+                    && pEnriquecimentoAmbiental.nomeEnriquecimento == null
+                    && pEnriquecimentoAmbiental.descricaoEnriquecimento == null) {
+                throw new BadRequestException("Informe os dados para atualizar o Enriquecimento Ambiental.");
             } else {
                 if (pEnriquecimentoAmbiental.dataEnriquecimento != null) {
-                    if (!Objects.equals(enriquecimentoAmbiental.dataEnriquecimento, pEnriquecimentoAmbiental.dataEnriquecimento)) {
+                    if (!Objects.equals(enriquecimentoAmbiental.dataEnriquecimento,
+                            pEnriquecimentoAmbiental.dataEnriquecimento)) {
                         enriquecimentoAmbiental.dataEnriquecimento = pEnriquecimentoAmbiental.dataEnriquecimento;
                     }
                 }
                 if (pEnriquecimentoAmbiental.nomeEnriquecimento != null) {
-                    if (!enriquecimentoAmbiental.nomeEnriquecimento.equals(pEnriquecimentoAmbiental.nomeEnriquecimento)) {
+                    if (!enriquecimentoAmbiental.nomeEnriquecimento
+                            .equals(pEnriquecimentoAmbiental.nomeEnriquecimento)) {
                         enriquecimentoAmbiental.nomeEnriquecimento = pEnriquecimentoAmbiental.nomeEnriquecimento;
                     }
                 }
                 if (pEnriquecimentoAmbiental.descricaoEnriquecimento != null) {
-                    if (!enriquecimentoAmbiental.descricaoEnriquecimento.equals(pEnriquecimentoAmbiental.descricaoEnriquecimento)) {
+                    if (!enriquecimentoAmbiental.descricaoEnriquecimento
+                            .equals(pEnriquecimentoAmbiental.descricaoEnriquecimento)) {
                         enriquecimentoAmbiental.descricaoEnriquecimento = pEnriquecimentoAmbiental.descricaoEnriquecimento;
                     }
                 }
@@ -93,7 +108,7 @@ public class EnriquecimentoAmbientalController {
                 enriquecimentoAmbiental.persist();
             }
         } else {
-            throw new BadRequestException("Não foi possível atualizar o Enriquecimento Ambiental.");//TODO organizar mensagem
+            throw new BadRequestException("Não foi possível atualizar o Enriquecimento Ambiental.");
 
         }
     }
@@ -101,7 +116,8 @@ public class EnriquecimentoAmbientalController {
     public void deleteEnriquecimentoAmbiental(List<Long> pListEnriquecimentoAmbiental, String email) {
 
         pListEnriquecimentoAmbiental.forEach((pEnriquecimentoAmbiental) -> {
-            enriquecimentoAmbiental = EnriquecimentoAmbiental.find("id = ?1 and isAtivo = true ORDER BY id DESC", pEnriquecimentoAmbiental).firstResult();
+            enriquecimentoAmbiental = EnriquecimentoAmbiental
+                    .find("id = ?1 and isAtivo = true ORDER BY id DESC", pEnriquecimentoAmbiental).firstResult();
 
             if (enriquecimentoAmbiental != null) {
                 enriquecimentoAmbiental.isAtivo = Boolean.FALSE;
@@ -111,9 +127,9 @@ public class EnriquecimentoAmbientalController {
                 enriquecimentoAmbiental.persist();
             } else {
                 if (pListEnriquecimentoAmbiental.size() <= 1) {
-                    throw new NotFoundException("Enriquecimento Ambiental não localizado ou já excluído.");//TODO organizar mensagem
+                    throw new NotFoundException("Enriquecimento Ambiental não localizado ou já excluído.");
                 } else {
-                    throw new NotFoundException("Enriquecimentos Ambientais não localizados ou já excluídos.");//TODO organizar mensagem
+                    throw new NotFoundException("Enriquecimentos Ambientais não localizados ou já excluídos.");
                 }
             }
         });
@@ -122,7 +138,8 @@ public class EnriquecimentoAmbientalController {
     public void reactivateEnriquecimentoAmbiental(List<Long> pListEnriquecimentoAmbiental, String email) {
 
         pListEnriquecimentoAmbiental.forEach((pEnriquecimentoAmbiental) -> {
-            enriquecimentoAmbiental = EnriquecimentoAmbiental.find("id = ?1 and isAtivo = false ORDER BY id DESC", pEnriquecimentoAmbiental).firstResult();
+            enriquecimentoAmbiental = EnriquecimentoAmbiental
+                    .find("id = ?1 and isAtivo = false ORDER BY id DESC", pEnriquecimentoAmbiental).firstResult();
 
             if (enriquecimentoAmbiental != null) {
                 enriquecimentoAmbiental.isAtivo = Boolean.TRUE;
@@ -132,9 +149,9 @@ public class EnriquecimentoAmbientalController {
                 enriquecimentoAmbiental.persist();
             } else {
                 if (pListEnriquecimentoAmbiental.size() <= 1) {
-                    throw new NotFoundException("Enriquecimento Ambiental não localizados ou já reativado.");//TODO organizar mensagem
+                    throw new NotFoundException("Enriquecimento Ambiental não localizados ou já reativado.");
                 } else {
-                    throw new NotFoundException("Enriquecimentos Ambientais não localizados ou já reativados.");//TODO organizar mensagem
+                    throw new NotFoundException("Enriquecimentos Ambientais não localizados ou já reativados.");
                 }
             }
         });

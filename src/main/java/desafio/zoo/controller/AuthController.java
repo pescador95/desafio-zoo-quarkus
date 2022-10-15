@@ -14,7 +14,6 @@ import javax.ws.rs.BadRequestException;
 import javax.ws.rs.core.SecurityContext;
 import java.util.Date;
 
-
 @ApplicationScoped
 public class AuthController {
 
@@ -37,7 +36,8 @@ public class AuthController {
             throw new BadRequestException("email ou senha incorretas");
         }
 
-        System.out.print("\n"+ "Iniciando login com usuário: " + usuario.email + "..." + "\n" + "Bem vindo, "+ usuario.nome + "!"); // todo log
+        System.out.print("\n" + "Iniciando login com usuário: " + usuario.email + "..." + "\n" + "Bem vindo, "
+                + usuario.nome + "!");
         String accessToken = token.GenerateAccessToken(usuario);
         String refreshToken = token.GenerateRefreshToken(usuario);
 
@@ -80,13 +80,13 @@ public class AuthController {
                 throw new BadRequestException("Credenciais incorretas!");
             }
         } catch (ParseException error) {
-            System.out.print(error.getMessage()); // todo logger
+            System.out.print(error.getMessage());
         }
 
         if (authenticated) {
             String accessToken = token.GenerateAccessToken(usuario);
             String refreshToken = token.GenerateRefreshToken(usuario);
-            System.out.print("Refresh token solicitado pelo usuário: " + usuario.email + "\n"); // todo logger
+            System.out.print("Refresh token solicitado pelo usuário: " + usuario.email + "\n");
             Long ACTOKEN = 0L;
             Long RFTOKEN = 0L;
             try {

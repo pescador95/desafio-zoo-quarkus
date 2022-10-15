@@ -18,9 +18,11 @@ import java.util.List;
 public class HistoricoClinicoController {
 
     public HistoricoClinico historicoClinico;
+
     public void addHistoricoClinico(@NotNull HistoricoClinico pHistoricoClinico, String email) {
 
-        historicoClinico = HistoricoClinico.find("animal = ?1 and isAtivo = true ORDER BY id DESC", pHistoricoClinico.animal).firstResult();
+        historicoClinico = HistoricoClinico
+                .find("animal = ?1 and isAtivo = true ORDER BY id DESC", pHistoricoClinico.animal).firstResult();
 
         if (historicoClinico == null) {
             historicoClinico = new HistoricoClinico();
@@ -28,53 +30,55 @@ public class HistoricoClinicoController {
             if (pHistoricoClinico.animal != null) {
                 historicoClinico.animal = Animal.findById(pHistoricoClinico.animal.id);
             } else {
-                throw new BadRequestException("Por favor, informar o Animal do Histórico Clínico.");//TODO organizar mensagem
+                throw new BadRequestException("Por favor, informar o Animal do Histórico Clínico.");
             }
             if (pHistoricoClinico.etco2 != null) {
                 historicoClinico.etco2 = pHistoricoClinico.etco2;
             } else {
-                throw new BadRequestException("Por favor, informar o etco2 do Animal no Histórico Clínico.");//TODO organizar mensagem
+                throw new BadRequestException("Por favor, informar o etco2 do Animal no Histórico Clínico.");
             }
             if (pHistoricoClinico.spo2 != null) {
                 historicoClinico.spo2 = pHistoricoClinico.spo2;
             } else {
-                throw new BadRequestException("Por favor, informar o spo2 do Animal no Histórico Clínico.");//TODO organizar mensagem
+                throw new BadRequestException("Por favor, informar o spo2 do Animal no Histórico Clínico.");
             }
             if (pHistoricoClinico.temperaturaAnimal != null) {
                 historicoClinico.temperaturaAnimal = pHistoricoClinico.temperaturaAnimal;
             } else {
-                throw new BadRequestException("Por favor, informar a temperatura do Animal no Histórico Clínico.");//TODO organizar mensagem
+                throw new BadRequestException("Por favor, informar a temperatura do Animal no Histórico Clínico.");
             }
             if (pHistoricoClinico.ps != null) {
                 historicoClinico.ps = pHistoricoClinico.ps;
             } else {
-                throw new BadRequestException("Por favor, informar o ps do Animal no Histórico Clínico.");//TODO organizar mensagem
+                throw new BadRequestException("Por favor, informar o ps do Animal no Histórico Clínico.");
             }
             if (pHistoricoClinico.frequenciaRespiratoria != null) {
                 historicoClinico.frequenciaRespiratoria = pHistoricoClinico.frequenciaRespiratoria;
             } else {
-                throw new BadRequestException("Por favor, informar o frequencia Respiratória do Animal no Histórico Clínico.");//TODO organizar mensagem
+                throw new BadRequestException(
+                        "Por favor, informar o frequencia Respiratória do Animal no Histórico Clínico.");
             }
             if (pHistoricoClinico.frequenciaCardiaca != null) {
                 historicoClinico.frequenciaCardiaca = pHistoricoClinico.frequenciaCardiaca;
             } else {
-                throw new BadRequestException("Por favor, informar o frequencia Cardíaca do Animal no Histórico Clínico.");//TODO organizar mensagem
+                throw new BadRequestException(
+                        "Por favor, informar o frequencia Cardíaca do Animal no Histórico Clínico.");
             }
             if (pHistoricoClinico.pd != null) {
                 historicoClinico.pd = pHistoricoClinico.pd;
 
             } else {
-                throw new BadRequestException("Por favor, informar o pd do Animal no Histórico Clínico.");//TODO organizar mensagem
+                throw new BadRequestException("Por favor, informar o pd do Animal no Histórico Clínico.");
             }
             if (pHistoricoClinico.observacao != null) {
                 historicoClinico.observacao = pHistoricoClinico.observacao;
             } else {
-                throw new BadRequestException("Por favor, informar a observacao do Animal no Histórico Clínico.");//TODO organizar mensagem
+                throw new BadRequestException("Por favor, informar a observacao do Animal no Histórico Clínico.");
             }
             if (pHistoricoClinico.pm != null) {
                 historicoClinico.pm = pHistoricoClinico.pm;
             } else {
-                throw new BadRequestException("Por favor, informar o pm do Animal no Histórico Clínico.");//TODO organizar mensagem
+                throw new BadRequestException("Por favor, informar o pm do Animal no Histórico Clínico.");
             }
 
             historicoClinico.isAtivo = Boolean.TRUE;
@@ -92,12 +96,16 @@ public class HistoricoClinicoController {
 
     public void updateHistoricoClinico(@NotNull HistoricoClinico pHistoricoClinico, String email) {
 
-        historicoClinico = HistoricoClinico.find("id = ?1 and isAtivo = true ORDER BY id DESC", pHistoricoClinico.id).firstResult();
+        historicoClinico = HistoricoClinico.find("id = ?1 and isAtivo = true ORDER BY id DESC", pHistoricoClinico.id)
+                .firstResult();
 
         if (historicoClinico != null) {
 
-            if (pHistoricoClinico.etco2 == null && pHistoricoClinico.temperaturaAnimal == null && pHistoricoClinico.spo2 == null && pHistoricoClinico.frequenciaRespiratoria == null && pHistoricoClinico.frequenciaCardiaca == null && pHistoricoClinico.ps == null && pHistoricoClinico.pd == null && pHistoricoClinico.pm == null) {
-                throw new BadRequestException("Informe os dados para atualizar o Histórico Clínico.");//TODO organizar mensagem
+            if (pHistoricoClinico.etco2 == null && pHistoricoClinico.temperaturaAnimal == null
+                    && pHistoricoClinico.spo2 == null && pHistoricoClinico.frequenciaRespiratoria == null
+                    && pHistoricoClinico.frequenciaCardiaca == null && pHistoricoClinico.ps == null
+                    && pHistoricoClinico.pd == null && pHistoricoClinico.pm == null) {
+                throw new BadRequestException("Informe os dados para atualizar o Histórico Clínico.");
             } else {
                 if (pHistoricoClinico.etco2 != null) {
                     if (!historicoClinico.etco2.equals(pHistoricoClinico.etco2)) {
@@ -154,7 +162,7 @@ public class HistoricoClinicoController {
                 historicoClinico.persist();
             }
         } else {
-            throw new BadRequestException("Não foi possível atualizar o Histórico Clínico.");//TODO organizar mensagem
+            throw new BadRequestException("Não foi possível atualizar o Histórico Clínico.");
 
         }
     }
@@ -162,7 +170,8 @@ public class HistoricoClinicoController {
     public void deleteHistoricoClinico(List<Long> pListIdHistoricoClinico, String email) {
 
         pListIdHistoricoClinico.forEach((pHistoricoClinico) -> {
-            historicoClinico = HistoricoClinico.find("id = ?1 and isAtivo = true ORDER BY id DESC", pHistoricoClinico).firstResult();
+            historicoClinico = HistoricoClinico.find("id = ?1 and isAtivo = true ORDER BY id DESC", pHistoricoClinico)
+                    .firstResult();
 
             if (historicoClinico != null) {
                 historicoClinico.isAtivo = Boolean.FALSE;
@@ -172,9 +181,9 @@ public class HistoricoClinicoController {
                 historicoClinico.persist();
             } else {
                 if (pListIdHistoricoClinico.size() <= 1) {
-                    throw new NotFoundException("Histórico Clínico não localizado ou já excluído.");//TODO organizar mensagem
+                    throw new NotFoundException("Histórico Clínico não localizado ou já excluído.");
                 } else {
-                    throw new NotFoundException("Históricos Clínico não localizados ou já excluídos.");//TODO organizar mensagem
+                    throw new NotFoundException("Históricos Clínico não localizados ou já excluídos.");
                 }
             }
         });
@@ -183,7 +192,8 @@ public class HistoricoClinicoController {
     public void reactivateHistoricoClinico(@NotNull List<Long> pListIdHistoricoClinico, String email) {
 
         pListIdHistoricoClinico.forEach((pHistoricoClinico) -> {
-            historicoClinico = HistoricoClinico.find("id = ?1 and isAtivo = false ORDER BY id DESC", pHistoricoClinico).firstResult();
+            historicoClinico = HistoricoClinico.find("id = ?1 and isAtivo = false ORDER BY id DESC", pHistoricoClinico)
+                    .firstResult();
 
             if (historicoClinico != null) {
                 historicoClinico.isAtivo = Boolean.TRUE;
@@ -193,9 +203,9 @@ public class HistoricoClinicoController {
                 historicoClinico.persist();
             } else {
                 if (pListIdHistoricoClinico.size() <= 1) {
-                    throw new NotFoundException("Histórico Clínico não localizado ou já reativado.");//TODO organizar mensagem
+                    throw new NotFoundException("Histórico Clínico não localizado ou já reativado.");
                 } else {
-                    throw new NotFoundException("Históricos Clínico não localizados ou já reativados.");//TODO organizar mensagem
+                    throw new NotFoundException("Históricos Clínico não localizados ou já reativados.");
                 }
             }
         });

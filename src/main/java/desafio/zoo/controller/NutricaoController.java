@@ -17,17 +17,17 @@ import java.util.List;
 public class NutricaoController {
 
     public Nutricao nutricao;
+
     public void addNutricao(@NotNull Nutricao pNutricao, String email) {
 
         nutricao = Nutricao.find("animal = ?1 and isAtivo = true ORDER BY id DESC", pNutricao.animal).firstResult();
-        //TODO verificar quais props são obrigatórias na criação.
         if (nutricao == null) {
             nutricao = new Nutricao();
 
             if (pNutricao.descricaoNutricao != null) {
                 nutricao.descricaoNutricao = pNutricao.descricaoNutricao;
             } else {
-                throw new BadRequestException("Por favor, preencha a descrição da Nutrição corretamente!");//TODO organizar mensagem
+                throw new BadRequestException("Por favor, preencha a descrição da Nutrição corretamente!");
             }
 
             nutricao.isAtivo = Boolean.TRUE;
@@ -35,19 +35,19 @@ public class NutricaoController {
             if (pNutricao.dataInicio != null) {
                 nutricao.dataInicio = pNutricao.dataInicio;
             } else {
-                throw new BadRequestException("Por favor, preencha a data de Início da Nutrição corretamente!");//TODO organizar mensagem
+                throw new BadRequestException("Por favor, preencha a data de Início da Nutrição corretamente!");
             }
 
             if (pNutricao.dataFim != null) {
                 nutricao.dataFim = pNutricao.dataFim;
 
             } else {
-                throw new BadRequestException("Por favor, preencha a data fim da Nutrição corretamente!");//TODO organizar mensagem
+                throw new BadRequestException("Por favor, preencha a data fim da Nutrição corretamente!");
             }
             if (pNutricao.animal != null) {
                 nutricao.animal = Animal.findById(pNutricao.animal.id);
             } else {
-                throw new BadRequestException("Por favor, preencha o Animal da Nutrição corretamente!");//TODO organizar mensagem
+                throw new BadRequestException("Por favor, preencha o Animal da Nutrição corretamente!");
             }
 
             nutricao.usuario = Usuario.find("email = ?1", email).firstResult();
@@ -57,7 +57,7 @@ public class NutricaoController {
             nutricao.persist();
 
         } else {
-            throw new BadRequestException("Nutrição já cadastrado!");//TODO organizar mensagem
+            throw new BadRequestException("Nutrição já cadastrado!");
         }
 
     }
@@ -67,8 +67,9 @@ public class NutricaoController {
         nutricao = Nutricao.find("id = ?1 and isAtivo = true ORDER BY id DESC", pNutricao.id).firstResult();
 
         if (nutricao != null) {
-            if (pNutricao.dataInicio == null && pNutricao.dataFim == null && pNutricao.descricaoNutricao == null && pNutricao.animal == null) {
-                throw new BadRequestException("Informe os dados para atualizar a Nutrição.");//TODO organizar mensagem
+            if (pNutricao.dataInicio == null && pNutricao.dataFim == null && pNutricao.descricaoNutricao == null
+                    && pNutricao.animal == null) {
+                throw new BadRequestException("Informe os dados para atualizar a Nutrição.");
             } else {
                 if (pNutricao.dataInicio != null) {
                     if (!nutricao.dataInicio.equals(pNutricao.dataInicio)) {
@@ -96,7 +97,7 @@ public class NutricaoController {
                 nutricao.persist();
             }
         } else {
-            throw new BadRequestException("Não foi possível atualizar a ficha de Nutrição.");//TODO organizar mensagem
+            throw new BadRequestException("Não foi possível atualizar a ficha de Nutrição.");
 
         }
     }
@@ -114,9 +115,9 @@ public class NutricaoController {
                 nutricao.persist();
             } else {
                 if (pListIdnutricao.size() <= 1) {
-                    throw new NotFoundException("Ficha de Nutrição não localizada ou já excluída.");//TODO organizar mensagem
+                    throw new NotFoundException("Ficha de Nutrição não localizada ou já excluída.");
                 } else {
-                    throw new NotFoundException("Fichas de Nutrição não localizadas ou já excluídas.");//TODO organizar mensagem
+                    throw new NotFoundException("Fichas de Nutrição não localizadas ou já excluídas.");
                 }
             }
         });
@@ -135,9 +136,9 @@ public class NutricaoController {
                 nutricao.persist();
             } else {
                 if (nutricaoList.size() <= 1) {
-                    throw new NotFoundException("Ficha de Nutrição não localizada ou já reativada.");//TODO organizar mensagem
+                    throw new NotFoundException("Ficha de Nutrição não localizada ou já reativada.");
                 } else {
-                    throw new NotFoundException("Fichas de Nutrição não localizadas ou já reativadas.");//TODO organizar mensagem
+                    throw new NotFoundException("Fichas de Nutrição não localizadas ou já reativadas.");
                 }
             }
         });

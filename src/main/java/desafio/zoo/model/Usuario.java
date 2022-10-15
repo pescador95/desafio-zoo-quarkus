@@ -21,11 +21,7 @@ import java.util.List;
 public class Usuario extends PanacheEntityBase {
 
     @Column()
-    @SequenceGenerator(
-            name = "usuarioIdSequence",
-            sequenceName = "usuario_id_seq",
-            allocationSize = 1
-    )
+    @SequenceGenerator(name = "usuarioIdSequence", sequenceName = "usuario_id_seq", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "usuarioIdSequence")
     @Id
     public Long id;
@@ -43,13 +39,6 @@ public class Usuario extends PanacheEntityBase {
 
     @Column()
     public boolean isAtivo;
-
-   /* @Column()
-    @ManyToOne
-    @JsonIgnoreProperties("usuario")
-    @JoinColumn(name = "userId")
-    @GeneratedValue
-    public Usuario usuarioAcao;*/ // TODO usuario ação para usuário
 
     @Column()
     @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
@@ -96,6 +85,5 @@ public class Usuario extends PanacheEntityBase {
     public Usuario() {
 
     }
-
 
 }

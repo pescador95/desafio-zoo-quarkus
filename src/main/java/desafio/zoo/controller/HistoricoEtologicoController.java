@@ -19,9 +19,11 @@ import java.util.Objects;
 public class HistoricoEtologicoController {
 
     public HistoricoEtologico historicoEtologico;
+
     public void addHistoricoEtologico(@NotNull HistoricoEtologico pHistoricoEtologico, String email) {
 
-        historicoEtologico = HistoricoEtologico.find("animal = ?1 and isAtivo = true ORDER BY id DESC", pHistoricoEtologico.animal).firstResult();
+        historicoEtologico = HistoricoEtologico
+                .find("animal = ?1 and isAtivo = true ORDER BY id DESC", pHistoricoEtologico.animal).firstResult();
 
         if (historicoEtologico == null) {
             historicoEtologico = new HistoricoEtologico();
@@ -29,24 +31,26 @@ public class HistoricoEtologicoController {
             if (pHistoricoEtologico.animal != null) {
                 historicoEtologico.animal = Animal.findById(pHistoricoEtologico.animal.id);
             } else {
-                throw new BadRequestException("Por favor, informar o Animal do Histórico Etológico.");//TODO organizar mensagem
+                throw new BadRequestException("Por favor, informar o Animal do Histórico Etológico.");
             }
             if (pHistoricoEtologico.dataEtologico != null) {
                 historicoEtologico.dataEtologico = pHistoricoEtologico.dataEtologico;
 
             } else {
-                throw new BadRequestException("Por favor, preencha a Data do evento Etológico corretamente!");//TODO organizar mensagem
+                throw new BadRequestException("Por favor, preencha a Data do evento Etológico corretamente!");
             }
             if (pHistoricoEtologico.nomeEtologico != null) {
                 historicoEtologico.nomeEtologico = pHistoricoEtologico.nomeEtologico;
 
             } else {
-                throw new BadRequestException("Por favor, preencha o Nome Etológico do Histórico Etológico corretamente!");//TODO organizar mensagem
+                throw new BadRequestException(
+                        "Por favor, preencha o Nome Etológico do Histórico Etológico corretamente!");
             }
             if (pHistoricoEtologico.descricaoEtologico != null) {
                 historicoEtologico.descricaoEtologico = pHistoricoEtologico.descricaoEtologico;
             } else {
-                throw new BadRequestException("Por favor, preencha a Descriação Etológica do Histórico Etológico corretamente!");//TODO organizar mensagem
+                throw new BadRequestException(
+                        "Por favor, preencha a Descriação Etológica do Histórico Etológico corretamente!");
             }
 
             historicoEtologico.isAtivo = Boolean.TRUE;
@@ -57,18 +61,20 @@ public class HistoricoEtologicoController {
             historicoEtologico.persist();
 
         } else {
-            throw new BadRequestException("HistoricoEtologico já cadastrado!");//TODO organizar mensagem
+            throw new BadRequestException("HistoricoEtologico já cadastrado!");
         }
 
     }
 
     public void updateHistoricoEtologico(@NotNull HistoricoEtologico pHistoricoEtologico, String email) {
 
-        historicoEtologico = HistoricoEtologico.find("id = ?1 and isAtivo = true ORDER BY id DESC", pHistoricoEtologico.id).firstResult();
+        historicoEtologico = HistoricoEtologico
+                .find("id = ?1 and isAtivo = true ORDER BY id DESC", pHistoricoEtologico.id).firstResult();
 
         if (historicoEtologico != null) {
-            if (pHistoricoEtologico.dataEtologico == null && pHistoricoEtologico.nomeEtologico == null && pHistoricoEtologico.descricaoEtologico == null && pHistoricoEtologico.animal == null) {
-                throw new BadRequestException("Informe os dados para atualizar o Histórico Etológico.");//TODO organizar mensagem
+            if (pHistoricoEtologico.dataEtologico == null && pHistoricoEtologico.nomeEtologico == null
+                    && pHistoricoEtologico.descricaoEtologico == null && pHistoricoEtologico.animal == null) {
+                throw new BadRequestException("Informe os dados para atualizar o Histórico Etológico.");
             } else {
                 if (pHistoricoEtologico.dataEtologico != null) {
                     if (!Objects.equals(historicoEtologico.dataEtologico, pHistoricoEtologico.dataEtologico)) {
@@ -86,17 +92,18 @@ public class HistoricoEtologicoController {
                     }
                 }
                 if (pHistoricoEtologico.animal != null) {
-                    if (historicoEtologico.animal != null && !historicoEtologico.animal.equals(pHistoricoEtologico.animal)) {
+                    if (historicoEtologico.animal != null
+                            && !historicoEtologico.animal.equals(pHistoricoEtologico.animal)) {
                         historicoEtologico.animal = Animal.findById(pHistoricoEtologico.animal.id);
                     }
                 }
 
-                historicoEtologico.usuarioAcao =Usuario.find("email = ?1", email).firstResult();
+                historicoEtologico.usuarioAcao = Usuario.find("email = ?1", email).firstResult();
                 historicoEtologico.dataAcao = new Date();
                 historicoEtologico.persist();
             }
         } else {
-            throw new BadRequestException("Não foi possível atualizar o Histórico Etológico.");//TODO organizar mensagem
+            throw new BadRequestException("Não foi possível atualizar o Histórico Etológico.");
 
         }
     }
@@ -104,7 +111,8 @@ public class HistoricoEtologicoController {
     public void deleteHistoricoEtologico(List<Long> pListHistoricoEtologico, String email) {
 
         pListHistoricoEtologico.forEach((pHistoricoEtologico) -> {
-            historicoEtologico = HistoricoEtologico.find("id = ?1 and isAtivo = true ORDER BY id DESC", pHistoricoEtologico).firstResult();
+            historicoEtologico = HistoricoEtologico
+                    .find("id = ?1 and isAtivo = true ORDER BY id DESC", pHistoricoEtologico).firstResult();
 
             if (historicoEtologico != null) {
                 historicoEtologico.isAtivo = Boolean.FALSE;
@@ -114,19 +122,19 @@ public class HistoricoEtologicoController {
                 historicoEtologico.persist();
             } else {
                 if (pListHistoricoEtologico.size() <= 1) {
-                    throw new NotFoundException("Histórico Etológico não localizado ou já excluído.");//TODO organizar mensagem
+                    throw new NotFoundException("Histórico Etológico não localizado ou já excluído.");
                 } else {
-                    throw new NotFoundException("Históricos Etológico não localizados ou já excluídos.");//TODO organizar mensagem
+                    throw new NotFoundException("Históricos Etológico não localizados ou já excluídos.");
                 }
             }
         });
     }
 
-
     public void reactivateHistoricoEtologico(List<Long> pListHistoricoEtologico, String email) {
 
         pListHistoricoEtologico.forEach((pHistoricoEtologico) -> {
-            historicoEtologico = HistoricoEtologico.find("id = ?1 and isAtivo = false ORDER BY id DESC", pHistoricoEtologico).firstResult();
+            historicoEtologico = HistoricoEtologico
+                    .find("id = ?1 and isAtivo = false ORDER BY id DESC", pHistoricoEtologico).firstResult();
 
             if (historicoEtologico != null) {
                 historicoEtologico.isAtivo = Boolean.TRUE;
@@ -136,9 +144,9 @@ public class HistoricoEtologicoController {
                 historicoEtologico.persist();
             } else {
                 if (pListHistoricoEtologico.size() <= 1) {
-                    throw new NotFoundException("Histórico Etológico não localizado ou já reativado.");//TODO organizar mensagem
+                    throw new NotFoundException("Histórico Etológico não localizado ou já reativado.");
                 } else {
-                    throw new NotFoundException("Históricos Etológico não localizados ou já reativados.");//TODO organizar mensagem
+                    throw new NotFoundException("Históricos Etológico não localizados ou já reativados.");
                 }
             }
         });

@@ -16,6 +16,7 @@ import java.util.Objects;
 @Transactional
 public class UsuarioController<pId> {
     private Usuario usuario = new Usuario();
+
     public void addUser(@NotNull Usuario pUsuario, String email) {
 
         usuario = Usuario.find("email = ?1 and isAtivo = true ORDER BY id DESC", pUsuario.email).firstResult();
@@ -26,43 +27,42 @@ public class UsuarioController<pId> {
             if (pUsuario.email != null) {
                 usuario.email = pUsuario.email;
             } else {
-                throw new BadRequestException("Por favor, preencha o email do Usuário corretamente!");//TODO organizar mensagem
+                throw new BadRequestException("Por favor, preencha o email do Usuário corretamente!");
             }
             if (pUsuario.nome != null) {
                 usuario.nome = pUsuario.nome;
             } else {
-                throw new BadRequestException("Por favor, preencha o nome do Usuário corretamente!");//TODO organizar mensagem
+                throw new BadRequestException("Por favor, preencha o nome do Usuário corretamente!");
             }
             if (pUsuario.password != null) {
                 usuario.password = BcryptUtil.bcryptHash(pUsuario.password);
             } else {
-                throw new BadRequestException("Por favor, preencha a senha do Usuário corretamente!");//TODO organizar mensagem
+                throw new BadRequestException("Por favor, preencha a senha do Usuário corretamente!");
             }
 
             if (pUsuario.roleUsuario != null) {
                 usuario.roleUsuario = pUsuario.roleUsuario;
             } else {
-                throw new BadRequestException("Por favor, preencha a permissão do Usuário corretamente!");//TODO organizar mensagem
+                throw new BadRequestException("Por favor, preencha a permissão do Usuário corretamente!");
             }
             usuario.isAtivo = Boolean.TRUE;
-            //usuario.usuarioAcao = Usuario.findById(pUsuario.usuarioAcao.id); //TODO usuario ação para usuário
             usuario.dataAcao = new Date();
             usuario.persist();
 
         } else {
-            throw new BadRequestException("Usuário já cadastrado!");//TODO organizar mensagem
+            throw new BadRequestException("Usuário já cadastrado!");
         }
 
     }
-
 
     public void updateUser(@NotNull Usuario pUsuario, String email) {
 
         usuario = Usuario.find("id = ?1 and isAtivo = true ORDER BY id DESC", pUsuario.id).firstResult();
 
         if (usuario != null) {
-            if (pUsuario.email == null && pUsuario.nome == null && pUsuario.password == null && pUsuario.roleUsuario == null) {
-                throw new BadRequestException("Informe os dados para atualizar o Usuário.");//TODO organizar mensagem
+            if (pUsuario.email == null && pUsuario.nome == null && pUsuario.password == null
+                    && pUsuario.roleUsuario == null) {
+                throw new BadRequestException("Informe os dados para atualizar o Usuário.");
             } else {
                 if (pUsuario.email != null) {
                     if (!usuario.email.equals(pUsuario.email)) {
@@ -84,13 +84,11 @@ public class UsuarioController<pId> {
                         usuario.roleUsuario = pUsuario.roleUsuario;
                     }
                 }
-
-                // usuario.usuarioAcao = Usuario.findById(pUsuario.usuarioAcao.id);  //TODO usuario ação para usuário
                 usuario.dataAcao = new Date();
                 usuario.persist();
             }
         } else {
-            throw new BadRequestException("Não foi possível atualizar o Usuário.");//TODO organizar mensagem
+            throw new BadRequestException("Não foi possível atualizar o Usuário.");
 
         }
     }
@@ -103,14 +101,13 @@ public class UsuarioController<pId> {
             if (usuario != null) {
                 usuario.isAtivo = Boolean.FALSE;
                 usuario.dataAcao = new Date();
-                //  usuario.usuarioAcao = Usuario.findById(pUsuario.usuarioAcao.id);  //TODO usuario ação para usuário
                 usuario.systemDateDeleted = new Date();
                 usuario.persist();
             } else {
                 if (pListIdusuario.size() <= 1) {
-                    throw new NotFoundException("Usuário não localizado ou já excluído.");//TODO organizar mensagem
+                    throw new NotFoundException("Usuário não localizado ou já excluído.");
                 } else {
-                    throw new NotFoundException("Usuários não localizados ou já excluídos.");//TODO organizar mensagem
+                    throw new NotFoundException("Usuários não localizados ou já excluídos.");
                 }
 
             }
@@ -125,19 +122,16 @@ public class UsuarioController<pId> {
             if (usuario != null) {
                 usuario.isAtivo = Boolean.TRUE;
                 usuario.dataAcao = new Date();
-                //  usuario.usuarioAcao = Usuario.findById(pUsuario.usuarioAcao.id);  //TODO usuario ação para usuário
                 usuario.systemDateDeleted = null;
                 usuario.persist();
             } else {
                 if (pListIdusuario.size() <= 1) {
-                    throw new NotFoundException("Usuário inativo não localizado ou já reativado.");//TODO organizar mensagem
+                    throw new NotFoundException("Usuário inativo não localizado ou já reativado.");
                 } else {
-                    throw new NotFoundException("Usuários inativos não localizados ou já reativados.");//TODO organizar mensagem
+                    throw new NotFoundException("Usuários inativos não localizados ou já reativados.");
                 }
 
             }
         });
     }
 }
-
-

@@ -61,6 +61,11 @@ public class AnimalController {
             } else {
                 throw new BadRequestException("Por favor, preencha a idade do Animal corretamente!"); //TODO organizar mensagem
             }
+            if (pAnimal.dataEntrada != null) {
+                animal.dataEntrada = pAnimal.dataEntrada;
+            } else {
+                throw new BadRequestException("Por favor, preencha a data de entrada do Animal corretamente!"); //TODO organizar mensagem
+            }
 
             animal.isAtivo = Boolean.TRUE;
             animal.usuario = Usuario.find("email = ?1", email).firstResult();

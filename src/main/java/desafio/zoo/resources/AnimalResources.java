@@ -49,7 +49,8 @@ public class AnimalResources {
     public Response list(@QueryParam("sort") @DefaultValue("desc") @NotNull String sortQuery,
                                @QueryParam("page") @DefaultValue("0") int pageIndex,
                                @QueryParam("size") @DefaultValue("20") int pageSize,
-                               @QueryParam("ativo") @DefaultValue("true") Boolean ativo) {
+                               @QueryParam("ativo") @DefaultValue("true") Boolean ativo
+                               ) {
         PanacheQuery<Animal> animais;
         if(sortQuery.equals("desc")) {
             animais = Animal.find("isAtivo = ?1 order by id desc", ativo);

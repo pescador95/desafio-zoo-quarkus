@@ -19,6 +19,8 @@ import java.util.Objects;
 public class EnriquecimentoAmbientalController {
 
     public EnriquecimentoAmbiental enriquecimentoAmbiental;
+    public Animal animal;
+
 
     public void addEnriquecimentoAmbiental(@NotNull EnriquecimentoAmbiental pEnriquecimentoAmbiental, String email) {
 
@@ -27,6 +29,7 @@ public class EnriquecimentoAmbientalController {
                 pEnriquecimentoAmbiental.animal, pEnriquecimentoAmbiental.dataEnriquecimento,
                 pEnriquecimentoAmbiental.nomeEnriquecimento, pEnriquecimentoAmbiental.descricaoEnriquecimento)
                 .firstResult();
+        animal = Animal.find("id = ?", pEnriquecimentoAmbiental.animal.id).firstResult();
 
         if (enriquecimentoAmbiental == null) {
             enriquecimentoAmbiental = new EnriquecimentoAmbiental();
@@ -57,6 +60,7 @@ public class EnriquecimentoAmbientalController {
                         "Por favor, preencha a Descrição do Enriquecimento Ambiental corretamente!");
             }
 
+            enriquecimentoAmbiental.nomeAnimal = animal.nomeApelido;
             enriquecimentoAmbiental.isAtivo = Boolean.TRUE;
             enriquecimentoAmbiental.usuario = Usuario.find("email = ?1", email).firstResult();
             enriquecimentoAmbiental.usuarioAcao = Usuario.find("email = ?1", email).firstResult();
@@ -103,6 +107,13 @@ public class EnriquecimentoAmbientalController {
                         enriquecimentoAmbiental.descricaoEnriquecimento = pEnriquecimentoAmbiental.descricaoEnriquecimento;
                     }
                 }
+                if (pEnriquecimentoAmbiental.animal != null) {
+                    if (!enriquecimentoAmbiental.animal
+                            .equals(pEnriquecimentoAmbiental.animal)) {
+                        enriquecimentoAmbiental.animal = Animal.findById(pEnriquecimentoAmbiental.animal.id);
+                    }
+                }
+                enriquecimentoAmbiental.nomeAnimal = enriquecimentoAmbiental.animal.nomeApelido;
                 enriquecimentoAmbiental.usuarioAcao = Usuario.find("email = ?1", email).firstResult();
                 enriquecimentoAmbiental.dataAcao = new Date();
                 enriquecimentoAmbiental.persist();

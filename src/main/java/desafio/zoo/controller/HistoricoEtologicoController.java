@@ -19,11 +19,13 @@ import java.util.Objects;
 public class HistoricoEtologicoController {
 
     public HistoricoEtologico historicoEtologico;
-
+    public Animal animal;
+    
     public void addHistoricoEtologico(@NotNull HistoricoEtologico pHistoricoEtologico, String email) {
 
         historicoEtologico = HistoricoEtologico
                 .find("animal = ?1 and isAtivo = true ORDER BY id DESC", pHistoricoEtologico.animal).firstResult();
+        animal = Animal.find("id = ?", pHistoricoEtologico.animal.id).firstResult();
 
         if (historicoEtologico == null) {
             historicoEtologico = new HistoricoEtologico();
@@ -53,6 +55,7 @@ public class HistoricoEtologicoController {
                         "Por favor, preencha a Descriação Etológica do Histórico Etológico corretamente!");
             }
 
+            historicoEtologico.nomeAnimal = animal.nomeApelido;
             historicoEtologico.isAtivo = Boolean.TRUE;
             historicoEtologico.usuario = Usuario.find("email = ?1", email).firstResult();
             historicoEtologico.usuarioAcao = Usuario.find("email = ?1", email).firstResult();
@@ -98,6 +101,8 @@ public class HistoricoEtologicoController {
                     }
                 }
 
+
+                historicoEtologico.nomeAnimal = historicoEtologico.animal.nomeApelido;
                 historicoEtologico.usuarioAcao = Usuario.find("email = ?1", email).firstResult();
                 historicoEtologico.dataAcao = new Date();
                 historicoEtologico.persist();

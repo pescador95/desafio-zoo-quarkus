@@ -23,6 +23,7 @@ public class MedicacaoResources {
     @Inject
     MedicacaoController controller;
     Medicacao medicacao;
+
     @GET
     @Path("{id}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -32,37 +33,39 @@ public class MedicacaoResources {
         medicacao = Medicacao.findById(pId);
         return Response.ok(medicacao).status(200).build();
     }
+
     @GET
     @Path("/count")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
-    @RolesAllowed({ "veterinario", "biologo", "dev" })
-    public Response count(@QueryParam("ativo") @DefaultValue("true")  Boolean ativo) {
+    @RolesAllowed({"veterinario", "biologo", "dev"})
+    public Response count(@QueryParam("ativo") @DefaultValue("true") Boolean ativo) {
         long medicacao = Medicacao.count("isAtivo = ?1", ativo);
         return Response.ok(medicacao).status(200).build();
     }
+
     @GET
     @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
-    @RolesAllowed({"veterinario", "biologo", "dev"})
-    public Response list(@QueryParam("sort") String sortQuery,
-                               @QueryParam("page") @DefaultValue("0") int pageIndex,
-                               @QueryParam("size") @DefaultValue("20") int pageSize,
-                               @QueryParam("ativo") @DefaultValue("true") Boolean ativo) {
+    public Response list(@QueryParam("sort") @DefaultValue("desc") @NotNull String sortQuery,
+                         @QueryParam("page") @DefaultValue("0") int pageIndex,
+                         @QueryParam("size") @DefaultValue("20") int pageSize,
+                         @QueryParam("ativo") @DefaultValue("true") Boolean ativo,
+                         @QueryParam("strgFilter") @DefaultValue("") String strgFilter,
+                         @QueryParam("strgOrder") @DefaultValue("id") String strgOrder
+    ) {
+        String query = "isAtivo = " + ativo + " " + strgFilter + " " + "order by " + strgOrder + " " + sortQuery;
         PanacheQuery<Medicacao> medicacao;
-        if(sortQuery.equals("desc")) {
-            medicacao = Medicacao.find("isAtivo = ?1 order by id desc", ativo);
-        }else{
-            medicacao = Medicacao.find("isAtivo = ?1 order by id asc", ativo);
-        }
+        medicacao = Medicacao.find(query);
         return Response.ok(medicacao.page(Page.of(pageIndex, pageSize)).list()).status(200).build();
     }
+
     @POST
     @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
-    @RolesAllowed({ "veterinario", "biologo", "dev" })
+    @RolesAllowed({"veterinario", "biologo", "dev"})
     public Response add(Medicacao pMedicacao, @Context @NotNull SecurityContext context) {
         Principal json = context.getUserPrincipal();
         String email = json.getName();
@@ -74,7 +77,7 @@ public class MedicacaoResources {
     @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
-    @RolesAllowed({ "veterinario", "biologo", "dev" })
+    @RolesAllowed({"veterinario", "biologo", "dev"})
     public Response update(Medicacao pMedicacao, @Context @NotNull SecurityContext context) {
         Principal json = context.getUserPrincipal();
         String email = json.getName();
@@ -86,7 +89,7 @@ public class MedicacaoResources {
     @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
-    @RolesAllowed({ "veterinario", "biologo", "dev" })
+    @RolesAllowed({"veterinario", "biologo", "dev"})
     public Response deleteList(List<Long> pListMedicacao, @Context @NotNull SecurityContext context) {
         Principal json = context.getUserPrincipal();
         String email = json.getName();
@@ -98,7 +101,7 @@ public class MedicacaoResources {
     @Path("/reactivate")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
-    @RolesAllowed({ "veterinario", "biologo", "dev" })
+    @RolesAllowed({"veterinario", "biologo", "dev"})
     public Response reactivateList(List<Long> pListMedicacao, @Context @NotNull SecurityContext context) {
         Principal json = context.getUserPrincipal();
         String email = json.getName();

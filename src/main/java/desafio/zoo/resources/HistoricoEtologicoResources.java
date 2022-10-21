@@ -23,46 +23,50 @@ public class HistoricoEtologicoResources {
     @Inject
     HistoricoEtologicoController controller;
     HistoricoEtologico historicoEtologico;
+
     @GET
     @Path("{id}")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
-    @RolesAllowed({ "veterinario", "biologo", "dev" })
+    @RolesAllowed({"veterinario", "biologo", "dev"})
     public Response getById(@PathParam("id") Long pId) {
         historicoEtologico = HistoricoEtologico.findById(pId);
         return Response.ok(historicoEtologico).status(200).build();
     }
+
     @GET
     @Path("/count")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
-    @RolesAllowed({ "veterinario", "biologo", "dev" })
-    public Response count(@QueryParam("ativo") @DefaultValue("true")  Boolean ativo) {
+    @RolesAllowed({"veterinario", "biologo", "dev"})
+    public Response count(@QueryParam("ativo") @DefaultValue("true") Boolean ativo) {
         long historicoEtologico = HistoricoEtologico.count("isAtivo = ?1", ativo);
         return Response.ok(historicoEtologico).status(200).build();
     }
+
     @GET
     @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
-    @RolesAllowed({ "veterinario", "biologo", "dev" })
-    public Response list(@QueryParam("sort") String sortQuery,
-                               @QueryParam("page") @DefaultValue("0") int pageIndex,
-                               @QueryParam("size") @DefaultValue("20") int pageSize,
-                         @QueryParam("ativo") @DefaultValue("true") Boolean ativo) {
+    @RolesAllowed({"veterinario", "biologo", "dev"})
+    public Response list(@QueryParam("sort") @DefaultValue("desc") @NotNull String sortQuery,
+                         @QueryParam("page") @DefaultValue("0") int pageIndex,
+                         @QueryParam("size") @DefaultValue("20") int pageSize,
+                         @QueryParam("ativo") @DefaultValue("true") Boolean ativo,
+                         @QueryParam("strgFilter") @DefaultValue("") String strgFilter,
+                         @QueryParam("strgOrder") @DefaultValue("id") String strgOrder
+    ) {
+        String query = "isAtivo = " + ativo + " " + strgFilter + " " + "order by " + strgOrder + " " + sortQuery;
         PanacheQuery<HistoricoEtologico> historicoEtologico;
-        if(sortQuery.equals("desc")) {
-            historicoEtologico = HistoricoEtologico.find("isAtivo = ?1 order by id desc", ativo);
-        }else{
-            historicoEtologico = HistoricoEtologico.find("isAtivo = ?1 order by id asc", ativo);
-        }
-        return Response.ok(historicoEtologico.page(Page.of(pageIndex,pageSize)).list()).status(200).build();
+        historicoEtologico = HistoricoEtologico.find(query);
+        return Response.ok(historicoEtologico.page(Page.of(pageIndex, pageSize)).list()).status(200).build();
     }
+
     @POST
     @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
-    @RolesAllowed({ "veterinario", "biologo", "dev" })
+    @RolesAllowed({"veterinario", "biologo", "dev"})
     public Response add(HistoricoEtologico pHistoricoEtologico, @Context @NotNull SecurityContext context) {
         Principal json = context.getUserPrincipal();
         String email = json.getName();
@@ -74,7 +78,7 @@ public class HistoricoEtologicoResources {
     @Path("/update")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
-    @RolesAllowed({ "veterinario", "biologo", "dev" })
+    @RolesAllowed({"veterinario", "biologo", "dev"})
     public Response update(HistoricoEtologico pHistoricoEtologico, @Context @NotNull SecurityContext context) {
         Principal json = context.getUserPrincipal();
         String email = json.getName();
@@ -86,7 +90,7 @@ public class HistoricoEtologicoResources {
     @Path("/delete")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
-    @RolesAllowed({ "veterinario", "biologo", "dev" })
+    @RolesAllowed({"veterinario", "biologo", "dev"})
     public Response deleteList(List<Long> pListHistoricoEtologico, @Context @NotNull SecurityContext context) {
         Principal json = context.getUserPrincipal();
         String email = json.getName();
@@ -98,7 +102,7 @@ public class HistoricoEtologicoResources {
     @Path("/reactivate")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
-    @RolesAllowed({ "veterinario", "biologo", "dev" })
+    @RolesAllowed({"veterinario", "biologo", "dev"})
     public Response reactivateList(List<Long> pListHistoricoEtologico, @Context @NotNull SecurityContext context) {
         Principal json = context.getUserPrincipal();
         String email = json.getName();

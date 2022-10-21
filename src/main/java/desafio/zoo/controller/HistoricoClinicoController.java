@@ -18,11 +18,13 @@ import java.util.List;
 public class HistoricoClinicoController {
 
     public HistoricoClinico historicoClinico;
+    public Animal animal;
 
     public void addHistoricoClinico(@NotNull HistoricoClinico pHistoricoClinico, String email) {
 
         historicoClinico = HistoricoClinico
                 .find("animal = ?1 and isAtivo = true ORDER BY id DESC", pHistoricoClinico.animal).firstResult();
+        animal = Animal.find("id = ?", pHistoricoClinico.animal.id).firstResult();
 
         if (historicoClinico == null) {
             historicoClinico = new HistoricoClinico();
@@ -81,6 +83,7 @@ public class HistoricoClinicoController {
                 throw new BadRequestException("Por favor, informar o pm do Animal no Histórico Clínico.");
             }
 
+            historicoClinico.nomeAnimal = animal.nomeApelido;
             historicoClinico.isAtivo = Boolean.TRUE;
             historicoClinico.usuario = Usuario.find("email = ?1", email).firstResult();
             historicoClinico.usuarioAcao = Usuario.find("email = ?1", email).firstResult();
@@ -157,6 +160,7 @@ public class HistoricoClinicoController {
                         historicoClinico.animal = Animal.findById(pHistoricoClinico.animal.id);
                     }
                 }
+                historicoClinico.nomeAnimal = historicoClinico.animal.nomeApelido;
                 historicoClinico.usuarioAcao = Usuario.find("email = ?1", email).firstResult();
                 historicoClinico.dataAcao = new Date();
                 historicoClinico.persist();

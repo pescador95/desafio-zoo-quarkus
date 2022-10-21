@@ -16,10 +16,12 @@ import java.util.Objects;
 @Transactional
 public class UsuarioController<pId> {
     private Usuario usuario = new Usuario();
+    public String usuarioCreated;
 
     public void addUser(@NotNull Usuario pUsuario, String email) {
 
         usuario = Usuario.find("email = ?1 and isAtivo = true ORDER BY id DESC", pUsuario.email).firstResult();
+        usuarioCreated = usuario.nome;
 
         if (usuario == null) {
             usuario = new Usuario();
@@ -45,6 +47,8 @@ public class UsuarioController<pId> {
             } else {
                 throw new BadRequestException("Por favor, preencha a permissão do Usuário corretamente!");
             }
+            usuario.usuario = usuarioCreated;
+            usuario.usuarioAcao = usuarioCreated;
             usuario.isAtivo = Boolean.TRUE;
             usuario.dataAcao = new Date();
             usuario.persist();
@@ -58,6 +62,7 @@ public class UsuarioController<pId> {
     public void updateUser(@NotNull Usuario pUsuario, String email) {
 
         usuario = Usuario.find("id = ?1 and isAtivo = true ORDER BY id DESC", pUsuario.id).firstResult();
+        usuarioCreated = usuario.nome;
 
         if (usuario != null) {
             if (pUsuario.email == null && pUsuario.nome == null && pUsuario.password == null
@@ -84,6 +89,7 @@ public class UsuarioController<pId> {
                         usuario.roleUsuario = pUsuario.roleUsuario;
                     }
                 }
+               usuario.usuarioAcao = usuarioCreated;
                 usuario.dataAcao = new Date();
                 usuario.persist();
             }
@@ -97,8 +103,9 @@ public class UsuarioController<pId> {
 
         pListIdusuario.forEach((pUsuario) -> {
             Usuario usuario = Usuario.find("id = ?1 and isAtivo = true ORDER BY id DESC", pUsuario).firstResult();
-
+            usuarioCreated = usuario.nome;
             if (usuario != null) {
+                usuario.usuarioAcao = usuarioCreated;
                 usuario.isAtivo = Boolean.FALSE;
                 usuario.dataAcao = new Date();
                 usuario.systemDateDeleted = new Date();
@@ -118,8 +125,9 @@ public class UsuarioController<pId> {
 
         pListIdusuario.forEach((pUsuario) -> {
             Usuario usuario = Usuario.find("id = ?1 and isAtivo = false ORDER BY id DESC", pUsuario).firstResult();
-
+            usuarioCreated = usuario.nome;
             if (usuario != null) {
+                usuario.usuarioAcao= usuarioCreated;
                 usuario.isAtivo = Boolean.TRUE;
                 usuario.dataAcao = new Date();
                 usuario.systemDateDeleted = null;

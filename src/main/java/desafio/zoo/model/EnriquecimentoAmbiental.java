@@ -2,6 +2,7 @@ package desafio.zoo.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 
 import javax.persistence.*;
@@ -28,6 +29,7 @@ public class EnriquecimentoAmbiental extends PanacheEntityBase {
     public Animal animal;
 
     @Column()
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     public String nomeAnimal;
     @Column()
     @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")

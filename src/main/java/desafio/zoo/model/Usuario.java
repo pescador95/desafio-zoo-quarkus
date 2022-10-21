@@ -52,6 +52,12 @@ public class Usuario extends PanacheEntityBase {
     @Roles
     public String roleUsuario;
 
+    @Column()
+    public String usuario;
+
+    @Column()
+    public String usuarioAcao;
+
     @LazyCollection(LazyCollectionOption.FALSE)
     @OneToMany(fetch = FetchType.LAZY, targetEntity = Nutricao.class, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "usuario")
     @JsonIgnoreProperties("usuario")

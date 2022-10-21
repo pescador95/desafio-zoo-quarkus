@@ -20,7 +20,7 @@ public class HistoricoEtologicoController {
 
     public HistoricoEtologico historicoEtologico;
     public Animal animal;
-
+    
     public void addHistoricoEtologico(@NotNull HistoricoEtologico pHistoricoEtologico, String email) {
 
         historicoEtologico = HistoricoEtologico
@@ -100,6 +100,7 @@ public class HistoricoEtologicoController {
                         historicoEtologico.animal = Animal.findById(pHistoricoEtologico.animal.id);
                     }
                 }
+
 
                 historicoEtologico.nomeAnimal = historicoEtologico.animal.nomeApelido;
                 historicoEtologico.usuarioAcao = Usuario.find("email = ?1", email).firstResult();

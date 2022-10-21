@@ -57,11 +57,8 @@ public class AnimalResources {
                          @QueryParam("strgOrder") @DefaultValue("id") String strgOrder
     ) {
         PanacheQuery<Animal> animais;
-
         String query = "isAtivo = " + ativo + " " + strgFilter + " " + "order by " + strgOrder + " " + sortQuery;
-
         animais = Animal.find(query);
-
         return Response.ok(animais.page(Page.of(pageIndex, pageSize)).list()).status(200).build();
     }
 

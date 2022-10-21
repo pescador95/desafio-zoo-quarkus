@@ -28,6 +28,9 @@ public class HistoricoClinico extends PanacheEntityBase {
     public Animal animal;
 
     @Column()
+    public String nomeAnimal;
+
+    @Column()
     public Float temperaturaAnimal;
 
     @Column()

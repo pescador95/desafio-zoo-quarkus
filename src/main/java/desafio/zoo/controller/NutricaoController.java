@@ -17,10 +17,13 @@ import java.util.List;
 public class NutricaoController {
 
     public Nutricao nutricao;
+    public Animal animal;
 
     public void addNutricao(@NotNull Nutricao pNutricao, String email) {
 
         nutricao = Nutricao.find("animal = ?1 and isAtivo = true ORDER BY id DESC", pNutricao.animal).firstResult();
+        animal = Animal.find("id = ?", pNutricao.animal.id).firstResult();
+
         if (nutricao == null) {
             nutricao = new Nutricao();
 
@@ -49,7 +52,7 @@ public class NutricaoController {
             } else {
                 throw new BadRequestException("Por favor, preencha o Animal da Nutrição corretamente!");
             }
-
+            nutricao.nomeAnimal = animal.nomeApelido;
             nutricao.usuario = Usuario.find("email = ?1", email).firstResult();
             nutricao.usuarioAcao = Usuario.find("email = ?1", email).firstResult();
             nutricao.dataAcao = new Date();
@@ -91,7 +94,7 @@ public class NutricaoController {
                         nutricao.animal = Animal.findById(pNutricao.animal.id);
                     }
                 }
-
+                nutricao.nomeAnimal = nutricao.animal.nomeApelido;
                 nutricao.usuarioAcao = Usuario.find("email = ?1", email).firstResult();
                 nutricao.dataAcao = new Date();
                 nutricao.persist();

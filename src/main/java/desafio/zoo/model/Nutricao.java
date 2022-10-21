@@ -30,6 +30,9 @@ public class Nutricao extends PanacheEntityBase {
     Animal animal;
 
     @Column()
+    public String nomeAnimal;
+
+    @Column()
     @JsonFormat(pattern = "dd/MM/yyyy")
     public Date dataInicio;
 

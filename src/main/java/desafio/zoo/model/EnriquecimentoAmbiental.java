@@ -28,6 +28,8 @@ public class EnriquecimentoAmbiental extends PanacheEntityBase {
     public Animal animal;
 
     @Column()
+    public String nomeAnimal;
+    @Column()
     @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
     public Date dataEnriquecimento;
 

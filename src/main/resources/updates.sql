@@ -6,3 +6,5 @@ update usuario set usuario = usuario.nome;
 update animal set idade = 'Filhote' where id between 1 and 333;
 update animal set idade = 'Adulto' where id between 334 and 667;
 update animal set idade = 'Idoso' where id between 668 and 1000;
+update animal set sexo = 'Macho' where sexo = 'Male';
+update animal set sexo = 'Fêmea' where sexo = 'Female';

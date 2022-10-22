@@ -21,7 +21,7 @@ public class Animal extends PanacheEntityBase {
             sequenceName = "animal_id_seq",
             allocationSize = 1
     )
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "animalIdSequence")
+    @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "animalIdSequence")
     @Id
     public Long id;
 
@@ -48,19 +48,22 @@ public class Animal extends PanacheEntityBase {
     public String idade;
 
     @Column()
-    public boolean isAtivo;
+    public String origem;
 
-    @ManyToOne()
-    @JsonIgnoreProperties("animal")
-    @JoinColumn(name = "userId")
-    @GeneratedValue
-    public Usuario usuarioAcao;
+    @Column()
+    public boolean isAtivo;
 
     @ManyToOne()
     @JsonIgnoreProperties("animal")
     @JoinColumn(name = "userId", insertable = false, updatable = false)
     @GeneratedValue
     public Usuario usuario;
+
+    @ManyToOne()
+    @JsonIgnoreProperties("animal")
+    @JoinColumn(name = "userId")
+    @GeneratedValue
+    public Usuario usuarioAcao;
 
     @Column()
     @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
@@ -69,9 +72,6 @@ public class Animal extends PanacheEntityBase {
     @Column()
     @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
     public Date systemDateDeleted;
-    @Column()
-    public String origem;
-
 
     @LazyCollection(LazyCollectionOption.FALSE)
     @OneToMany(fetch = FetchType.LAZY, targetEntity = Nutricao.class, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "animal")

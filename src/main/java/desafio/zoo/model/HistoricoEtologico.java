@@ -18,7 +18,7 @@ public class HistoricoEtologico extends PanacheEntityBase {
             sequenceName = "historicoEtologico_id_seq",
             allocationSize = 1
     )
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "historicoEtologicoIdSequence")
+    @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "historicoEtologicoIdSequence")
     @Id
     public Long id;
 
@@ -42,11 +42,8 @@ public class HistoricoEtologico extends PanacheEntityBase {
     @Column()
     public String descricaoEtologico;
 
-    @ManyToOne()
-    @JsonIgnoreProperties("historicoEtologico")
-    @JoinColumn(name = "userId")
-    @GeneratedValue
-    public Usuario usuarioAcao;
+    @Column()
+    public boolean isAtivo;
 
     @ManyToOne()
     @JsonIgnoreProperties("historicoEtologico")
@@ -54,8 +51,11 @@ public class HistoricoEtologico extends PanacheEntityBase {
     @GeneratedValue
     public Usuario usuario;
 
-    @Column()
-    public boolean isAtivo;
+    @ManyToOne()
+    @JsonIgnoreProperties("historicoEtologico")
+    @JoinColumn(name = "userId")
+    @GeneratedValue
+    public Usuario usuarioAcao;
 
     @Column()
     @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")

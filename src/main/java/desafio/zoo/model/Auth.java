@@ -7,12 +7,14 @@ import java.util.Date;
 
 @ApplicationScoped
 public class Auth {
+
     public String email;
 
     public String nomeUsuario;
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     public String password;
+
     public String roleUsuario;
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)

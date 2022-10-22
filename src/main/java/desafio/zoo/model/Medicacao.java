@@ -17,7 +17,7 @@ public class Medicacao extends PanacheEntityBase {
             sequenceName = "medicacao_id_seq",
             allocationSize = 1
     )
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "medicacaoIdSequence")
+    @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "medicacaoIdSequence")
     @Id
     public Long id;
 
@@ -39,11 +39,8 @@ public class Medicacao extends PanacheEntityBase {
     @Column(nullable = false)
     public String frequencia;
 
-    @ManyToOne()
-    @JsonIgnoreProperties("medicacao")
-    @JoinColumn(name = "userId")
-    @GeneratedValue
-    public Usuario usuarioAcao;
+    @Column()
+    public boolean isAtivo;
 
     @ManyToOne()
     @JsonIgnoreProperties("medicacao")
@@ -51,8 +48,11 @@ public class Medicacao extends PanacheEntityBase {
     @GeneratedValue
     public Usuario usuario;
 
-    @Column()
-    public boolean isAtivo;
+    @ManyToOne()
+    @JsonIgnoreProperties("medicacao")
+    @JoinColumn(name = "userId")
+    @GeneratedValue
+    public Usuario usuarioAcao;
 
     @Column()
     @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")

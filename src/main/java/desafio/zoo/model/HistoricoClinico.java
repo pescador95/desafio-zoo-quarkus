@@ -18,7 +18,7 @@ public class HistoricoClinico extends PanacheEntityBase {
             sequenceName = "historicoClinico_id_seq",
             allocationSize = 1
     )
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "historicoClinicoIdSequence")
+    @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "historicoClinicoIdSequence")
     @Id
     public Long id;
 
@@ -59,11 +59,8 @@ public class HistoricoClinico extends PanacheEntityBase {
     @Column()
     public Float pm;
 
-    @ManyToOne()
-    @JsonIgnoreProperties("historicoClinico")
-    @JoinColumn(name = "userId")
-    @GeneratedValue
-    public Usuario usuarioAcao;
+    @Column()
+    public boolean isAtivo;
 
     @ManyToOne()
     @JsonIgnoreProperties("historicoClinico")
@@ -71,8 +68,11 @@ public class HistoricoClinico extends PanacheEntityBase {
     @GeneratedValue
     public Usuario usuario;
 
-    @Column()
-    public boolean isAtivo;
+    @ManyToOne()
+    @JsonIgnoreProperties("historicoClinico")
+    @JoinColumn(name = "userId")
+    @GeneratedValue
+    public Usuario usuarioAcao;
 
     @Column()
     @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")

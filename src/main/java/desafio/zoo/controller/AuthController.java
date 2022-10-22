@@ -36,7 +36,7 @@ public class AuthController {
             throw new BadRequestException("email ou senha incorretas");
         }
 
-        System.out.print("\n" + "Iniciando login com usuário: " + usuario.email + "..." + "\n" + "Bem vindo, "
+        System.out.print("\n" + "Iniciando login com usuário: " + usuario.email + "..." + "\n" + "\n" + "Bem vindo, "
                 + usuario.nome + "!");
         String accessToken = token.GenerateAccessToken(usuario);
         String refreshToken = token.GenerateRefreshToken(usuario);

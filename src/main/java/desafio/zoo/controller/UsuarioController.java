@@ -132,7 +132,7 @@ public class UsuarioController<pId> {
             Usuario usuario = Usuario.find("id = ?1 and isAtivo = false ORDER BY id DESC", pUsuario).firstResult();
 
             if (usuario != null) {
-              usuarioAcao = usuarioAuth.nome;
+              usuario.usuarioAcao = usuarioAuth.nome;
                 usuario.isAtivo = Boolean.TRUE;
                 usuario.dataAcao = new Date();
                 usuario.systemDateDeleted = null;

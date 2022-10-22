@@ -18,7 +18,7 @@ public class EnriquecimentoAmbiental extends PanacheEntityBase {
             sequenceName = "enriquecimentoAmbiental_id_seq",
             allocationSize = 1
     )
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "enriquecimentoAmbientalIdSequence")
+    @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "enriquecimentoAmbientalIdSequence")
     @Id
     public Long id;
 

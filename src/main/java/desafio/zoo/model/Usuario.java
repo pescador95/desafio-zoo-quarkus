@@ -22,7 +22,7 @@ public class Usuario extends PanacheEntityBase {
 
     @Column()
     @SequenceGenerator(name = "usuarioIdSequence", sequenceName = "usuario_id_seq", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "usuarioIdSequence")
+    @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "usuarioIdSequence")
     @Id
     public Long id;
     @Column(nullable = false)
@@ -38,7 +38,17 @@ public class Usuario extends PanacheEntityBase {
     public String email;
 
     @Column()
+    @Roles
+    public String roleUsuario;
+
+    @Column()
     public boolean isAtivo;
+
+    @Column()
+    public String usuario;
+
+    @Column()
+    public String usuarioAcao;
 
     @Column()
     @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
@@ -47,16 +57,6 @@ public class Usuario extends PanacheEntityBase {
     @Column()
     @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
     public Date systemDateDeleted;
-
-    @Column()
-    @Roles
-    public String roleUsuario;
-
-    @Column()
-    public String usuario;
-
-    @Column()
-    public String usuarioAcao;
 
     @LazyCollection(LazyCollectionOption.FALSE)
     @OneToMany(fetch = FetchType.LAZY, targetEntity = Nutricao.class, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "usuario")

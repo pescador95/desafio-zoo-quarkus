@@ -18,7 +18,7 @@ public class Nutricao extends PanacheEntityBase {
             sequenceName = "nutricao_id_seq",
             allocationSize = 1
     )
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "nutricaoIdSequence")
+    @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "nutricaoIdSequence")
     @Id
     public Long id;
 
@@ -45,14 +45,14 @@ public class Nutricao extends PanacheEntityBase {
     @Column()
     public String descricaoNutricao;
 
+    @Column()
+    public boolean isAtivo;
+
     @ManyToOne()
     @JsonIgnoreProperties("nutricao")
     @JoinColumn(name = "userId", insertable = false, updatable = false)
     @GeneratedValue
     public Usuario usuario;
-
-    @Column()
-    public boolean isAtivo;
 
     @ManyToOne()
     @JsonIgnoreProperties("nutricao")

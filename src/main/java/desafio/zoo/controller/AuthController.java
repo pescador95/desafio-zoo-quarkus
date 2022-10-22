@@ -36,7 +36,7 @@ public class AuthController {
             throw new BadRequestException("email ou senha incorretas");
         }
 
-        System.out.print("\n" + "Iniciando login com usuário: " + usuario.email + "..." + "\n" + "Bem vindo, "
+        System.out.print("\n" + "Iniciando login com usuário: " + usuario.email + "..." + "\n" + "\n" + "Bem vindo, "
                 + usuario.nome + "!");
         String accessToken = token.GenerateAccessToken(usuario);
         String refreshToken = token.GenerateRefreshToken(usuario);
@@ -52,7 +52,6 @@ public class AuthController {
         }
 
         Auth auth = new Auth();
-        auth.nomeUsuario = usuario.nome;
         auth.email = usuario.email;
         auth.password = BcryptUtil.bcryptHash(usuario.password);
         auth.roleUsuario = usuario.roleUsuario;
@@ -97,7 +96,6 @@ public class AuthController {
                 throw new BadRequestException("Credenciais incorretas!");
             }
             Auth auth = new Auth();
-            auth.nomeUsuario = usuario.nome;
             auth.email = usuario.email;
             auth.roleUsuario = usuario.roleUsuario;
             auth.usuario = usuario;

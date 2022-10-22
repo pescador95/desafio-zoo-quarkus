@@ -10,6 +10,8 @@ public class Auth {
 
     public String email;
 
+    public String nomeUsuario;
+
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     public String password;
 

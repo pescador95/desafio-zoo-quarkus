@@ -52,6 +52,7 @@ public class AuthController {
         }
 
         Auth auth = new Auth();
+        auth.nomeUsuario = usuario.nome;
         auth.email = usuario.email;
         auth.password = BcryptUtil.bcryptHash(usuario.password);
         auth.roleUsuario = usuario.roleUsuario;
@@ -96,6 +97,7 @@ public class AuthController {
                 throw new BadRequestException("Credenciais incorretas!");
             }
             Auth auth = new Auth();
+            auth.nomeUsuario = usuario.nome;
             auth.email = usuario.email;
             auth.roleUsuario = usuario.roleUsuario;
             auth.usuario = usuario;

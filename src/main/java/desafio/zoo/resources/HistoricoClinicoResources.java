@@ -24,7 +24,6 @@ public class HistoricoClinicoResources {
     @Inject
     HistoricoClinicoController controller;
     HistoricoClinico historicoClinico;
-    List<HistoricoClinico> historicoClinicoList;
 
     @GET
     @Path("{id}")

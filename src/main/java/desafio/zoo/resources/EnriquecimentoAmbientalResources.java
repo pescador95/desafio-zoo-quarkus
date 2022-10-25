@@ -2,7 +2,6 @@ package desafio.zoo.resources;
 
 import desafio.zoo.controller.EnriquecimentoAmbientalController;
 import desafio.zoo.model.EnriquecimentoAmbiental;
-import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import io.quarkus.hibernate.orm.panache.PanacheQuery;
 import io.quarkus.panache.common.Page;
 import org.jetbrains.annotations.NotNull;
@@ -31,7 +30,7 @@ public class EnriquecimentoAmbientalResources {
     @Consumes("application/json")
     @RolesAllowed({"veterinario", "biologo", "dev"})
     public Response getById(@PathParam("id") Long pId) {
-        enriquecimentoAmbiental = PanacheEntityBase.findById(pId);
+        enriquecimentoAmbiental = EnriquecimentoAmbiental.findById(pId);
         return Response.ok(enriquecimentoAmbiental).status(200).build();
     }
 

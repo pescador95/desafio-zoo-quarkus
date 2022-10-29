@@ -2,43 +2,52 @@ package desafio.zoo.controller;
 
 import desafio.zoo.model.Usuario;
 import io.quarkus.elytron.security.common.BcryptUtil;
-import org.jetbrains.annotations.NotNull;
+import io.quarkus.mailer.Mail;
+import io.quarkus.mailer.Mailer;
+import net.bytebuddy.utility.RandomString;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 import javax.transaction.Transactional;
 import javax.ws.rs.BadRequestException;
 import javax.ws.rs.NotFoundException;
-import javax.inject.Inject;
 import java.util.Date;
-import java.util.List;
-import java.util.Objects;
-import io.quarkus.mailer.Mail;
-import io.quarkus.mailer.Mailer;
 
 @ApplicationScoped
 @Transactional
 public class RecuperaSenhaController {
-    
-    //private Usuario usuario = new Usuario();
     @Inject
     Mailer mailer;
 
-    public String enviaEmail(String email) {
-        System.out.println("enviaEmail OK");
+    public void sendEmail(String email) {
+
         Usuario usuario = Usuario.find("email = ?1 and isAtivo = true", email).firstResult();
-        System.out.println("Verifica usuario OK");
-        System.out.println("Email: " + email);
-        System.out.println(mailer);
+        String senha = RandomString.make(12);
+        System.out.println(senha);
+        usuario.password = BcryptUtil.bcryptHash(senha);
+        usuario.persist();
+        String nome = usuario.nome;
 
         if (usuario != null) {
-            /*Faz o envio do email*/
-            System.out.println("Verifica se e nulo OK");
-            mailer.send(Mail.withText(email, "Quarkus mailer test titulo", "Quarkus mailer test corpo"));
-            System.out.println("Envia o email OK");
-            return "Email enviado";
-            
+            mailer.send(Mail.withText(email, "Desafio Zoo - Recuperação de Senha", "Caro " + nome + ",\n" + "segue a nova senha para realização do acesso ao sistema do Zoo: " + senha));
         } else {
             throw new NotFoundException("Usuários não cadastrado ou inativo");
+        }
+    }
+
+    public void updatePassword(String email, String password) {
+
+        Usuario usuarioAuth = Usuario.find("email = ?1", email).firstResult();
+
+        if (password != null) {
+            if (password != null && !password.equals(usuarioAuth.password)) {
+                usuarioAuth.password = BcryptUtil.bcryptHash(password);
+                usuarioAuth.usuarioAcao = usuarioAuth.nome;
+                usuarioAuth.dataAcao = new Date();
+                usuarioAuth.persist();
+            }
+        } else {
+            throw new BadRequestException("Não foi possível atualizar a senha.");
         }
     }
 }

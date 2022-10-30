@@ -14,6 +14,7 @@ import javax.ws.rs.core.SecurityContext;
 import java.security.Principal;
 
 @Path("/recoverPassword")
+
 public class RecuperaSenhaResource {
     @Inject
     RecuperaSenhaController controller;

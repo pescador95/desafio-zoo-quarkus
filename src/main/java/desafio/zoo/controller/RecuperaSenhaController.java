@@ -39,13 +39,11 @@ public class RecuperaSenhaController {
 
         Usuario usuarioAuth = Usuario.find("email = ?1", email).firstResult();
 
-        if (password != null) {
             if (password != null && !password.equals(usuarioAuth.password)) {
                 usuarioAuth.password = BcryptUtil.bcryptHash(password);
                 usuarioAuth.usuarioAcao = usuarioAuth.nome;
                 usuarioAuth.dataAcao = new Date();
                 usuarioAuth.persist();
-            }
         } else {
             throw new BadRequestException("Não foi possível atualizar a senha.");
         }

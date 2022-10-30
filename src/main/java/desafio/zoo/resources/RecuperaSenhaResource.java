@@ -13,7 +13,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
 import java.security.Principal;
 
-@Path("/recuperaSenha")
+@Path("/recoverPassword")
 public class RecuperaSenhaResource {
     @Inject
     RecuperaSenhaController controller;
@@ -23,7 +23,6 @@ public class RecuperaSenhaResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
     public Response sendMail(@PathParam("email") String email) {
-        System.out.println("Sendmail function OK");
         controller.sendEmail(email);
         return Response.ok().status(200).build();
     }

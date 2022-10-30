@@ -110,4 +110,3 @@ public class AnimalResources {
         return Response.ok().status(200).build();
     }
 }
-

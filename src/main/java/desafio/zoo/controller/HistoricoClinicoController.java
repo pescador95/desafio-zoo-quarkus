@@ -82,7 +82,7 @@ public class HistoricoClinicoController {
             } else {
                 throw new BadRequestException("Por favor, informar o pm do Animal no Histórico Clínico.");
             }
-
+            historicoClinico.dataHistoricoClinico = new Date();
             historicoClinico.nomeAnimal = animal.nomeApelido;
             historicoClinico.isAtivo = Boolean.TRUE;
             historicoClinico.usuario = Usuario.find("email = ?1", email).firstResult();

@@ -39,6 +39,10 @@ public class HistoricoClinico extends PanacheEntityBase {
     public String frequenciaRespiratoria;
 
     @Column()
+    @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
+    public Date dataHistoricoClinico;
+
+    @Column()
     public String frequenciaCardiaca;
 
     @Column()

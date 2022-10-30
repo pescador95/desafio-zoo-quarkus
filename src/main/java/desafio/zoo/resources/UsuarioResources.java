@@ -55,12 +55,11 @@ public class UsuarioResources {
                          @QueryParam("strgFilter") @DefaultValue("") String strgFilter,
                          @QueryParam("strgOrder") @DefaultValue("id") String strgOrder
     ) {
-        String query = "isAtivo = " + ativo + " " + strgFilter + " " + "order by " + strgOrder + " " + sortQuery;
+        String query = "isAtivo = " + ativo + " " + strgFilter + " order by "+ strgOrder + " " + sortQuery;
         PanacheQuery<Usuario> usuario;
         usuario = Usuario.find(query);
         return Response.ok(usuario.page(Page.of(pageIndex, pageSize)).list()).status(200).build();
     }
-
     @POST
     @Path("/")
     @Produces(MediaType.APPLICATION_JSON)

@@ -1,6 +1,6 @@
 package desafio.zoo.resources;
 
-import desafio.zoo.controller.RecuperaSenhaController;
+import desafio.zoo.controller.RecoverPasswordController;
 import desafio.zoo.model.Usuario;
 import org.jetbrains.annotations.NotNull;
 
@@ -15,9 +15,9 @@ import java.security.Principal;
 
 @Path("/recoverPassword")
 
-public class RecuperaSenhaResource {
+public class RecoverPasswordResource {
     @Inject
-    RecuperaSenhaController controller;
+    RecoverPasswordController controller;
 
     @GET
     @Path("{email}")

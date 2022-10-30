@@ -39,8 +39,10 @@ public class AnimalResources {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
     @RolesAllowed({"veterinario", "biologo", "dev"})
-    public Response count(@QueryParam("ativo") @DefaultValue("true") Boolean ativo) {
-        long animais = Animal.count("isAtivo = ?1", ativo);
+    public Response count(@QueryParam("ativo") @DefaultValue("true") Boolean ativo,
+                          @QueryParam("strgFilter") @DefaultValue("") String strgFilter) {
+        String query = "isAtivo = " + ativo + " " + strgFilter;
+        long animais = Animal.count(query);
         return Response.ok(animais).status(200).build();
     }
 

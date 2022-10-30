@@ -39,8 +39,10 @@ public class NutricaoResources {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
     @RolesAllowed({"veterinario", "biologo", "dev"})
-    public Response count(@QueryParam("ativo") @DefaultValue("true") Boolean ativo) {
-        long nutricao = Nutricao.count("isAtivo = ?1", ativo);
+    public Response count(@QueryParam("ativo") @DefaultValue("true") Boolean ativo,
+                          @QueryParam("strgFilter") @DefaultValue("") String strgFilter) {
+        String query = "isAtivo = " + ativo + " " + strgFilter;
+        long nutricao = Nutricao.count(query);
         return Response.ok(nutricao).status(200).build();
     }
 

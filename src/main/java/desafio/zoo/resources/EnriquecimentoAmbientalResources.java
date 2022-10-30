@@ -39,8 +39,10 @@ public class EnriquecimentoAmbientalResources {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
     @RolesAllowed({"veterinario", "biologo", "dev"})
-    public Response count(@QueryParam("ativo") @DefaultValue("true") Boolean ativo) {
-        long enriquecimentoAmbiental = EnriquecimentoAmbiental.count("isAtivo = ?1", ativo);
+    public Response count(@QueryParam("ativo") @DefaultValue("true") Boolean ativo,
+                          @QueryParam("strgFilter") @DefaultValue("") String strgFilter) {
+        String query = "isAtivo = " + ativo + " " + strgFilter;
+        long enriquecimentoAmbiental = EnriquecimentoAmbiental.count(query);
         return Response.ok(enriquecimentoAmbiental).status(200).build();
     }
 

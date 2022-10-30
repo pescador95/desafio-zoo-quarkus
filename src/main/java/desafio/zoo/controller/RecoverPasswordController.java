@@ -15,7 +15,7 @@ import java.util.Date;
 
 @ApplicationScoped
 @Transactional
-public class RecuperaSenhaController {
+public class RecoverPasswordController {
     @Inject
     Mailer mailer;
 

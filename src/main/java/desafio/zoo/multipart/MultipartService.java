@@ -6,13 +6,16 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
+import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
+
 @Path("/echo")
-public class Server {
+@RegisterRestClient
+public interface MultipartService {
 
     @POST
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces(MediaType.TEXT_PLAIN)
-    public String echo(String requestBody) throws Exception {
-        return requestBody;
-    }
+    String sendMultipartData(@MultipartForm MultipartBody data);
+
 }

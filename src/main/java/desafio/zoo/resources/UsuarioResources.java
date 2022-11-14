@@ -1,6 +1,7 @@
 package desafio.zoo.resources;
 
 import desafio.zoo.controller.UsuarioController;
+import desafio.zoo.model.Responses;
 import desafio.zoo.model.Usuario;
 import io.quarkus.hibernate.orm.panache.PanacheQuery;
 import io.quarkus.panache.common.Page;
@@ -22,6 +23,8 @@ public class UsuarioResources {
     @Inject
     UsuarioController controller;
     Usuario usuario;
+
+    Responses responses;
 
     @GET
     @Path("{id}")
@@ -69,10 +72,12 @@ public class UsuarioResources {
     @RolesAllowed({"veterinario", "biologo", "dev"})
 
     public Response add(Usuario pUsuario, @Context @NotNull SecurityContext context) {
+        responses = new Responses();
+        responses.message = "Usuário cadastrado com sucesso!";
         Principal json = context.getUserPrincipal();
         String email = json.getName();
         controller.addUser(pUsuario, email);
-        return Response.ok().status(201).build();
+        return Response.ok(responses).status(201, "Usuário cadastrado com sucesso!").build();
     }
 
     @PUT
@@ -81,10 +86,12 @@ public class UsuarioResources {
     @Consumes("application/json")
     @RolesAllowed({"veterinario", "biologo", "dev"})
     public Response update(Usuario pUsuario, @Context @NotNull SecurityContext context) {
+        responses = new Responses();
+        responses.message = "Usuário atualizado com sucesso!";
         Principal json = context.getUserPrincipal();
         String email = json.getName();
         controller.updateUser(pUsuario, email);
-        return Response.ok().status(200).build();
+        return Response.ok(responses).status(200,"Usuário atualizado com sucesso!").build();
     }
 
     @DELETE
@@ -93,10 +100,17 @@ public class UsuarioResources {
     @Consumes("application/json")
     @RolesAllowed({"veterinario", "biologo", "dev"})
     public Response deleteList(List<Long> pListIdusuario, @Context @NotNull SecurityContext context) {
+        Integer countList = pListIdusuario.size();
+        responses = new Responses();
+        if(pListIdusuario.size() <= 1){
+            responses.message = "Usuário exclúido com sucesso!";
+        } else {
+            responses.message = countList + " Usuários exclúidos com sucesso!";
+        }
         Principal json = context.getUserPrincipal();
         String email = json.getName();
         controller.deleteUser(pListIdusuario, email);
-        return Response.ok().status(200).build();
+        return Response.ok(responses).status(200,"Usuário excluído com sucesso!").build();
     }
 
     @PUT
@@ -105,9 +119,16 @@ public class UsuarioResources {
     @Consumes("application/json")
     @RolesAllowed({"veterinario", "biologo", "dev"})
     public Response reactivateList(List<Long> pListIdusuario, @Context @NotNull SecurityContext context) {
+        Integer countList = pListIdusuario.size();
+        responses = new Responses();
+         if(pListIdusuario.size() <= 1){
+            responses.message = "Usuário recuperado com sucesso!";
+        } else {
+            responses.message = countList + " Usuários recuperados com sucesso!";
+        }
         Principal json = context.getUserPrincipal();
         String email = json.getName();
         controller.reactivateUser(pListIdusuario, email);
-        return Response.ok().status(200).build();
+        return Response.ok(responses).status(200, "Usuário recuperado com sucesso!").build();
     }
 }

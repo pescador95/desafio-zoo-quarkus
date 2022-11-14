@@ -2,6 +2,7 @@ package desafio.zoo.resources;
 
 import desafio.zoo.controller.AnimalController;
 import desafio.zoo.model.Animal;
+import desafio.zoo.model.Responses;
 import io.quarkus.hibernate.orm.panache.PanacheQuery;
 import io.quarkus.panache.common.Page;
 import org.jetbrains.annotations.NotNull;
@@ -23,6 +24,7 @@ public class AnimalResources {
     @Inject
     AnimalController controller;
     Animal animal;
+    Responses responses;
 
     @GET
     @Path("{id}")
@@ -70,10 +72,13 @@ public class AnimalResources {
     @Consumes("application/json")
     @RolesAllowed({"veterinario", "biologo", "dev"})
     public Response add(Animal pAnimal, @Context @NotNull SecurityContext context) {
-        Principal json = context.getUserPrincipal();
+        responses = new Responses();
+        responses.status = 201;
+        responses.message = "Animal cadastrado com sucesso!";
+                Principal json = context.getUserPrincipal();
         String email = json.getName();
         controller.addAnimal(pAnimal, email);
-        return Response.ok().status(201).build();
+        return Response.ok(responses).status(201, "Animal cadastrado com sucesso!").build();
     }
 
     @PUT
@@ -82,10 +87,13 @@ public class AnimalResources {
     @Consumes("application/json")
     @RolesAllowed({"veterinario", "biologo", "dev"})
     public Response update(Animal pAnimal, @Context @NotNull SecurityContext context) {
+        responses = new Responses();
+        responses.status = 200;
+        responses.message = "Animal atualizado com sucesso!";
         Principal json = context.getUserPrincipal();
         String email = json.getName();
         controller.updateAnimal(pAnimal, email);
-        return Response.ok().status(200).build();
+        return Response.ok(responses).status(200, "Animal atualizado com sucesso!").build();
     }
 
     @DELETE
@@ -94,10 +102,18 @@ public class AnimalResources {
     @Consumes("application/json")
     @RolesAllowed({"veterinario", "biologo", "dev"})
     public Response deleteList(List<Long> pListIdAnimal, @Context @NotNull SecurityContext context) {
-        Principal json = context.getUserPrincipal();
+       Integer countList = pListIdAnimal.size();
+        responses = new Responses();
+        responses.status = 200;
+        if(pListIdAnimal.size() <= 1){
+            responses.message = "Animal excluído com sucesso!";
+        } else {
+            responses.message = countList + " Animais excluídos com sucesso!";
+        }
+                Principal json = context.getUserPrincipal();
         String email = json.getName();
         controller.deleteAnimal(pListIdAnimal, email);
-        return Response.ok().status(200).build();
+        return Response.ok(responses).status(200, "Animal excluído com sucesso!").build();
     }
 
     @PUT
@@ -106,9 +122,17 @@ public class AnimalResources {
     @Consumes("application/json")
     @RolesAllowed({"veterinario", "biologo", "dev"})
     public Response reactivateList(List<Long> pListIdAnimal, @Context @NotNull SecurityContext context) {
+        Integer countList = pListIdAnimal.size();
+        responses = new Responses();
+        responses.status = 200;
+        if(pListIdAnimal.size() <= 1){
+            responses.message = "Animal recuperado com sucesso!";
+        } else {
+            responses.message = countList + " Animais recuperados com sucesso!";
+        }
         Principal json = context.getUserPrincipal();
         String email = json.getName();
         controller.reactivateAnimal(pListIdAnimal, email);
-        return Response.ok().status(200).build();
+        return Response.ok(responses).status(200, "Animal recuperado com sucesso!").build();
     }
 }

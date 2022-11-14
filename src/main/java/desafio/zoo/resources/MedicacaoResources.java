@@ -2,6 +2,7 @@ package desafio.zoo.resources;
 
 import desafio.zoo.controller.MedicacaoController;
 import desafio.zoo.model.Medicacao;
+import desafio.zoo.model.Responses;
 import io.quarkus.hibernate.orm.panache.PanacheQuery;
 import io.quarkus.panache.common.Page;
 import org.jetbrains.annotations.NotNull;
@@ -23,6 +24,8 @@ public class MedicacaoResources {
     @Inject
     MedicacaoController controller;
     Medicacao medicacao;
+
+    Responses responses;
 
     @GET
     @Path("{id}")
@@ -69,10 +72,12 @@ public class MedicacaoResources {
     @Consumes("application/json")
     @RolesAllowed({"veterinario", "biologo", "dev"})
     public Response add(Medicacao pMedicacao, @Context @NotNull SecurityContext context) {
+        responses = new Responses();
+        responses.message = "Medicação cadastrado com sucesso!";
         Principal json = context.getUserPrincipal();
         String email = json.getName();
         controller.addMedicacao(pMedicacao, email);
-        return Response.ok().status(201).build();
+        return Response.ok(responses).status(201,"Medicação cadastrada com sucesso!").build();
     }
 
     @PUT
@@ -81,10 +86,12 @@ public class MedicacaoResources {
     @Consumes("application/json")
     @RolesAllowed({"veterinario", "biologo", "dev"})
     public Response update(Medicacao pMedicacao, @Context @NotNull SecurityContext context) {
+        responses = new Responses();
+        responses.message = "Medicação atualizado com sucesso!";
         Principal json = context.getUserPrincipal();
         String email = json.getName();
         controller.updateMedicacao(pMedicacao, email);
-        return Response.ok().status(200).build();
+        return Response.ok(responses).status(200,"Medicação atualizada com sucesso!").build();
     }
 
     @DELETE
@@ -93,10 +100,17 @@ public class MedicacaoResources {
     @Consumes("application/json")
     @RolesAllowed({"veterinario", "biologo", "dev"})
     public Response deleteList(List<Long> pListMedicacao, @Context @NotNull SecurityContext context) {
+        Integer countList = pListMedicacao.size();
+        responses = new Responses();
+        if(pListMedicacao.size() <= 1){
+            responses.message = "Medicação excluída com sucesso!";
+        } else {
+            responses.message = countList + " Medicações exclúidas com sucesso!";
+        }
         Principal json = context.getUserPrincipal();
         String email = json.getName();
         controller.deleteMedicacao(pListMedicacao, email);
-        return Response.ok().status(200).build();
+        return Response.ok(responses).status(200, "Medicação excluída com sucesso!").build();
     }
 
     @PUT
@@ -105,9 +119,16 @@ public class MedicacaoResources {
     @Consumes("application/json")
     @RolesAllowed({"veterinario", "biologo", "dev"})
     public Response reactivateList(List<Long> pListMedicacao, @Context @NotNull SecurityContext context) {
+        Integer countList = pListMedicacao.size();
+        responses = new Responses();
+        if(pListMedicacao.size() <= 1){
+            responses.message = "Medicação recuperada com sucesso!";
+        } else {
+            responses.message = countList + " Medicações recuperadas com sucesso!";
+        }
         Principal json = context.getUserPrincipal();
         String email = json.getName();
         controller.reactivateMedicacao(pListMedicacao, email);
-        return Response.ok().status(200).build();
+        return Response.ok(responses).status(200, "Medicação recuperada com sucesso!").build();
     }
 }

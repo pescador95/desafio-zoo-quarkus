@@ -2,6 +2,7 @@ package desafio.zoo.resources;
 
 import desafio.zoo.controller.NutricaoController;
 import desafio.zoo.model.Nutricao;
+import desafio.zoo.model.Responses;
 import io.quarkus.hibernate.orm.panache.PanacheQuery;
 import io.quarkus.panache.common.Page;
 import org.jetbrains.annotations.NotNull;
@@ -23,6 +24,8 @@ public class NutricaoResources {
     @Inject
     NutricaoController controller;
     Nutricao nutricao;
+
+    Responses responses;
 
     @GET
     @Path("{id}")
@@ -70,10 +73,12 @@ public class NutricaoResources {
     @Consumes("application/json")
     @RolesAllowed({"veterinario", "biologo", "dev"})
     public Response add(Nutricao pNutricao, @Context @NotNull SecurityContext context) {
+        responses = new Responses();
+        responses.message = "Ficha de Nutrição cadastrada com sucesso!";
         Principal json = context.getUserPrincipal();
         String email = json.getName();
         controller.addNutricao(pNutricao, email);
-        return Response.ok().status(201).build();
+        return Response.ok(responses).status(201, "Ficha de Nutrição cadastrada com sucesso!").build();
     }
 
     @PUT
@@ -82,10 +87,12 @@ public class NutricaoResources {
     @Consumes("application/json")
     @RolesAllowed({"veterinario", "biologo", "dev"})
     public Response update(Nutricao pNutricao, @Context @NotNull SecurityContext context) {
+        responses = new Responses();
+        responses.message = "Ficha de Nutrição atualizada com sucesso!";
         Principal json = context.getUserPrincipal();
         String email = json.getName();
         controller.updateNutricao(pNutricao, email);
-        return Response.ok().status(200).build();
+        return Response.ok(responses).status(200, "Ficha de Nutrição atualizada com sucesso!").build();
     }
 
     @DELETE
@@ -94,10 +101,17 @@ public class NutricaoResources {
     @Consumes("application/json")
     @RolesAllowed({"veterinario", "biologo", "dev"})
     public Response deleteList(List<Long> pListIdnutricao, @Context @NotNull SecurityContext context) {
+        Integer countList = pListIdnutricao.size();
+        responses = new Responses();
+        if(pListIdnutricao.size() <= 1){
+            responses.message = "Ficha de Nutrição excluída com sucesso!";
+        } else {
+            responses.message = countList + " Fichas de Nutrição exclúidas com sucesso!";
+        }
         Principal json = context.getUserPrincipal();
         String email = json.getName();
         controller.deleteNutricao(pListIdnutricao, email);
-        return Response.ok().status(200).build();
+        return Response.ok(responses).status(200, "Ficha de Nutrição excluída com sucesso!").build();
     }
 
     @PUT
@@ -106,9 +120,16 @@ public class NutricaoResources {
     @Consumes("application/json")
     @RolesAllowed({"veterinario", "biologo", "dev"})
     public Response reactivateList(List<Long> pListIdnutricao, @Context @NotNull SecurityContext context) {
+        Integer countList = pListIdnutricao.size();
+        responses = new Responses();
+        if(pListIdnutricao.size() <= 1){
+            responses.message = "Ficha de Nutrição recuperada com sucesso!";
+        } else {
+            responses.message = countList + " Fichas de Nutrição recuperadas com sucesso!";
+        }
         Principal json = context.getUserPrincipal();
         String email = json.getName();
         controller.reactivateNutricao(pListIdnutricao, email);
-        return Response.ok().status(200).build();
+        return Response.ok(responses).status(200, "Ficha de Nutrição recuperada com sucesso!").build();
     }
 }

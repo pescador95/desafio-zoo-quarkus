@@ -2,6 +2,7 @@ package desafio.zoo.resources;
 
 import desafio.zoo.controller.EnriquecimentoAmbientalController;
 import desafio.zoo.model.EnriquecimentoAmbiental;
+import desafio.zoo.model.Responses;
 import io.quarkus.hibernate.orm.panache.PanacheQuery;
 import io.quarkus.panache.common.Page;
 import org.jetbrains.annotations.NotNull;
@@ -24,6 +25,7 @@ public class EnriquecimentoAmbientalResources {
     EnriquecimentoAmbientalController controller;
     EnriquecimentoAmbiental enriquecimentoAmbiental;
 
+    Responses responses;
     @GET
     @Path("{id}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -70,10 +72,12 @@ public class EnriquecimentoAmbientalResources {
     @Consumes("application/json")
     @RolesAllowed({"veterinario", "biologo", "dev"})
     public Response add(EnriquecimentoAmbiental pEnriquecimentoAmbiental, @Context @NotNull SecurityContext context) {
+        responses = new Responses();
+        responses.message = "Enriquecimento Ambiental cadastrado com sucesso!";
         Principal json = context.getUserPrincipal();
         String email = json.getName();
         controller.addEnriquecimentoAmbiental(pEnriquecimentoAmbiental, email);
-        return Response.ok().status(201).build();
+        return Response.ok(responses).status(201, "Enriquecimento Ambiental cadastrado com sucesso!").build();
     }
 
     @PUT
@@ -82,10 +86,12 @@ public class EnriquecimentoAmbientalResources {
     @Consumes("application/json")
     @RolesAllowed({"veterinario", "biologo", "dev"})
     public Response update(EnriquecimentoAmbiental pEnriquecimentoAmbiental, @Context @NotNull SecurityContext context) {
+        responses = new Responses();
+        responses.message = "Enriquecimento Ambiental atualizado com sucesso!";
         Principal json = context.getUserPrincipal();
         String email = json.getName();
         controller.updateEnriquecimentoAmbiental(pEnriquecimentoAmbiental, email);
-        return Response.ok().status(200).build();
+        return Response.ok(responses).status(200, "Enriquecimento Ambiental atualizado com sucesso!").build();
     }
 
     @DELETE
@@ -94,10 +100,17 @@ public class EnriquecimentoAmbientalResources {
     @Consumes("application/json")
     @RolesAllowed({"veterinario", "biologo", "dev"})
     public Response deleteList(List<Long> pListEnriquecimentoAmbiental, @Context @NotNull SecurityContext context) {
+        Integer countList = pListEnriquecimentoAmbiental.size();
+        responses = new Responses();
+        if(pListEnriquecimentoAmbiental.size() <= 1){
+            responses.message = "Enriquecimento Ambiental excluído com sucesso!";
+        } else {
+            responses.message = countList + " Enriquecimentos Ambientais exclúidos com sucesso!";
+        }
         Principal json = context.getUserPrincipal();
         String email = json.getName();
         controller.deleteEnriquecimentoAmbiental(pListEnriquecimentoAmbiental, email);
-        return Response.ok().status(200).build();
+        return Response.ok(responses).status(200, "Enriquecimento Ambiental excluído com sucesso!").build();
     }
 
     @PUT
@@ -106,9 +119,16 @@ public class EnriquecimentoAmbientalResources {
     @Consumes("application/json")
     @RolesAllowed({"veterinario", "biologo", "dev"})
     public Response reactivateList(List<Long> pListEnriquecimentoAmbiental, @Context @NotNull SecurityContext context) {
+        Integer countList = pListEnriquecimentoAmbiental.size();
+        responses = new Responses();
+        if(pListEnriquecimentoAmbiental.size() <= 1){
+            responses.message = "Enriquecimento Ambiental recuperado com sucesso!";
+        } else {
+            responses.message = countList + " Enriquecimentos Ambientais recuperados com sucesso!";
+        }
         Principal json = context.getUserPrincipal();
         String email = json.getName();
         controller.reactivateEnriquecimentoAmbiental(pListEnriquecimentoAmbiental, email);
-        return Response.ok().status(200).build();
+        return Response.ok(responses).status(200,"Enriquecimento Ambiental recuperado com sucesso!").build();
     }
 }

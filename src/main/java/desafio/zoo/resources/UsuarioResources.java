@@ -73,6 +73,7 @@ public class UsuarioResources {
 
     public Response add(Usuario pUsuario, @Context @NotNull SecurityContext context) {
         responses = new Responses();
+        responses.status = 201;
         responses.message = "Usuário cadastrado com sucesso!";
         Principal json = context.getUserPrincipal();
         String email = json.getName();
@@ -87,6 +88,7 @@ public class UsuarioResources {
     @RolesAllowed({"veterinario", "biologo", "dev"})
     public Response update(Usuario pUsuario, @Context @NotNull SecurityContext context) {
         responses = new Responses();
+        responses.status = 200;
         responses.message = "Usuário atualizado com sucesso!";
         Principal json = context.getUserPrincipal();
         String email = json.getName();
@@ -102,6 +104,7 @@ public class UsuarioResources {
     public Response deleteList(List<Long> pListIdusuario, @Context @NotNull SecurityContext context) {
         Integer countList = pListIdusuario.size();
         responses = new Responses();
+        responses.status = 200;
         if(pListIdusuario.size() <= 1){
             responses.message = "Usuário exclúido com sucesso!";
         } else {
@@ -121,6 +124,7 @@ public class UsuarioResources {
     public Response reactivateList(List<Long> pListIdusuario, @Context @NotNull SecurityContext context) {
         Integer countList = pListIdusuario.size();
         responses = new Responses();
+        responses.status = 200;
          if(pListIdusuario.size() <= 1){
             responses.message = "Usuário recuperado com sucesso!";
         } else {

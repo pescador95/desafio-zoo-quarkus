@@ -74,6 +74,7 @@ public class HistoricoEtologicoResources {
     @RolesAllowed({"veterinario", "biologo", "dev"})
     public Response add(HistoricoEtologico pHistoricoEtologico, @Context @NotNull SecurityContext context) {
         responses = new Responses();
+        responses.status = 201;
         responses.message = "Histórico Etológico cadastrado com sucesso!";
         Principal json = context.getUserPrincipal();
         String email = json.getName();
@@ -88,6 +89,7 @@ public class HistoricoEtologicoResources {
     @RolesAllowed({"veterinario", "biologo", "dev"})
     public Response update(HistoricoEtologico pHistoricoEtologico, @Context @NotNull SecurityContext context) {
         responses = new Responses();
+        responses.status = 200;
         responses.message = "Histórico Etológico atualizado com sucesso!";
         Principal json = context.getUserPrincipal();
         String email = json.getName();
@@ -103,6 +105,7 @@ public class HistoricoEtologicoResources {
     public Response deleteList(List<Long> pListHistoricoEtologico, @Context @NotNull SecurityContext context) {
         Integer countList = pListHistoricoEtologico.size();
         responses = new Responses();
+        responses.status = 200;
         if(pListHistoricoEtologico.size() <= 1){
             responses.message = "Histórico Etológico excluído com sucesso!";
         } else {
@@ -122,6 +125,7 @@ public class HistoricoEtologicoResources {
     public Response reactivateList(List<Long> pListHistoricoEtologico, @Context @NotNull SecurityContext context) {
         Integer countList = pListHistoricoEtologico.size();
         responses = new Responses();
+        responses.status = 200;
         if(pListHistoricoEtologico.size() <= 1){
             responses.message = "Histórico Etológico recuperado com sucesso!";
         } else {

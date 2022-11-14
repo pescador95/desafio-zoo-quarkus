@@ -73,6 +73,7 @@ public class EnriquecimentoAmbientalResources {
     @RolesAllowed({"veterinario", "biologo", "dev"})
     public Response add(EnriquecimentoAmbiental pEnriquecimentoAmbiental, @Context @NotNull SecurityContext context) {
         responses = new Responses();
+        responses.status = 201;
         responses.message = "Enriquecimento Ambiental cadastrado com sucesso!";
         Principal json = context.getUserPrincipal();
         String email = json.getName();
@@ -87,6 +88,7 @@ public class EnriquecimentoAmbientalResources {
     @RolesAllowed({"veterinario", "biologo", "dev"})
     public Response update(EnriquecimentoAmbiental pEnriquecimentoAmbiental, @Context @NotNull SecurityContext context) {
         responses = new Responses();
+        responses.status = 200;
         responses.message = "Enriquecimento Ambiental atualizado com sucesso!";
         Principal json = context.getUserPrincipal();
         String email = json.getName();
@@ -102,6 +104,7 @@ public class EnriquecimentoAmbientalResources {
     public Response deleteList(List<Long> pListEnriquecimentoAmbiental, @Context @NotNull SecurityContext context) {
         Integer countList = pListEnriquecimentoAmbiental.size();
         responses = new Responses();
+        responses.status = 200;
         if(pListEnriquecimentoAmbiental.size() <= 1){
             responses.message = "Enriquecimento Ambiental excluído com sucesso!";
         } else {
@@ -121,6 +124,7 @@ public class EnriquecimentoAmbientalResources {
     public Response reactivateList(List<Long> pListEnriquecimentoAmbiental, @Context @NotNull SecurityContext context) {
         Integer countList = pListEnriquecimentoAmbiental.size();
         responses = new Responses();
+        responses.status = 200;
         if(pListEnriquecimentoAmbiental.size() <= 1){
             responses.message = "Enriquecimento Ambiental recuperado com sucesso!";
         } else {

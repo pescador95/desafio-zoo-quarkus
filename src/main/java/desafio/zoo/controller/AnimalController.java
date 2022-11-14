@@ -113,7 +113,7 @@ public class AnimalController {
                     }
                 }
                 if (pAnimal.sexo != null) {
-                    if (animal.sexo.equals(pAnimal.sexo)) {
+                    if (!animal.sexo.equals(pAnimal.sexo)) {
                         animal.sexo = pAnimal.sexo;
                     }
                 }
@@ -123,12 +123,12 @@ public class AnimalController {
                     }
                 }
                 if (pAnimal.idade != null) {
-                    if (animal.idade.equals(pAnimal.idade)) {
+                    if (!animal.idade.equals(pAnimal.idade)) {
                         animal.idade = pAnimal.idade;
                     }
                 }
                 if (pAnimal.origem != null) {
-                    if (animal.origem.equals(pAnimal.origem)) {
+                    if (!animal.origem.equals(pAnimal.origem)) {
                         animal.origem = pAnimal.origem;
                     }
                 }

@@ -2,6 +2,7 @@ package desafio.zoo.resources;
 
 import desafio.zoo.controller.HistoricoEtologicoController;
 import desafio.zoo.model.HistoricoEtologico;
+import desafio.zoo.model.Responses;
 import io.quarkus.hibernate.orm.panache.PanacheQuery;
 import io.quarkus.panache.common.Page;
 import org.jetbrains.annotations.NotNull;
@@ -23,6 +24,8 @@ public class HistoricoEtologicoResources {
     @Inject
     HistoricoEtologicoController controller;
     HistoricoEtologico historicoEtologico;
+
+    Responses responses;
 
     @GET
     @Path("{id}")
@@ -70,10 +73,12 @@ public class HistoricoEtologicoResources {
     @Consumes("application/json")
     @RolesAllowed({"veterinario", "biologo", "dev"})
     public Response add(HistoricoEtologico pHistoricoEtologico, @Context @NotNull SecurityContext context) {
+        responses = new Responses();
+        responses.message = "Histórico Etológico cadastrado com sucesso!";
         Principal json = context.getUserPrincipal();
         String email = json.getName();
         controller.addHistoricoEtologico(pHistoricoEtologico, email);
-        return Response.ok().status(201).build();
+        return Response.ok(responses).status(201, "Histórico Etológico cadastrado com sucesso!").build();
     }
 
     @PUT
@@ -82,10 +87,12 @@ public class HistoricoEtologicoResources {
     @Consumes("application/json")
     @RolesAllowed({"veterinario", "biologo", "dev"})
     public Response update(HistoricoEtologico pHistoricoEtologico, @Context @NotNull SecurityContext context) {
+        responses = new Responses();
+        responses.message = "Histórico Etológico atualizado com sucesso!";
         Principal json = context.getUserPrincipal();
         String email = json.getName();
         controller.updateHistoricoEtologico(pHistoricoEtologico, email);
-        return Response.ok().status(200).build();
+        return Response.ok(responses).status(200, "Histórico Etológico atualizado com sucesso!").build();
     }
 
     @DELETE
@@ -94,10 +101,17 @@ public class HistoricoEtologicoResources {
     @Consumes("application/json")
     @RolesAllowed({"veterinario", "biologo", "dev"})
     public Response deleteList(List<Long> pListHistoricoEtologico, @Context @NotNull SecurityContext context) {
+        Integer countList = pListHistoricoEtologico.size();
+        responses = new Responses();
+        if(pListHistoricoEtologico.size() <= 1){
+            responses.message = "Histórico Etológico excluído com sucesso!";
+        } else {
+            responses.message = countList + " Históricos Etológicos exclúidos com sucesso!";
+        }
         Principal json = context.getUserPrincipal();
         String email = json.getName();
         controller.deleteHistoricoEtologico(pListHistoricoEtologico, email);
-        return Response.ok().status(200).build();
+        return Response.ok(responses).status(200,"Histórico Etológico excluído com sucesso!" ).build();
     }
 
     @PUT
@@ -106,9 +120,16 @@ public class HistoricoEtologicoResources {
     @Consumes("application/json")
     @RolesAllowed({"veterinario", "biologo", "dev"})
     public Response reactivateList(List<Long> pListHistoricoEtologico, @Context @NotNull SecurityContext context) {
+        Integer countList = pListHistoricoEtologico.size();
+        responses = new Responses();
+        if(pListHistoricoEtologico.size() <= 1){
+            responses.message = "Histórico Etológico recuperado com sucesso!";
+        } else {
+            responses.message = countList + " Históricos Etológicos recuperados com sucesso!";
+        }
         Principal json = context.getUserPrincipal();
         String email = json.getName();
         controller.reactivateHistoricoEtologico(pListHistoricoEtologico, email);
-        return Response.ok().status(200).build();
+        return Response.ok(responses).status(200, "Histórico Etológico recuperado com sucesso!").build();
     }
 }

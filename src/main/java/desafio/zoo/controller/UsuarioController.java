@@ -16,14 +16,12 @@ import java.util.Objects;
 @Transactional
 public class UsuarioController<pId> {
     private Usuario usuario = new Usuario();
-    public String usuarioCreated;
 
     public void addUser(@NotNull Usuario pUsuario, String email) {
 
         Usuario usuarioAuth = Usuario.find("email = ?1", email).firstResult();
 
         usuario = Usuario.find("email = ?1 and isAtivo = true ORDER BY id DESC", pUsuario.email).firstResult();
-        usuarioCreated = usuario.nome;
 
         if (usuario == null) {
             usuario = new Usuario();
@@ -65,7 +63,6 @@ public class UsuarioController<pId> {
         Usuario usuarioAuth = Usuario.find("email = ?1", email).firstResult();
 
         usuario = Usuario.find("id = ?1 and isAtivo = true ORDER BY id DESC", pUsuario.id).firstResult();
-        usuarioCreated = usuario.nome;
 
         if (usuario != null) {
             if (pUsuario.email == null && pUsuario.nome == null && pUsuario.password == null
@@ -107,7 +104,7 @@ public class UsuarioController<pId> {
 
         pListIdusuario.forEach((pUsuario) -> {
             Usuario usuario = Usuario.find("id = ?1 and isAtivo = true ORDER BY id DESC", pUsuario).firstResult();
-            usuarioCreated = usuario.nome;
+
             if (usuario != null) {
                 usuario.usuarioAcao = usuarioAuth.nome;
                 usuario.isAtivo = Boolean.FALSE;

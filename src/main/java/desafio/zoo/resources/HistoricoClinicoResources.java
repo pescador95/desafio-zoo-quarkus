@@ -3,6 +3,7 @@ package desafio.zoo.resources;
 import desafio.zoo.controller.HistoricoClinicoController;
 import desafio.zoo.model.HistoricoClinico;
 import desafio.zoo.model.HistoricoEtologico;
+import desafio.zoo.model.Responses;
 import io.quarkus.hibernate.orm.panache.PanacheQuery;
 import io.quarkus.panache.common.Page;
 import org.jetbrains.annotations.NotNull;
@@ -25,6 +26,7 @@ public class HistoricoClinicoResources {
     HistoricoClinicoController controller;
     HistoricoClinico historicoClinico;
 
+    Responses responses;
     @GET
     @Path("{id}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -71,10 +73,12 @@ public class HistoricoClinicoResources {
     @Consumes("application/json")
     @RolesAllowed({"veterinario", "biologo", "dev"})
     public Response add(HistoricoClinico pHistoricoClinico, @Context @NotNull SecurityContext context) {
+        responses = new Responses();
+        responses.message = "Histórico Clínico cadastrado com sucesso!";
         Principal json = context.getUserPrincipal();
         String email = json.getName();
         controller.addHistoricoClinico(pHistoricoClinico, email);
-        return Response.ok().status(201).build();
+        return Response.ok(responses).status(201, "Histórico Clínico cadastrado com sucesso!").build();
     }
 
     @PUT
@@ -83,10 +87,12 @@ public class HistoricoClinicoResources {
     @Consumes("application/json")
     @RolesAllowed({"veterinario", "biologo", "dev"})
     public Response update(HistoricoClinico pHistoricoClinico, @Context @NotNull SecurityContext context) {
+        responses = new Responses();
+        responses.message = "Histórico Clínico atualizado com sucesso!";
         Principal json = context.getUserPrincipal();
         String email = json.getName();
         controller.updateHistoricoClinico(pHistoricoClinico, email);
-        return Response.ok().status(200).build();
+        return Response.ok(responses).status(200, "Histórico Clínico atualizado com sucesso!").build();
     }
 
     @DELETE
@@ -95,10 +101,17 @@ public class HistoricoClinicoResources {
     @Consumes("application/json")
     @RolesAllowed({"veterinario", "biologo", "dev"})
     public Response deleteList(List<Long> pListIdHistoricoClinico, @Context @NotNull SecurityContext context) {
+        Integer countList = pListIdHistoricoClinico.size();
+        responses = new Responses();
+        if(pListIdHistoricoClinico.size() <= 1){
+            responses.message = "Histórico Clínico excluído com sucesso!";
+        } else {
+            responses.message = countList + " Históricos Clínicos exclúidos com sucesso!";
+        }
         Principal json = context.getUserPrincipal();
         String email = json.getName();
         controller.deleteHistoricoClinico(pListIdHistoricoClinico, email);
-        return Response.ok().status(200).build();
+        return Response.ok(responses).status(200, "Histórico Clínico excluído com sucesso!").build();
     }
 
     @PUT
@@ -107,10 +120,16 @@ public class HistoricoClinicoResources {
     @Consumes("application/json")
     @RolesAllowed({"veterinario", "biologo", "dev"})
     public Response reactivateList(List<Long> pListIdHistoricoClinico, @Context @NotNull SecurityContext context) {
+        Integer countList = pListIdHistoricoClinico.size();
+        responses = new Responses();
+        if(pListIdHistoricoClinico.size() <= 1){
+            responses.message = "Histórico Clínico recuperado com sucesso!";
+        } else {
+            responses.message = countList + " Históricos Clínicos recuperados com sucesso!";
+        }
         Principal json = context.getUserPrincipal();
         String email = json.getName();
         controller.reactivateHistoricoClinico(pListIdHistoricoClinico, email);
-        return Response.ok().status(200).build();
+        return Response.ok(responses).status(200, "Histórico Clínico recuperado com sucesso!").build();
     }
 }
-

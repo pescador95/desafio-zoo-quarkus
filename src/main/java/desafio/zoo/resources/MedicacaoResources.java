@@ -73,6 +73,7 @@ public class MedicacaoResources {
     @RolesAllowed({"veterinario", "biologo", "dev"})
     public Response add(Medicacao pMedicacao, @Context @NotNull SecurityContext context) {
         responses = new Responses();
+        responses.status = 201;
         responses.message = "Medicação cadastrado com sucesso!";
         Principal json = context.getUserPrincipal();
         String email = json.getName();
@@ -87,6 +88,7 @@ public class MedicacaoResources {
     @RolesAllowed({"veterinario", "biologo", "dev"})
     public Response update(Medicacao pMedicacao, @Context @NotNull SecurityContext context) {
         responses = new Responses();
+        responses.status = 200;
         responses.message = "Medicação atualizado com sucesso!";
         Principal json = context.getUserPrincipal();
         String email = json.getName();
@@ -102,6 +104,7 @@ public class MedicacaoResources {
     public Response deleteList(List<Long> pListMedicacao, @Context @NotNull SecurityContext context) {
         Integer countList = pListMedicacao.size();
         responses = new Responses();
+        responses.status = 200;
         if(pListMedicacao.size() <= 1){
             responses.message = "Medicação excluída com sucesso!";
         } else {
@@ -121,6 +124,7 @@ public class MedicacaoResources {
     public Response reactivateList(List<Long> pListMedicacao, @Context @NotNull SecurityContext context) {
         Integer countList = pListMedicacao.size();
         responses = new Responses();
+        responses.status = 200;
         if(pListMedicacao.size() <= 1){
             responses.message = "Medicação recuperada com sucesso!";
         } else {

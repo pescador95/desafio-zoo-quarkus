@@ -74,6 +74,7 @@ public class HistoricoClinicoResources {
     @RolesAllowed({"veterinario", "biologo", "dev"})
     public Response add(HistoricoClinico pHistoricoClinico, @Context @NotNull SecurityContext context) {
         responses = new Responses();
+        responses.status = 201;
         responses.message = "Histórico Clínico cadastrado com sucesso!";
         Principal json = context.getUserPrincipal();
         String email = json.getName();
@@ -88,6 +89,7 @@ public class HistoricoClinicoResources {
     @RolesAllowed({"veterinario", "biologo", "dev"})
     public Response update(HistoricoClinico pHistoricoClinico, @Context @NotNull SecurityContext context) {
         responses = new Responses();
+        responses.status = 200;
         responses.message = "Histórico Clínico atualizado com sucesso!";
         Principal json = context.getUserPrincipal();
         String email = json.getName();
@@ -103,6 +105,7 @@ public class HistoricoClinicoResources {
     public Response deleteList(List<Long> pListIdHistoricoClinico, @Context @NotNull SecurityContext context) {
         Integer countList = pListIdHistoricoClinico.size();
         responses = new Responses();
+        responses.status = 200;
         if(pListIdHistoricoClinico.size() <= 1){
             responses.message = "Histórico Clínico excluído com sucesso!";
         } else {
@@ -122,6 +125,7 @@ public class HistoricoClinicoResources {
     public Response reactivateList(List<Long> pListIdHistoricoClinico, @Context @NotNull SecurityContext context) {
         Integer countList = pListIdHistoricoClinico.size();
         responses = new Responses();
+        responses.status = 200;
         if(pListIdHistoricoClinico.size() <= 1){
             responses.message = "Histórico Clínico recuperado com sucesso!";
         } else {

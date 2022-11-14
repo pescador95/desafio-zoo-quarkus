@@ -74,6 +74,7 @@ public class NutricaoResources {
     @RolesAllowed({"veterinario", "biologo", "dev"})
     public Response add(Nutricao pNutricao, @Context @NotNull SecurityContext context) {
         responses = new Responses();
+        responses.status = 201;
         responses.message = "Ficha de Nutrição cadastrada com sucesso!";
         Principal json = context.getUserPrincipal();
         String email = json.getName();
@@ -88,6 +89,7 @@ public class NutricaoResources {
     @RolesAllowed({"veterinario", "biologo", "dev"})
     public Response update(Nutricao pNutricao, @Context @NotNull SecurityContext context) {
         responses = new Responses();
+        responses.status = 200;
         responses.message = "Ficha de Nutrição atualizada com sucesso!";
         Principal json = context.getUserPrincipal();
         String email = json.getName();
@@ -103,6 +105,7 @@ public class NutricaoResources {
     public Response deleteList(List<Long> pListIdnutricao, @Context @NotNull SecurityContext context) {
         Integer countList = pListIdnutricao.size();
         responses = new Responses();
+        responses.status = 200;
         if(pListIdnutricao.size() <= 1){
             responses.message = "Ficha de Nutrição excluída com sucesso!";
         } else {
@@ -122,6 +125,7 @@ public class NutricaoResources {
     public Response reactivateList(List<Long> pListIdnutricao, @Context @NotNull SecurityContext context) {
         Integer countList = pListIdnutricao.size();
         responses = new Responses();
+        responses.status = 200;
         if(pListIdnutricao.size() <= 1){
             responses.message = "Ficha de Nutrição recuperada com sucesso!";
         } else {

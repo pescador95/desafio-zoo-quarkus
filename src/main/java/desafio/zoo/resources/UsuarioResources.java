@@ -65,6 +65,20 @@ public class UsuarioResources {
         usuario = Usuario.find(query);
         return Response.ok(usuario.page(Page.of(pageIndex, pageSize)).list()).status(200).build();
     }
+
+    @GET
+    @Path("/myprofile")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes("application/json")
+    @RolesAllowed({"veterinario", "biologo", "dev"})
+
+    public Response getmyprofile(Usuario pUsuario, @Context @NotNull SecurityContext context) {
+        Principal json = context.getUserPrincipal();
+        String email = json.getName();
+        Usuario usuario = Usuario.find("email = ?1", email).firstResult();
+        return Response.ok(usuario).status(200).build();
+    }
+
     @POST
     @Path("/")
     @Produces(MediaType.APPLICATION_JSON)

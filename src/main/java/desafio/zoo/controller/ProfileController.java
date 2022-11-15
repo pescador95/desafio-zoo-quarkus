@@ -5,20 +5,21 @@ import desafio.zoo.repository.ProfileRepository;
 import desafio.zoo.utils.FormData;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
-
+@ApplicationScoped
 public class ProfileServices {
 
     @ConfigProperty(name = "quarkus.http.body.uploads-directory")
     String directory;
     @Inject
     ProfileRepository repository;
-
+    @Transactional
     public Profile sendUpload(FormData data) throws IOException {
 
         List<String> mimeType = Arrays.asList("image/jpg", "image/jpeg", "image/png", "image/gif", "document/pdf", "document/doc", "document/docx", "document/xls", "document/xlsx");

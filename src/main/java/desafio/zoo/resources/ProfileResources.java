@@ -45,10 +45,11 @@ public class ProfileResources {
 
     @POST
     @Path("/")
-    public Response sendUpload(@MultipartForm FormData pData) {
+    public Response sendUpload(@MultipartForm FormData pData, @QueryParam("fileRefence") String pFileRefence,
+                               @QueryParam("idAnimal") Long pIdAnimal) {
 
         try {
-            Profile profile = controller.sendUpload((pData));
+            Profile profile = controller.sendUpload(pData, pFileRefence, pIdAnimal);
 
             return Response.ok(profile).status(201).build();
         } catch (IOException e) {

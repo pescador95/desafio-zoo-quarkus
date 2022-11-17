@@ -1,5 +1,6 @@
 package desafio.zoo.controller;
 
+import desafio.zoo.model.Animal;
 import desafio.zoo.model.Profile;
 import desafio.zoo.repository.ProfileRepository;
 import desafio.zoo.utils.FormData;
@@ -38,7 +39,7 @@ public class ProfileController {
     }
 
     @Transactional
-    public Profile sendUpload(@NotNull FormData data) throws IOException {
+    public Profile sendUpload(@NotNull FormData data, String pFileRefence, Long pIdAnimal) throws IOException {
 
         List<String> mimetype = Arrays.asList("image/jpg", "image/jpeg", "image/gif", "image/png", "application/pdf", "document/doc", "document/docx", "application/zip", "application/vnd.sealed.xls");
 
@@ -63,6 +64,10 @@ public class ProfileController {
         profile.fileSize = data.getFile().size();
 
         profile.dataCriado = new Date();
+
+        profile.animal = Animal.findById(pIdAnimal);
+
+        profile.fileReference = pFileRefence;
 
         repository.persist(profile);
 

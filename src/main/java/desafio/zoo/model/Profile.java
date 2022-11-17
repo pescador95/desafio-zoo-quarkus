@@ -1,5 +1,7 @@
 package desafio.zoo.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.*;
 import java.util.Date;
 
@@ -28,6 +30,13 @@ public class Profile {
     @Column()
     public Long fileSize;
 
+    @ManyToOne()
+    @JsonIgnoreProperties("profile")
+    @JoinColumn(name = "animalId")
+    @GeneratedValue
+    public Animal animal;
+    @Column()
+    public String fileReference;
     public Profile(){
 
     }

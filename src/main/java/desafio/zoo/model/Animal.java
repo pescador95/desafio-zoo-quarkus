@@ -93,6 +93,11 @@ public class Animal extends PanacheEntityBase {
     @JsonIgnoreProperties("animal")
     List<EnriquecimentoAmbiental> enriquecimentoAmbientalList;
 
+    @LazyCollection(LazyCollectionOption.FALSE)
+    @OneToMany(fetch = FetchType.LAZY, targetEntity = Profile.class, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "animal")
+    @JsonIgnoreProperties("animal")
+    List<Profile> profileList;
+
     public Animal() {
 
     }

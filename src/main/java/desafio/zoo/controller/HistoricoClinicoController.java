@@ -24,7 +24,7 @@ public class HistoricoClinicoController {
 
         historicoClinico = HistoricoClinico
                 .find("animal = ?1 and isAtivo = true ORDER BY id DESC", pHistoricoClinico.animal).firstResult();
-        animal = Animal.find("id = ?", pHistoricoClinico.animal.id).firstResult();
+        animal = Animal.find("id = ?1", pHistoricoClinico.animal.id).firstResult();
 
         if (historicoClinico == null) {
             historicoClinico = new HistoricoClinico();

@@ -1,9 +1,10 @@
-package desafio.zoo.services;
+package desafio.zoo.controller;
 
 import desafio.zoo.model.Profile;
 import desafio.zoo.repository.ProfileRepository;
 import desafio.zoo.utils.FormData;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
+import org.jetbrains.annotations.NotNull;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -13,56 +14,76 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
 @ApplicationScoped
-public class ProfileServices {
+public class ProfileController {
 
     @ConfigProperty(name = "quarkus.http.body.uploads-directory")
     String directory;
+
     @Inject
     ProfileRepository repository;
-    @Transactional
-    public Profile sendUpload(FormData data) throws IOException {
 
-        List<String> mimeType = Arrays.asList("image/jpg", "image/jpeg", "image/png", "image/gif", "document/pdf", "document/doc", "document/docx", "document/xls", "document/xlsx");
+    public List<Profile> listUploads() {
+        return repository.listAll();
+    }
 
-        if (!mimeType.contains(data.getFile().contentType())) {
+    public Optional<Profile> findOne(Long id) {
 
-            throw new IOException("Arquivo não suportado");
+        Optional<Profile> profileOp = repository.findByIdOptional(id);
+
+        if (profileOp.isEmpty()) {
+            throw new RuntimeException("File not found");
         }
-        if (data.getFile().size() > 1024 * 1024 * 4){
+
+        return profileOp;
+    }
+
+    @Transactional
+    public Profile sendUpload(@NotNull FormData data) throws IOException {
+
+        List<String> mimetype = Arrays.asList("image/jpg", "image/jpeg", "image/gif", "image/png", "application/pdf", "document/doc", "document/docx", "application/zip", "application/vnd.sealed.xls");
+
+        if (!mimetype.contains(data.getFile().contentType())) {
+            throw new IOException("Tipo de arquivo não suportado.");
+        }
+
+        if (data.getFile().size() > 1024 * 1024 * 4) {
             throw new IOException("Arquivo muito grande.");
         }
+
         Profile profile = new Profile();
 
         String fileName = UUID.randomUUID() + "-" + data.getFile().fileName();
 
-        profile.setOriginalName(data.getFile().fileName());
+        profile.originalName = data.getFile().fileName();
 
-        profile.setKeyName(fileName);
+        profile.keyName = fileName;
 
-        profile.setMimetype(data.getFile().contentType());
+        profile.mimetype = data.getFile().contentType();
 
-        profile.setFileSize(data.getFile().size());
+        profile.fileSize = data.getFile().size();
 
-        profile.setDataCriada(new Date());
+        profile.dataCriado = new Date();
 
         repository.persist(profile);
 
         Files.copy(data.getFile().filePath(), Paths.get(directory + fileName));
+
         return profile;
     }
+
     @Transactional
     public void removeUpload(Long id) throws IOException {
 
         Optional<Profile> profileOp = repository.findByIdOptional(id);
 
         if (profileOp.isEmpty()) {
-            throw new IOException("Arquivo não encontrado");
+            throw new IOException("Arquivo não encontrado.");
         }
 
         Profile profile = profileOp.get();
 
         repository.delete(profile);
 
-        Files.deleteIfExists(Paths.get(directory + profile.getKeyName()));
+        Files.deleteIfExists(Paths.get(directory + profile.keyName));
     }
 }

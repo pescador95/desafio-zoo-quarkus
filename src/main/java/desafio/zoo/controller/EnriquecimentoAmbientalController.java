@@ -29,7 +29,7 @@ public class EnriquecimentoAmbientalController {
                 pEnriquecimentoAmbiental.animal, pEnriquecimentoAmbiental.dataEnriquecimento,
                 pEnriquecimentoAmbiental.nomeEnriquecimento, pEnriquecimentoAmbiental.descricaoEnriquecimento)
                 .firstResult();
-        animal = Animal.find("id = ?", pEnriquecimentoAmbiental.animal.id).firstResult();
+        animal = Animal.find("id = ?1", pEnriquecimentoAmbiental.animal.id).firstResult();
 
         if (enriquecimentoAmbiental == null) {
             enriquecimentoAmbiental = new EnriquecimentoAmbiental();

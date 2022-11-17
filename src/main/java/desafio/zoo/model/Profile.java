@@ -6,65 +6,29 @@ import java.util.Date;
 @Entity
 @Table(name = "profile")
 public class Profile {
+
+    @Column()
+    @SequenceGenerator(name = "profileIdSequence", sequenceName = "profile_id_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "profileIdSequence")
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
-    private Long id;
+    public Long id;
 
     @Column()
-    private String originalName;
+    public String originalName;
 
     @Column()
-    private String keyName;
+    public String keyName;
 
     @Column()
-    private String mimetype;
+    public String mimetype;
 
     @Column()
-    private Date dataCriado;
+    public Date dataCriado;
 
     @Column()
-    private Long fileSize;
+    public Long fileSize;
+
     public Profile(){
 
-    }
-    public Long getId() {
-        return id;
-    }
-
-    public String getOriginalName() {
-        return originalName;
-    }
-
-    public String getKeyName() {
-        return keyName;
-    }
-
-    public String getMimetype() {
-        return mimetype;
-    }
-
-    public Long getFilesize() {
-        return fileSize;
-    }
-
-    public void setOriginalName(String fileName) {
-        this.originalName = originalName;
-    }
-
-    public void setKeyName(String fileName) {
-        this.keyName = keyName;
-    }
-
-    public void setMimetype(String contentType) {
-        this.mimetype = mimetype;
-    }
-
-    public void setFileSize(long size) {
-        this.fileSize = fileSize;
-    }
-
-    public void setDataCriada(Date date) {
-        this.dataCriado = dataCriado;
     }
 }

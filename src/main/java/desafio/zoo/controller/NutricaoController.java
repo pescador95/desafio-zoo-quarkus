@@ -22,7 +22,7 @@ public class NutricaoController {
     public void addNutricao(@NotNull Nutricao pNutricao, String email) {
 
         nutricao = Nutricao.find("animal = ?1 and isAtivo = true ORDER BY id DESC", pNutricao.animal).firstResult();
-        animal = Animal.find("id = ?", pNutricao.animal.id).firstResult();
+        animal = Animal.find("id = ?1", pNutricao.animal.id).firstResult();
 
         if (nutricao == null) {
             nutricao = new Nutricao();

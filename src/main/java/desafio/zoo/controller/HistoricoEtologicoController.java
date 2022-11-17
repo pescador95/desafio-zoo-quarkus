@@ -25,7 +25,7 @@ public class HistoricoEtologicoController {
 
         historicoEtologico = HistoricoEtologico
                 .find("animal = ?1 and isAtivo = true ORDER BY id DESC", pHistoricoEtologico.animal).firstResult();
-        animal = Animal.find("id = ?", pHistoricoEtologico.animal.id).firstResult();
+        animal = Animal.find("id = ?1", pHistoricoEtologico.animal.id).firstResult();
 
         if (historicoEtologico == null) {
             historicoEtologico = new HistoricoEtologico();

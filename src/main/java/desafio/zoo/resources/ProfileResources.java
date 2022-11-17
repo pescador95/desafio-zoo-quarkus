@@ -1,36 +1,31 @@
-package desafio.zoo.controller;
-
-import java.io.IOException;
-import java.util.List;
-
-import javax.inject.Inject;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
+package desafio.zoo.resources;
 
 import desafio.zoo.model.Profile;
-import desafio.zoo.services.ProfileServices;
+import desafio.zoo.controller.ProfileController;
 import desafio.zoo.utils.FormData;
 import org.jboss.resteasy.reactive.MultipartForm;
+
+import javax.inject.Inject;
+import javax.ws.rs.*;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import java.io.IOException;
+import java.util.List;
+import java.util.Optional;
 
 @Path("uploads")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.MULTIPART_FORM_DATA)
-public class ProfileController {
+public class ProfileResources {
 
     @Inject
-    ProfileServices service;
+    ProfileController controller;
 
     @GET
+    @Path("/")
     public Response listUploads() {
 
-        List<Profile> profiles = service.listUploads();
+        List<Profile> profiles = controller.listUploads();
 
         return Response.ok(profiles).build();
     }
@@ -40,7 +35,7 @@ public class ProfileController {
     public Response findOne(@PathParam("id") Long id) {
 
         try {
-            Profile profile = service.findOne(id);
+            Optional<Profile> profile = controller.findOne(id);
 
             return Response.ok(profile).build();
         } catch (RuntimeException e) {
@@ -49,10 +44,11 @@ public class ProfileController {
     }
 
     @POST
-    public Response sendUpload(@MultipartForm FormData data) {
+    @Path("/")
+    public Response sendUpload(@MultipartForm FormData pData) {
 
         try {
-            Profile profile = service.sendUpload(data);
+            Profile profile = controller.sendUpload((pData));
 
             return Response.ok(profile).status(201).build();
         } catch (IOException e) {
@@ -65,7 +61,7 @@ public class ProfileController {
     public Response removeUpload(@PathParam("id") Long id) {
 
         try {
-            service.removeUpload(id);
+            controller.removeUpload(id);
 
             return Response.status(204).build();
         } catch (IOException e) {

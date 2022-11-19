@@ -21,16 +21,17 @@ public class AuthResources {
     AuthController authController;
     Auth auth;
     Responses responses;
+
     @POST
     @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
     @PermitAll
     public Response auth(Auth data) {
-        try{
+        try {
             auth = authController.login(data);
             return Response.ok(auth).status(200).build();
-        } catch (Exception e){
+        } catch (Exception e) {
             return Response.ok(responses).status(Response.Status.UNAUTHORIZED).build();
         }
 
@@ -42,11 +43,12 @@ public class AuthResources {
     @Consumes("application/json")
     @PermitAll
     public Response refreshToken(Auth data) {
-        try{
+        try {
             auth = authController.refreshToken(data);
             return Response.ok(auth).status(200).build();
-        }catch (Exception e) {
-            return Response.ok(responses).status(Response.Status.UNAUTHORIZED).build();}
+        } catch (Exception e) {
+            return Response.ok(responses).status(Response.Status.UNAUTHORIZED).build();
+        }
 
     }
 }

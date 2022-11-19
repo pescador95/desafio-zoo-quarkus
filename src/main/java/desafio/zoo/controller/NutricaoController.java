@@ -8,7 +8,9 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.transaction.Transactional;
-import javax.ws.rs.NotFoundException;
+import javax.ws.rs.core.Response;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -21,11 +23,13 @@ public class NutricaoController {
     Responses responses;
     Usuario usuarioAuth;
 
-    public void addNutricao(@NotNull Nutricao pNutricao, String email) {
+    public Response addNutricao(@NotNull Nutricao pNutricao, String email) {
 
+        responses = new Responses();
+        responses.messages = new ArrayList<>();
         usuarioAuth = Usuario.find("email = ?1", email).firstResult();
 
-        nutricao = Nutricao.find("animal = ?1 and isAtivo = true ORDER BY id DESC", pNutricao.animal).firstResult();
+        nutricao = Nutricao.find("animal = ?1 and isAtivo = true and dataInicio = ?2 ORDER BY id DESC", pNutricao.animal, pNutricao.dataInicio).firstResult();
         animal = Animal.find("id = ?1", pNutricao.animal.id).firstResult();
 
         if (nutricao == null) {
@@ -56,46 +60,60 @@ public class NutricaoController {
             } else {
                 responses.messages.add("Por favor, preencha o Animal da Nutrição corretamente!");
             }
-            nutricao.nomeAnimal = animal.nomeApelido;
-            nutricao.usuario = usuarioAuth;
-            nutricao.usuarioAcao = usuarioAuth;
-            nutricao.dataAcao = new Date();
+            if (responses.messages.size() < 1) {
+                nutricao.isAtivo = Boolean.TRUE;
+                nutricao.nomeAnimal = animal.nomeApelido;
+                nutricao.usuario = usuarioAuth;
+                nutricao.usuarioAcao = usuarioAuth;
+                nutricao.dataAcao = new Date();
 
-            nutricao.persist();
+                nutricao.persist();
 
+                responses.status = 201;
+                responses.data = nutricao;
+                responses.messages.add("Ficha de nutrição Cadastrada com sucesso!");
+            } else {
+                return Response.ok(responses).status(Response.Status.NOT_ACCEPTABLE).build();
+            }
+            return Response.ok(responses).status(Response.Status.CREATED).build();
         } else {
-            responses.messages.add("Nutrição já cadastrado!");
+            responses.status = 500;
+            responses.data = nutricao;
+            responses.messages.add("Ficha de nutrição já cadastrada!");
+            return Response.ok(responses).status(Response.Status.NOT_ACCEPTABLE).build();
         }
-
     }
 
-    public void updateNutricao(@NotNull Nutricao pNutricao, String email) {
+    public Response updateNutricao(@NotNull Nutricao pNutricao, String email) {
 
-        usuarioAuth = Usuario.find("email = ?1", email).firstResult();
+        responses = new Responses();
+        responses.messages = new ArrayList<>();
 
-        nutricao = Nutricao.find("id = ?1 and isAtivo = true ORDER BY id DESC", pNutricao.id).firstResult();
+        try {
 
-        if (nutricao != null) {
+            nutricao = Nutricao.find("id = ?1 and isAtivo = true ORDER BY id DESC", pNutricao.id).firstResult();
+            usuarioAuth = Usuario.find("email = ?1", email).firstResult();
+
             if (pNutricao.dataInicio == null && pNutricao.dataFim == null && pNutricao.descricaoNutricao == null
                     && pNutricao.animal == null) {
                 responses.messages.add("Informe os dados para atualizar a Nutrição.");
             } else {
-                if (pNutricao.dataInicio != null) {
+                if (pNutricao.dataInicio != null && nutricao.dataInicio != null) {
                     if (!nutricao.dataInicio.equals(pNutricao.dataInicio)) {
                         nutricao.dataInicio = pNutricao.dataInicio;
                     }
                 }
-                if (pNutricao.dataFim != null) {
+                if (pNutricao.dataFim != null && nutricao.dataFim != null) {
                     if (!nutricao.dataFim.equals(pNutricao.dataFim)) {
                         nutricao.dataFim = pNutricao.dataFim;
                     }
                 }
-                if (pNutricao.descricaoNutricao != null) {
+                if (pNutricao.descricaoNutricao != null && nutricao.descricaoNutricao != null) {
                     if (!nutricao.descricaoNutricao.equals(pNutricao.descricaoNutricao)) {
                         nutricao.descricaoNutricao = pNutricao.descricaoNutricao;
                     }
                 }
-                if (pNutricao.animal != null) {
+                if (pNutricao.animal != null && nutricao.animal != null) {
                     if (nutricao.animal != null && !nutricao.animal.equals(pNutricao.animal)) {
                         nutricao.animal = Animal.findById(pNutricao.animal.id);
                     }
@@ -104,56 +122,105 @@ public class NutricaoController {
                 nutricao.usuarioAcao = usuarioAuth;
                 nutricao.dataAcao = new Date();
                 nutricao.persist();
-            }
-        } else {
-            responses.messages.add("Não foi possível atualizar a ficha de Nutrição.");
 
+                responses.status = 200;
+                responses.data = nutricao;
+                responses.messages.add("Ficha de Nutricação atualizada com sucesso!");
+            }
+            return Response.ok(responses).status(Response.Status.ACCEPTED).build();
+        } catch (Exception e) {
+            responses.status = 500;
+            responses.data = nutricao;
+            responses.messages.add("Não foi possível atualizar a Ficha de Nutrição.");
+            return Response.ok(responses).status(Response.Status.BAD_REQUEST).build();
         }
     }
 
-    public void deleteNutricao(List<Long> pListIdnutricao, String email) {
+    public Response deleteNutricao(List<Long> pListIdnutricao, String email) {
 
+        Integer countList = pListIdnutricao.size();
+        List<Nutricao> nutricaoList = new ArrayList<>();
+        responses = new Responses();
+        responses.messages = new ArrayList<>();
         usuarioAuth = Usuario.find("email = ?1", email).firstResult();
 
-        pListIdnutricao.forEach((pNutricao) -> {
-            nutricao = Nutricao.find("id = ?1 and isAtivo = true ORDER BY id DESC", pNutricao).firstResult();
+        try {
+            pListIdnutricao.forEach((pNutricao) -> {
+                nutricao = Nutricao.find("id = ?1 and isAtivo = true ORDER BY id DESC", pNutricao).firstResult();
 
-            if (nutricao != null) {
+
                 nutricao.isAtivo = Boolean.FALSE;
                 nutricao.dataAcao = new Date();
                 nutricao.usuarioAcao = usuarioAuth;
                 nutricao.systemDateDeleted = new Date();
                 nutricao.persist();
+                nutricaoList.add(nutricao);
+            });
+            if (pListIdnutricao.size() <= 1) {
+                responses.status = 200;
+                responses.data = animal;
+                responses.messages.add("Ficha de Nutricação excluída com sucesso.");
             } else {
-                if (pListIdnutricao.size() <= 1) {
-                    throw new NotFoundException("Ficha de Nutrição não localizada ou já excluída.");
-                } else {
-                    throw new NotFoundException("Fichas de Nutrição não localizadas ou já excluídas.");
-                }
+                responses.status = 200;
+                responses.dataList = Collections.singletonList(nutricaoList);
+                responses.messages.add(countList + " Fichas de Nutricação excluídas com sucesso.");
             }
-        });
+            return Response.ok(responses).status(Response.Status.ACCEPTED).build();
+        } catch (Exception e) {
+            if (pListIdnutricao.size() <= 1) {
+                responses.status = 500;
+                responses.data = animal;
+                responses.messages.add("Ficha de Nutricação não localizada ou já excluída.");
+            } else {
+                responses.status = 500;
+                responses.dataList = Collections.singletonList(nutricaoList);
+                responses.messages.add("Fichas de Nutricação não localizadas ou já excluídas.");
+            }
+            return Response.ok(responses).status(Response.Status.BAD_REQUEST).build();
+        }
     }
 
-    public void reactivateNutricao(List<Long> nutricaoList, String email) {
+    public Response reactivateNutricao(List<Long> pListIdnutricao, String email) {
 
+        Integer countList = pListIdnutricao.size();
+        List<Nutricao> nutricaoList = new ArrayList<>();
+        responses = new Responses();
+        responses.messages = new ArrayList<>();
         usuarioAuth = Usuario.find("email = ?1", email).firstResult();
 
-        nutricaoList.forEach((pNutricao) -> {
-            nutricao = Nutricao.find("id = ?1 and isAtivo = false ORDER BY id DESC", pNutricao).firstResult();
+        try {
+            pListIdnutricao.forEach((pNutricao) -> {
+                nutricao = Nutricao.find("id = ?1 and isAtivo = false ORDER BY id DESC", pNutricao).firstResult();
 
-            if (nutricao != null) {
+
                 nutricao.isAtivo = Boolean.TRUE;
                 nutricao.dataAcao = new Date();
                 nutricao.usuarioAcao = usuarioAuth;
-                nutricao.systemDateDeleted = null;
+                nutricao.systemDateDeleted = new Date();
                 nutricao.persist();
+                nutricaoList.add(nutricao);
+            });
+            if (pListIdnutricao.size() <= 1) {
+                responses.status = 200;
+                responses.data = animal;
+                responses.messages.add("Ficha de Nutricação excluída com sucesso.");
             } else {
-                if (nutricaoList.size() <= 1) {
-                    throw new NotFoundException("Ficha de Nutrição não localizada ou já reativada.");
-                } else {
-                    throw new NotFoundException("Fichas de Nutrição não localizadas ou já reativadas.");
-                }
+                responses.status = 200;
+                responses.dataList = Collections.singletonList(nutricaoList);
+                responses.messages.add(countList + " Fichas de Nutricação excluídas com sucesso.");
             }
-        });
+            return Response.ok(responses).status(Response.Status.ACCEPTED).build();
+        } catch (Exception e) {
+            if (pListIdnutricao.size() <= 1) {
+                responses.status = 500;
+                responses.data = animal;
+                responses.messages.add("Ficha de Nutricação não localizada ou já excluída.");
+            } else {
+                responses.status = 500;
+                responses.dataList = Collections.singletonList(nutricaoList);
+                responses.messages.add("Fichas de Nutricação não localizadas ou já excluídas.");
+            }
+            return Response.ok(responses).status(Response.Status.BAD_REQUEST).build();
+        }
     }
 }

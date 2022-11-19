@@ -25,8 +25,7 @@ public class AnimalController {
         responses.messages = new ArrayList<>();
         usuarioAuth = Usuario.find("email = ?1", email).firstResult();
 
-        animal = Animal.find("identificacao = ?1 and isAtivo = true ORDER BY id DESC", pAnimal.identificacao)
-                .firstResult();
+        animal = Animal.find("identificacao = ?1 and isAtivo = true ORDER BY id DESC", pAnimal.identificacao).firstResult();
 
         if (animal == null) {
             animal = new Animal();
@@ -90,7 +89,7 @@ public class AnimalController {
                 responses.data = animal;
                 responses.messages.add("Animal Cadastrado com sucesso!");
             } else {
-            return Response.ok(responses).status(Response.Status.NOT_ACCEPTABLE).build();
+                return Response.ok(responses).status(Response.Status.NOT_ACCEPTABLE).build();
             }
             return Response.ok(responses).status(Response.Status.CREATED).build();
         } else {

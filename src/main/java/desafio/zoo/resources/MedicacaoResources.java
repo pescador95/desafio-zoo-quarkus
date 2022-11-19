@@ -15,7 +15,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
 import java.security.Principal;
-import java.util.Arrays;
 import java.util.List;
 
 @Path("/medicacao")
@@ -31,7 +30,7 @@ public class MedicacaoResources {
     @Path("{id}")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
-    @RolesAllowed({ "veterinario", "biologo", "dev" })
+    @RolesAllowed({"veterinario", "biologo", "dev"})
     public Response getById(@PathParam("id") Long pId) {
         medicacao = Medicacao.findById(pId);
         return Response.ok(medicacao).status(200).build();
@@ -41,9 +40,9 @@ public class MedicacaoResources {
     @Path("/count")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
-    @RolesAllowed({ "veterinario", "biologo", "dev" })
+    @RolesAllowed({"veterinario", "biologo", "dev"})
     public Response count(@QueryParam("ativo") @DefaultValue("true") Boolean ativo,
-            @QueryParam("strgFilter") @DefaultValue("") String strgFilter) {
+                          @QueryParam("strgFilter") @DefaultValue("") String strgFilter) {
         String query = "isAtivo = " + ativo + " " + strgFilter;
         long medicacao = Medicacao.count(query);
         return Response.ok(medicacao).status(200).build();
@@ -54,11 +53,11 @@ public class MedicacaoResources {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
     public Response list(@QueryParam("sort") @DefaultValue("desc") @NotNull String sortQuery,
-            @QueryParam("page") @DefaultValue("0") int pageIndex,
-            @QueryParam("size") @DefaultValue("20") int pageSize,
-            @QueryParam("ativo") @DefaultValue("true") Boolean ativo,
-            @QueryParam("strgFilter") @DefaultValue("") String strgFilter,
-            @QueryParam("strgOrder") @DefaultValue("id") String strgOrder) {
+                         @QueryParam("page") @DefaultValue("0") int pageIndex,
+                         @QueryParam("size") @DefaultValue("20") int pageSize,
+                         @QueryParam("ativo") @DefaultValue("true") Boolean ativo,
+                         @QueryParam("strgFilter") @DefaultValue("") String strgFilter,
+                         @QueryParam("strgOrder") @DefaultValue("id") String strgOrder) {
         String query = "isAtivo = " + ativo + " " + strgFilter + " " + "order by " + strgOrder + " " + sortQuery;
         PanacheQuery<Medicacao> medicacao;
         medicacao = Medicacao.find(query);
@@ -69,69 +68,83 @@ public class MedicacaoResources {
     @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
-    @RolesAllowed({ "veterinario", "biologo", "dev" })
+    @RolesAllowed({"veterinario", "biologo", "dev"})
     public Response add(Medicacao pMedicacao, @Context @NotNull SecurityContext context) {
-        responses = new Responses();
-        responses.status = 201;
-        responses.messages.add("Medicação cadastrado com sucesso!");
-        Principal json = context.getUserPrincipal();
-        String email = json.getName();
-        controller.addMedicacao(pMedicacao, email);
-        return Response.ok(responses).status(201, "Medicação cadastrada com sucesso!").build();
+        try {
+            Principal json = context.getUserPrincipal();
+            String email = json.getName();
+            return controller.addMedicacao(pMedicacao, email);
+        } catch (Exception e) {
+            responses = new Responses();
+            responses.status = 406;
+            responses.messages.add("Não foi possível cadastrar a Medicação.");
+            return Response.ok(responses).status(Response.Status.NOT_ACCEPTABLE).build();
+        }
     }
 
     @PUT
     @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
-    @RolesAllowed({ "veterinario", "biologo", "dev" })
+    @RolesAllowed({"veterinario", "biologo", "dev"})
     public Response update(Medicacao pMedicacao, @Context @NotNull SecurityContext context) {
-        responses = new Responses();
-        responses.status = 200;
-        responses.messages.add("Medicação atualizado com sucesso!");
-        Principal json = context.getUserPrincipal();
-        String email = json.getName();
-        controller.updateMedicacao(pMedicacao, email);
-        return Response.ok(responses).status(200, "Medicação atualizada com sucesso!").build();
+        try {
+            Principal json = context.getUserPrincipal();
+            String email = json.getName();
+            return controller.updateMedicacao(pMedicacao, email);
+        } catch (Exception e) {
+            responses = new Responses();
+            responses.status = 500;
+            responses.messages.add("Não foi possível atualizar a medicação.");
+            return Response.ok(responses).status(Response.Status.BAD_REQUEST).build();
+        }
     }
 
     @DELETE
     @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
-    @RolesAllowed({ "veterinario", "biologo", "dev" })
+    @RolesAllowed({"veterinario", "biologo", "dev"})
     public Response deleteList(List<Long> pListMedicacao, @Context @NotNull SecurityContext context) {
-        Integer countList = pListMedicacao.size();
-        responses = new Responses();
-        responses.status = 200;
-        if (pListMedicacao.size() <= 1) {
-            responses.messages.add("Medicação excluída com sucesso!");
-        } else {
-            responses.messages.add(countList + " Medicações exclúidas com sucesso!");
+        try {
+            Principal json = context.getUserPrincipal();
+            String email = json.getName();
+            return controller.deleteMedicacao(pListMedicacao, email);
+        } catch (Exception e) {
+            if (pListMedicacao.size() <= 1) {
+                responses = new Responses();
+                responses.status = 500;
+                responses.messages.add("Não foi possível excluir a medicação.");
+            } else {
+                responses = new Responses();
+                responses.status = 500;
+                responses.messages.add("Não foi possível excluir as medicações.");
+            }
+            return Response.ok(responses).status(Response.Status.BAD_REQUEST).build();
         }
-        Principal json = context.getUserPrincipal();
-        String email = json.getName();
-        controller.deleteMedicacao(pListMedicacao, email);
-        return Response.ok(responses).status(200, "Medicação excluída com sucesso!").build();
     }
 
     @PUT
     @Path("/reactivate")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
-    @RolesAllowed({ "veterinario", "biologo", "dev" })
+    @RolesAllowed({"veterinario", "biologo", "dev"})
     public Response reactivateList(List<Long> pListMedicacao, @Context @NotNull SecurityContext context) {
-        Integer countList = pListMedicacao.size();
-        responses = new Responses();
-        responses.status = 200;
-        if (pListMedicacao.size() <= 1) {
-            responses.messages.add("Medicação recuperada com sucesso!");
-        } else {
-            responses.messages.add(countList + " Medicações recuperadas com sucesso!");
+        try {
+            Principal json = context.getUserPrincipal();
+            String email = json.getName();
+            return controller.reactivateMedicacao(pListMedicacao, email);
+        } catch (Exception e) {
+            if (pListMedicacao.size() <= 1) {
+                responses = new Responses();
+                responses.status = 500;
+                responses.messages.add("Não foi possível reativar a medicação.");
+            } else {
+                responses = new Responses();
+                responses.status = 500;
+                responses.messages.add("Não foi possível reativar as medicações.");
+            }
+            return Response.ok(responses).status(Response.Status.BAD_REQUEST).build();
         }
-        Principal json = context.getUserPrincipal();
-        String email = json.getName();
-        controller.reactivateMedicacao(pListMedicacao, email);
-        return Response.ok(responses).status(200, "Medicação recuperada com sucesso!").build();
     }
 }

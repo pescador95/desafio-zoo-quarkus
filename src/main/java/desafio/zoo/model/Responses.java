@@ -5,13 +5,13 @@ import java.util.List;
 
 public class Responses {
 
-   public Integer status;
+    public Integer status;
 
-   public Object data;
+    public Object data;
 
-   public List<Object> dataList;
+    public List<Object> dataList;
 
-   public List<String> messages;
+    public List<String> messages;
 
     public Responses() {
 
@@ -23,6 +23,7 @@ public class Responses {
         this.messages = messages;
 
     }
+
     public Responses(int i, Object data, List<Object> dataList, List<String> messages) {
         this.status = i;
         this.data = data;

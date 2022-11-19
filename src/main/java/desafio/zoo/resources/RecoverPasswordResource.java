@@ -27,27 +27,32 @@ public class RecoverPasswordResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
     public Response sendMail(@PathParam("email") String email) {
-        responses = new Responses();
-        responses.status = 200;
-        responses.messages.add("Uma nova senha foi enviada para recuperar ao email informado.");
-        controller.sendEmail(email);
-        return Response.ok(responses).status(200, "Uma nova senha foi enviada para recuperar ao email informado.")
-                .build();
+        try {
+            return controller.sendEmail(email);
+        } catch (Exception e) {
+            responses = new Responses();
+            responses.status = 404;
+            responses.messages.add("Não foi possível localizar um cadastro com o email informado.");
+            return Response.ok(responses).status(Response.Status.NOT_FOUND).build();
+        }
     }
 
     @PUT
     @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
-    @RolesAllowed({ "veterinario", "biologo", "dev" })
+    @RolesAllowed({"veterinario", "biologo", "dev"})
     public Response update(Usuario pUsuario, @Context @NotNull SecurityContext context,
-            @QueryParam("password") String password) {
-        responses = new Responses();
-        responses.status = 200;
-        responses.messages.add("Senha alterada com sucesso!");
-        Principal json = context.getUserPrincipal();
-        String email = json.getName();
-        controller.updatePassword(email, password);
-        return Response.ok(responses).status(200, "Senha alterada com sucesso!").build();
+                           @QueryParam("password") String password) {
+        try {
+            Principal json = context.getUserPrincipal();
+            String email = json.getName();
+            return controller.updatePassword(email, password);
+        } catch (Exception e) {
+            responses = new Responses();
+            responses.status = 404;
+            responses.messages.add("Não foi possível atualizar a senha.");
+            return Response.ok(responses).status(Response.Status.BAD_REQUEST).build();
+        }
     }
 }

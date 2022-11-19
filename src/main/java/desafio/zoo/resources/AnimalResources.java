@@ -72,13 +72,16 @@ public class AnimalResources {
     @Consumes("application/json")
     @RolesAllowed({"veterinario", "biologo", "dev"})
     public Response add(Animal pAnimal, @Context @NotNull SecurityContext context) {
-        responses = new Responses();
-        responses.status = 201;
-        responses.message = "Animal cadastrado com sucesso!";
-                Principal json = context.getUserPrincipal();
-        String email = json.getName();
-        controller.addAnimal(pAnimal, email);
-        return Response.ok(responses).status(201, "Animal cadastrado com sucesso!").build();
+        try{
+            Principal json = context.getUserPrincipal();
+            String email = json.getName();
+           return controller.addAnimal(pAnimal, email);
+        } catch (Exception e) {
+            responses = new Responses();
+            responses.status = 406;
+            responses.messages.add("Não foi possível cadastrar o animal.");
+            return Response.ok(responses).status(Response.Status.NOT_ACCEPTABLE).build();
+        }
     }
 
     @PUT
@@ -87,13 +90,16 @@ public class AnimalResources {
     @Consumes("application/json")
     @RolesAllowed({"veterinario", "biologo", "dev"})
     public Response update(Animal pAnimal, @Context @NotNull SecurityContext context) {
-        responses = new Responses();
-        responses.status = 200;
-        responses.message = "Animal atualizado com sucesso!";
-        Principal json = context.getUserPrincipal();
-        String email = json.getName();
-        controller.updateAnimal(pAnimal, email);
-        return Response.ok(responses).status(200, "Animal atualizado com sucesso!").build();
+        try{
+            Principal json = context.getUserPrincipal();
+            String email = json.getName();
+            return controller.updateAnimal(pAnimal, email);
+        } catch (Exception e) {
+            responses = new Responses();
+            responses.status = 500;
+            responses.messages.add("Não foi possível atualizar o animal.");
+            return Response.ok(responses).status(Response.Status.BAD_REQUEST).build();
+        }
     }
 
     @DELETE
@@ -102,37 +108,44 @@ public class AnimalResources {
     @Consumes("application/json")
     @RolesAllowed({"veterinario", "biologo", "dev"})
     public Response deleteList(List<Long> pListIdAnimal, @Context @NotNull SecurityContext context) {
-       Integer countList = pListIdAnimal.size();
-        responses = new Responses();
-        responses.status = 200;
-        if(pListIdAnimal.size() <= 1){
-            responses.message = "Animal excluído com sucesso!";
-        } else {
-            responses.message = countList + " Animais excluídos com sucesso!";
+        try {
+            Principal json = context.getUserPrincipal();
+            String email = json.getName();
+            return controller.deleteAnimal(pListIdAnimal, email);
+        } catch (Exception e) {
+            if (pListIdAnimal.size() <= 1) {
+                responses = new Responses();
+                responses.status = 500;
+                responses.messages.add("Não foi possível excluir o animal.");
+            } else {
+                responses = new Responses();
+                responses.status = 500;
+                responses.messages.add("Não foi possível excluir os animais.");
+            }
+            return Response.ok(responses).status(Response.Status.BAD_REQUEST).build();
         }
-                Principal json = context.getUserPrincipal();
-        String email = json.getName();
-        controller.deleteAnimal(pListIdAnimal, email);
-        return Response.ok(responses).status(200, "Animal excluído com sucesso!").build();
     }
-
     @PUT
     @Path("/reactivate")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
     @RolesAllowed({"veterinario", "biologo", "dev"})
     public Response reactivateList(List<Long> pListIdAnimal, @Context @NotNull SecurityContext context) {
-        Integer countList = pListIdAnimal.size();
-        responses = new Responses();
-        responses.status = 200;
-        if(pListIdAnimal.size() <= 1){
-            responses.message = "Animal recuperado com sucesso!";
-        } else {
-            responses.message = countList + " Animais recuperados com sucesso!";
+        try{
+            Principal json = context.getUserPrincipal();
+            String email = json.getName();
+            return controller.reactivateAnimal(pListIdAnimal, email);
+        } catch (Exception e) {
+            if(pListIdAnimal.size() <= 1){
+                responses = new Responses();
+                responses.status = 500;
+                responses.messages.add("Não foi possível reativar o animal.");
+            } else {
+                responses = new Responses();
+                responses.status = 406;
+                responses.messages.add("Não foi possível reativar os animais.");
+            }
+            return Response.ok(responses).status(Response.Status.BAD_REQUEST).build();
         }
-        Principal json = context.getUserPrincipal();
-        String email = json.getName();
-        controller.reactivateAnimal(pListIdAnimal, email);
-        return Response.ok(responses).status(200, "Animal recuperado com sucesso!").build();
     }
 }

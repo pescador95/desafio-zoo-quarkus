@@ -51,6 +51,9 @@ public class Animal extends PanacheEntityBase {
     public String origem;
 
     @Column()
+    public String orgao;
+
+    @Column()
     public boolean isAtivo;
 
     @ManyToOne()

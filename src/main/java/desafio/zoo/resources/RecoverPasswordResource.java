@@ -29,23 +29,25 @@ public class RecoverPasswordResource {
     public Response sendMail(@PathParam("email") String email) {
         responses = new Responses();
         responses.status = 200;
-        responses.message = "Uma nova senha foi enviada para recuperar ao email informado.";
+        responses.messages.add("Uma nova senha foi enviada para recuperar ao email informado.");
         controller.sendEmail(email);
-        return Response.ok(responses).status(200, "Uma nova senha foi enviada para recuperar ao email informado.").build();
+        return Response.ok(responses).status(200, "Uma nova senha foi enviada para recuperar ao email informado.")
+                .build();
     }
 
     @PUT
     @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
-    @RolesAllowed({"veterinario", "biologo", "dev"})
-    public Response update(Usuario pUsuario, @Context @NotNull SecurityContext context, @QueryParam("password") String password) {
+    @RolesAllowed({ "veterinario", "biologo", "dev" })
+    public Response update(Usuario pUsuario, @Context @NotNull SecurityContext context,
+            @QueryParam("password") String password) {
         responses = new Responses();
         responses.status = 200;
-        responses.message = "Senha alterada com sucesso!";
+        responses.messages.add("Senha alterada com sucesso!");
         Principal json = context.getUserPrincipal();
         String email = json.getName();
         controller.updatePassword(email, password);
-        return Response.ok(responses).status(200,"Senha alterada com sucesso!").build();
+        return Response.ok(responses).status(200, "Senha alterada com sucesso!").build();
     }
 }

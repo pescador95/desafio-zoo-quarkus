@@ -37,7 +37,8 @@ public class Profile {
     public Animal animal;
     @Column()
     public String fileReference;
-    public Profile(){
+
+    public Profile() {
 
     }
 }

@@ -10,8 +10,8 @@ import net.bytebuddy.utility.RandomString;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
-import javax.ws.rs.NotFoundException;
-import java.util.Arrays;
+import javax.ws.rs.core.Response;
+import java.util.ArrayList;
 import java.util.Date;
 
 @ApplicationScoped
@@ -22,34 +22,52 @@ public class RecoverPasswordController {
 
     Responses responses;
 
-    public void sendEmail(String email) {
+    public Response sendEmail(String email) {
+        responses = new Responses();
+        responses.messages = new ArrayList<>();
 
         Usuario usuario = Usuario.find("email = ?1 and isAtivo = true", email).firstResult();
-        String senha = RandomString.make(12);
-        System.out.println(senha);
-        usuario.password = BcryptUtil.bcryptHash(senha);
-        usuario.persist();
-        String nome = usuario.nome;
-
-        if (usuario != null) {
+        if (usuario.isAtivo) {
+            String senha = RandomString.make(12);
+            System.out.println(senha);
+            usuario.password = BcryptUtil.bcryptHash(senha);
+            usuario.persist();
+            String nome = usuario.nome;
             mailer.send(Mail.withText(email, "Desafio Zoo - Recuperação de Senha", "Caro " + nome + ",\n"
                     + "segue a nova senha para realização do acesso ao sistema do Zoo: " + senha));
+            responses.status = 200;
+            responses.data = usuario;
+            responses.messages.add("Enviado uma nova senha para o email informado.");
         } else {
-            throw new NotFoundException("Usuários não cadastrado ou inativo");
+            responses = new Responses();
+            responses.status = 404;
+            responses.messages.add("Não foi possível localizar um cadastro com o email informado.");
+            return Response.ok(responses).status(Response.Status.NOT_FOUND).build();
         }
+        return Response.ok(responses).status(Response.Status.ACCEPTED).build();
     }
 
-    public void updatePassword(String email, String password) {
+    public Response updatePassword(String email, String password) {
+        responses = new Responses();
+        responses.messages = new ArrayList<>();
 
-        Usuario usuarioAuth = Usuario.find("email = ?1", email).firstResult();
+        try {
+            Usuario usuarioAuth = Usuario.find("email = ?1", email).firstResult();
 
-        if (password != null && !password.equals(usuarioAuth.password)) {
             usuarioAuth.password = BcryptUtil.bcryptHash(password);
             usuarioAuth.usuarioAcao = usuarioAuth.nome;
             usuarioAuth.dataAcao = new Date();
             usuarioAuth.persist();
-        } else {
+
+            responses.status = 200;
+            responses.data = usuarioAuth;
+            responses.messages.add("Senha atualizada com sucesso.");
+            return Response.ok(responses).status(Response.Status.ACCEPTED).build();
+        } catch (Exception e) {
+            responses = new Responses();
+            responses.status = 500;
             responses.messages.add("Não foi possível atualizar a senha.");
+            return Response.ok(responses).status(Response.Status.BAD_REQUEST).build();
         }
     }
 }

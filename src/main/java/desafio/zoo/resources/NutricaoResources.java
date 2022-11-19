@@ -15,7 +15,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
 import java.security.Principal;
-import java.util.Arrays;
 import java.util.List;
 
 @Path("/nutricao")
@@ -31,7 +30,7 @@ public class NutricaoResources {
     @Path("{id}")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
-    @RolesAllowed({ "veterinario", "biologo", "dev" })
+    @RolesAllowed({"veterinario", "biologo", "dev"})
     public Response getById(@PathParam("id") Long pId) {
         nutricao = Nutricao.findById(pId);
         return Response.ok(nutricao).status(200).build();
@@ -41,9 +40,9 @@ public class NutricaoResources {
     @Path("/count")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
-    @RolesAllowed({ "veterinario", "biologo", "dev" })
+    @RolesAllowed({"veterinario", "biologo", "dev"})
     public Response count(@QueryParam("ativo") @DefaultValue("true") Boolean ativo,
-            @QueryParam("strgFilter") @DefaultValue("") String strgFilter) {
+                          @QueryParam("strgFilter") @DefaultValue("") String strgFilter) {
         String query = "isAtivo = " + ativo + " " + strgFilter;
         long nutricao = Nutricao.count(query);
         return Response.ok(nutricao).status(200).build();
@@ -53,13 +52,13 @@ public class NutricaoResources {
     @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
-    @RolesAllowed({ "veterinario", "biologo", "dev" })
+    @RolesAllowed({"veterinario", "biologo", "dev"})
     public Response list(@QueryParam("sort") @DefaultValue("desc") @NotNull String sortQuery,
-            @QueryParam("page") @DefaultValue("0") int pageIndex,
-            @QueryParam("size") @DefaultValue("20") int pageSize,
-            @QueryParam("ativo") @DefaultValue("true") Boolean ativo,
-            @QueryParam("strgFilter") @DefaultValue("") String strgFilter,
-            @QueryParam("strgOrder") @DefaultValue("id") String strgOrder) {
+                         @QueryParam("page") @DefaultValue("0") int pageIndex,
+                         @QueryParam("size") @DefaultValue("20") int pageSize,
+                         @QueryParam("ativo") @DefaultValue("true") Boolean ativo,
+                         @QueryParam("strgFilter") @DefaultValue("") String strgFilter,
+                         @QueryParam("strgOrder") @DefaultValue("id") String strgOrder) {
         String query = "isAtivo = " + ativo + " " + strgFilter + " " + "order by " + strgOrder + " " + sortQuery;
         PanacheQuery<Nutricao> nutricao;
         nutricao = Nutricao.find(query);
@@ -70,69 +69,84 @@ public class NutricaoResources {
     @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
-    @RolesAllowed({ "veterinario", "biologo", "dev" })
+    @RolesAllowed({"veterinario", "biologo", "dev"})
     public Response add(Nutricao pNutricao, @Context @NotNull SecurityContext context) {
-        responses = new Responses();
-        responses.status = 201;
-        responses.messages.add("Ficha de Nutrição cadastrada com sucesso!");
-        Principal json = context.getUserPrincipal();
-        String email = json.getName();
-        controller.addNutricao(pNutricao, email);
-        return Response.ok(responses).status(201, "Ficha de Nutrição cadastrada com sucesso!").build();
+        try {
+            Principal json = context.getUserPrincipal();
+            String email = json.getName();
+            return controller.addNutricao(pNutricao, email);
+        } catch (Exception e) {
+            responses = new Responses();
+            responses.status = 406;
+            responses.messages.add("Não foi possível cadastrar a Ficha de Nutrição.");
+            return Response.ok(responses).status(Response.Status.NOT_ACCEPTABLE).build();
+        }
     }
 
     @PUT
     @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
-    @RolesAllowed({ "veterinario", "biologo", "dev" })
+    @RolesAllowed({"veterinario", "biologo", "dev"})
     public Response update(Nutricao pNutricao, @Context @NotNull SecurityContext context) {
-        responses = new Responses();
-        responses.status = 200;
-        responses.messages.add("Ficha de Nutrição atualizada com sucesso!");
-        Principal json = context.getUserPrincipal();
-        String email = json.getName();
-        controller.updateNutricao(pNutricao, email);
-        return Response.ok(responses).status(200, "Ficha de Nutrição atualizada com sucesso!").build();
+        try {
+            Principal json = context.getUserPrincipal();
+            String email = json.getName();
+            return controller.updateNutricao(pNutricao, email);
+        } catch (Exception e) {
+            responses = new Responses();
+            responses.status = 500;
+            responses.messages.add("Não foi possível atualizar a Ficha de Nutrição.");
+            return Response.ok(responses).status(Response.Status.NOT_ACCEPTABLE).build();
+        }
     }
 
     @DELETE
     @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
-    @RolesAllowed({ "veterinario", "biologo", "dev" })
+    @RolesAllowed({"veterinario", "biologo", "dev"})
     public Response deleteList(List<Long> pListIdnutricao, @Context @NotNull SecurityContext context) {
-        Integer countList = pListIdnutricao.size();
-        responses = new Responses();
-        responses.status = 200;
-        if (pListIdnutricao.size() <= 1) {
-            responses.messages.add("Ficha de Nutrição excluída com sucesso!");
-        } else {
-            responses.messages.add(countList + " Fichas de Nutrição exclúidas com sucesso!");
+        try {
+            Principal json = context.getUserPrincipal();
+            String email = json.getName();
+            return controller.deleteNutricao(pListIdnutricao, email);
+        } catch (Exception e) {
+            if (pListIdnutricao.size() <= 1) {
+                responses = new Responses();
+                responses.status = 500;
+                responses.messages.add("Não foi possível excluir a ficha de nutrição.");
+            } else {
+                responses = new Responses();
+                responses.status = 500;
+                responses.messages.add("Não foi possível excluir as a fichas de nutrição.");
+            }
+            return Response.ok(responses).status(Response.Status.BAD_REQUEST).build();
         }
-        Principal json = context.getUserPrincipal();
-        String email = json.getName();
-        controller.deleteNutricao(pListIdnutricao, email);
-        return Response.ok(responses).status(200, "Ficha de Nutrição excluída com sucesso!").build();
     }
 
     @PUT
     @Path("/reactivate")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
-    @RolesAllowed({ "veterinario", "biologo", "dev" })
+    @RolesAllowed({"veterinario", "biologo", "dev"})
     public Response reactivateList(List<Long> pListIdnutricao, @Context @NotNull SecurityContext context) {
-        Integer countList = pListIdnutricao.size();
-        responses = new Responses();
-        responses.status = 200;
-        if (pListIdnutricao.size() <= 1) {
-            responses.messages.add("Ficha de Nutrição recuperada com sucesso!");
-        } else {
-            responses.messages.add(countList + " Fichas de Nutrição recuperadas com sucesso!");
+        try {
+            Principal json = context.getUserPrincipal();
+            String email = json.getName();
+            return controller.reactivateNutricao(pListIdnutricao, email);
+        } catch (Exception e) {
+            if (pListIdnutricao.size() <= 1) {
+                responses = new Responses();
+                responses.status = 500;
+                responses.messages.add("Não foi possível reativar a ficha de nutrição.");
+            } else {
+                responses = new Responses();
+                responses.status = 500;
+                responses.messages.add("Não foi possível reativar as a fichas de nutrição.");
+            }
+            return Response.ok(responses).status(Response.Status.BAD_REQUEST).build();
         }
-        Principal json = context.getUserPrincipal();
-        String email = json.getName();
-        controller.reactivateNutricao(pListIdnutricao, email);
-        return Response.ok(responses).status(200, "Ficha de Nutrição recuperada com sucesso!").build();
     }
+
 }

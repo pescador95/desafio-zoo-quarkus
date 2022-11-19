@@ -30,7 +30,7 @@ public class UsuarioResources {
     @Path("{id}")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
-    @RolesAllowed({ "veterinario", "biologo", "dev" })
+    @RolesAllowed({"veterinario", "biologo", "dev"})
     public Response getById(@PathParam("id") Long pId) {
         usuario = Usuario.findById(pId);
         return Response.ok(usuario).status(200).build();
@@ -40,9 +40,9 @@ public class UsuarioResources {
     @Path("/count")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
-    @RolesAllowed({ "veterinario", "biologo", "dev" })
+    @RolesAllowed({"veterinario", "biologo", "dev"})
     public Response count(@QueryParam("ativo") @DefaultValue("true") Boolean ativo,
-            @QueryParam("strgFilter") @DefaultValue("") String strgFilter) {
+                          @QueryParam("strgFilter") @DefaultValue("") String strgFilter) {
         String query = "isAtivo = " + ativo + " " + strgFilter;
         long usuario = Usuario.count(query);
         return Response.ok(usuario).status(200).build();
@@ -52,13 +52,13 @@ public class UsuarioResources {
     @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
-    @RolesAllowed({ "veterinario", "biologo", "dev" })
+    @RolesAllowed({"veterinario", "biologo", "dev"})
     public Response list(@QueryParam("sort") @DefaultValue("desc") @NotNull String sortQuery,
-            @QueryParam("page") @DefaultValue("0") int pageIndex,
-            @QueryParam("size") @DefaultValue("20") int pageSize,
-            @QueryParam("ativo") @DefaultValue("true") Boolean ativo,
-            @QueryParam("strgFilter") @DefaultValue("") String strgFilter,
-            @QueryParam("strgOrder") @DefaultValue("id") String strgOrder) {
+                         @QueryParam("page") @DefaultValue("0") int pageIndex,
+                         @QueryParam("size") @DefaultValue("20") int pageSize,
+                         @QueryParam("ativo") @DefaultValue("true") Boolean ativo,
+                         @QueryParam("strgFilter") @DefaultValue("") String strgFilter,
+                         @QueryParam("strgOrder") @DefaultValue("id") String strgOrder) {
         String query = "isAtivo = " + ativo + " " + strgFilter + " order by " + strgOrder + " " + sortQuery;
         PanacheQuery<Usuario> usuario;
         usuario = Usuario.find(query);
@@ -69,7 +69,7 @@ public class UsuarioResources {
     @Path("/myprofile")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
-    @RolesAllowed({ "veterinario", "biologo", "dev" })
+    @RolesAllowed({"veterinario", "biologo", "dev"})
 
     public Response getmyprofile(Usuario pUsuario, @Context @NotNull SecurityContext context) {
         Principal json = context.getUserPrincipal();
@@ -82,70 +82,85 @@ public class UsuarioResources {
     @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
-    @RolesAllowed({ "veterinario", "biologo", "dev" })
+    @RolesAllowed({"veterinario", "biologo", "dev"})
 
     public Response add(Usuario pUsuario, @Context @NotNull SecurityContext context) {
-        responses = new Responses();
-        responses.status = 201;
-        responses.messages.add("Usuário cadastrado com sucesso!");
-        Principal json = context.getUserPrincipal();
-        String email = json.getName();
-        controller.addUser(pUsuario, email);
-        return Response.ok(responses).status(201, "Usuário cadastrado com sucesso!").build();
+        try {
+            Principal json = context.getUserPrincipal();
+            String email = json.getName();
+            return controller.addUser(pUsuario, email);
+        } catch (Exception e) {
+            responses = new Responses();
+            responses.status = 406;
+            responses.messages.add("Não foi possível cadastrar o Usuário.");
+            return Response.ok(responses).status(Response.Status.NOT_ACCEPTABLE).build();
+        }
+
     }
 
     @PUT
     @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
-    @RolesAllowed({ "veterinario", "biologo", "dev" })
+    @RolesAllowed({"veterinario", "biologo", "dev"})
     public Response update(Usuario pUsuario, @Context @NotNull SecurityContext context) {
-        responses = new Responses();
-        responses.status = 200;
-        responses.messages.add("Usuário atualizado com sucesso!");
-        Principal json = context.getUserPrincipal();
-        String email = json.getName();
-        controller.updateUser(pUsuario, email);
-        return Response.ok(responses).status(200, "Usuário atualizado com sucesso!").build();
+        try {
+            Principal json = context.getUserPrincipal();
+            String email = json.getName();
+            return controller.updateUser(pUsuario, email);
+        } catch (Exception e) {
+            responses = new Responses();
+            responses.status = 500;
+            responses.messages.add("Não foi possível atualizar o Usuário.");
+            return Response.ok(responses).status(Response.Status.BAD_REQUEST).build();
+        }
     }
 
     @DELETE
     @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
-    @RolesAllowed({ "veterinario", "biologo", "dev" })
+    @RolesAllowed({"veterinario", "biologo", "dev"})
     public Response deleteList(List<Long> pListIdusuario, @Context @NotNull SecurityContext context) {
-        Integer countList = pListIdusuario.size();
-        responses = new Responses();
-        responses.status = 200;
-        if (pListIdusuario.size() <= 1) {
-            responses.messages.add("Usuário exclúido com sucesso!");
-        } else {
-            responses.messages.add(countList + " Usuários exclúidos com sucesso!");
+        try {
+            Principal json = context.getUserPrincipal();
+            String email = json.getName();
+            return controller.deleteUser(pListIdusuario, email);
+        } catch (Exception e) {
+            if (pListIdusuario.size() <= 1) {
+                responses = new Responses();
+                responses.status = 500;
+                responses.messages.add("Não foi possível excluir o Usuário.");
+            } else {
+                responses = new Responses();
+                responses.status = 500;
+                responses.messages.add("Não foi possível excluir os Usuários.");
+            }
+            return Response.ok(responses).status(Response.Status.BAD_REQUEST).build();
         }
-        Principal json = context.getUserPrincipal();
-        String email = json.getName();
-        controller.deleteUser(pListIdusuario, email);
-        return Response.ok(responses).status(200, "Usuário excluído com sucesso!").build();
     }
 
     @PUT
     @Path("/reactivate")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
-    @RolesAllowed({ "veterinario", "biologo", "dev" })
+    @RolesAllowed({"veterinario", "biologo", "dev"})
     public Response reactivateList(List<Long> pListIdusuario, @Context @NotNull SecurityContext context) {
-        Integer countList = pListIdusuario.size();
-        responses = new Responses();
-        responses.status = 200;
-        if (pListIdusuario.size() <= 1) {
-            responses.messages.add("Usuário recuperado com sucesso!");
-        } else {
-            responses.messages.add(countList + " Usuários recuperados com sucesso!");
+        try {
+            Principal json = context.getUserPrincipal();
+            String email = json.getName();
+            return controller.reactivateUser(pListIdusuario, email);
+        } catch (Exception e) {
+            if (pListIdusuario.size() <= 1) {
+                responses = new Responses();
+                responses.status = 500;
+                responses.messages.add("Não foi possível reativar o Usuário.");
+            } else {
+                responses = new Responses();
+                responses.status = 500;
+                responses.messages.add("Não foi possível reativar os Usuários.");
+            }
+            return Response.ok(responses).status(Response.Status.BAD_REQUEST).build();
         }
-        Principal json = context.getUserPrincipal();
-        String email = json.getName();
-        controller.reactivateUser(pListIdusuario, email);
-        return Response.ok(responses).status(200, "Usuário recuperado com sucesso!").build();
     }
 }

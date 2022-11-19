@@ -72,10 +72,10 @@ public class AnimalResources {
     @Consumes("application/json")
     @RolesAllowed({"veterinario", "biologo", "dev"})
     public Response add(Animal pAnimal, @Context @NotNull SecurityContext context) {
-        try{
+        try {
             Principal json = context.getUserPrincipal();
             String email = json.getName();
-           return controller.addAnimal(pAnimal, email);
+            return controller.addAnimal(pAnimal, email);
         } catch (Exception e) {
             responses = new Responses();
             responses.status = 406;
@@ -90,7 +90,7 @@ public class AnimalResources {
     @Consumes("application/json")
     @RolesAllowed({"veterinario", "biologo", "dev"})
     public Response update(Animal pAnimal, @Context @NotNull SecurityContext context) {
-        try{
+        try {
             Principal json = context.getUserPrincipal();
             String email = json.getName();
             return controller.updateAnimal(pAnimal, email);
@@ -125,18 +125,19 @@ public class AnimalResources {
             return Response.ok(responses).status(Response.Status.BAD_REQUEST).build();
         }
     }
+
     @PUT
     @Path("/reactivate")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
     @RolesAllowed({"veterinario", "biologo", "dev"})
     public Response reactivateList(List<Long> pListIdAnimal, @Context @NotNull SecurityContext context) {
-        try{
+        try {
             Principal json = context.getUserPrincipal();
             String email = json.getName();
             return controller.reactivateAnimal(pListIdAnimal, email);
         } catch (Exception e) {
-            if(pListIdAnimal.size() <= 1){
+            if (pListIdAnimal.size() <= 1) {
                 responses = new Responses();
                 responses.status = 500;
                 responses.messages.add("Não foi possível reativar o animal.");

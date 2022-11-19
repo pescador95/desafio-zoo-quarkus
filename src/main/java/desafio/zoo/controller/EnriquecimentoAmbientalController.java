@@ -29,9 +29,9 @@ public class EnriquecimentoAmbientalController {
         usuarioAuth = Usuario.find("email = ?1", email).firstResult();
 
         enriquecimentoAmbiental = EnriquecimentoAmbiental.find(
-                "animal = ?1 and dataEnriquecimento = ?2 and nomeEnriquecimento = ?3 and descricaoEnriquecimento = ?4 and isAtivo = true ORDER BY id DESC",
-                pEnriquecimentoAmbiental.animal, pEnriquecimentoAmbiental.dataEnriquecimento,
-                pEnriquecimentoAmbiental.nomeEnriquecimento, pEnriquecimentoAmbiental.descricaoEnriquecimento)
+                        "animal = ?1 and dataEnriquecimento = ?2 and nomeEnriquecimento = ?3 and descricaoEnriquecimento = ?4 and isAtivo = true ORDER BY id DESC",
+                        pEnriquecimentoAmbiental.animal, pEnriquecimentoAmbiental.dataEnriquecimento,
+                        pEnriquecimentoAmbiental.nomeEnriquecimento, pEnriquecimentoAmbiental.descricaoEnriquecimento)
                 .firstResult();
         animal = Animal.find("id = ?1", pEnriquecimentoAmbiental.animal.id).firstResult();
 
@@ -136,14 +136,14 @@ public class EnriquecimentoAmbientalController {
                 responses.data = enriquecimentoAmbiental;
                 responses.messages.add("Enriquecimento Ambiental atualizado com sucesso!");
             }
-                return Response.ok(responses).status(Response.Status.ACCEPTED).build();
-            } catch (Exception e) {
-                responses.status = 500;
-                responses.data = enriquecimentoAmbiental;
-                responses.messages.add("Não foi possível atualizar o Enriquecimento Ambiental.");
-                return Response.ok(responses).status(Response.Status.NOT_ACCEPTABLE).build();
-            }
+            return Response.ok(responses).status(Response.Status.ACCEPTED).build();
+        } catch (Exception e) {
+            responses.status = 500;
+            responses.data = enriquecimentoAmbiental;
+            responses.messages.add("Não foi possível atualizar o Enriquecimento Ambiental.");
+            return Response.ok(responses).status(Response.Status.NOT_ACCEPTABLE).build();
         }
+    }
 
     public Response deleteEnriquecimentoAmbiental(List<Long> pListEnriquecimentoAmbiental, String email) {
 
@@ -201,42 +201,42 @@ public class EnriquecimentoAmbientalController {
         responses.messages = new ArrayList<>();
         usuarioAuth = Usuario.find("email = ?1", email).firstResult();
 
-        try{
+        try {
             pListEnriquecimentoAmbiental.forEach((pEnriquecimentoAmbiental) -> {
                 enriquecimentoAmbiental = EnriquecimentoAmbiental
                         .find("id = ?1 and isAtivo = false ORDER BY id DESC", pEnriquecimentoAmbiental).firstResult();
 
-                    enriquecimentoAmbiental.isAtivo = Boolean.TRUE;
-                    enriquecimentoAmbiental.dataAcao = new Date();
-                    enriquecimentoAmbiental.usuarioAcao = usuarioAuth;
-                    enriquecimentoAmbiental.systemDateDeleted = null;
-                    enriquecimentoAmbiental.persist();
-                    enriquecimentoAmbientalList.add(enriquecimentoAmbiental);
-                });
-                if (pListEnriquecimentoAmbiental.size() <= 1) {
-                    responses.status = 200;
-                    responses.data = enriquecimentoAmbiental;
-                    responses.messages.add("Enriquecimento Ambiental reativado com sucesso.");
-                } else {
-                    responses.status = 200;
-                    responses.dataList = Collections.singletonList(enriquecimentoAmbientalList);
-                    responses.messages.add(countList + " Enriquecimentos Ambientais reativados com sucesso.");
-                }
-                return Response.ok(responses).status(Response.Status.ACCEPTED).build();
-        } catch (Exception e) {
-                if (pListEnriquecimentoAmbiental.size() <= 1) {
-                    responses.status = 500;
-                    responses.data = enriquecimentoAmbiental;
-                    responses.messages.add("Enriquecimento Ambiental não localizado ou já reativado.");
-                } else {
-                    responses.status = 500;
-                    responses.dataList = Collections.singletonList(enriquecimentoAmbientalList);
-                    responses.messages.add("Enriquecimentos Ambientais não localizados ou já reativados.");
-                }
-                return Response.ok(responses).status(Response.Status.BAD_REQUEST).build();
+                enriquecimentoAmbiental.isAtivo = Boolean.TRUE;
+                enriquecimentoAmbiental.dataAcao = new Date();
+                enriquecimentoAmbiental.usuarioAcao = usuarioAuth;
+                enriquecimentoAmbiental.systemDateDeleted = null;
+                enriquecimentoAmbiental.persist();
+                enriquecimentoAmbientalList.add(enriquecimentoAmbiental);
+            });
+            if (pListEnriquecimentoAmbiental.size() <= 1) {
+                responses.status = 200;
+                responses.data = enriquecimentoAmbiental;
+                responses.messages.add("Enriquecimento Ambiental reativado com sucesso.");
+            } else {
+                responses.status = 200;
+                responses.dataList = Collections.singletonList(enriquecimentoAmbientalList);
+                responses.messages.add(countList + " Enriquecimentos Ambientais reativados com sucesso.");
             }
+            return Response.ok(responses).status(Response.Status.ACCEPTED).build();
+        } catch (Exception e) {
+            if (pListEnriquecimentoAmbiental.size() <= 1) {
+                responses.status = 500;
+                responses.data = enriquecimentoAmbiental;
+                responses.messages.add("Enriquecimento Ambiental não localizado ou já reativado.");
+            } else {
+                responses.status = 500;
+                responses.dataList = Collections.singletonList(enriquecimentoAmbientalList);
+                responses.messages.add("Enriquecimentos Ambientais não localizados ou já reativados.");
+            }
+            return Response.ok(responses).status(Response.Status.BAD_REQUEST).build();
         }
     }
+}
 
 
 

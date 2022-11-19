@@ -1,7 +1,7 @@
 package desafio.zoo.resources;
 
-import desafio.zoo.model.Profile;
 import desafio.zoo.controller.ProfileController;
+import desafio.zoo.model.Profile;
 import desafio.zoo.utils.FormData;
 import org.jboss.resteasy.reactive.MultipartForm;
 

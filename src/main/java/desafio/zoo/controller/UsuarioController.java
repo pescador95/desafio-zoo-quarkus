@@ -7,10 +7,8 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.transaction.Transactional;
-import javax.ws.rs.NotFoundException;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
+import javax.ws.rs.core.Response;
+import java.util.*;
 
 @ApplicationScoped
 @Transactional
@@ -19,9 +17,13 @@ public class UsuarioController<pId> {
 
     Responses responses;
 
-    public void addUser(@NotNull Usuario pUsuario, String email) {
+    Usuario usuarioAuth;
 
-        Usuario usuarioAuth = Usuario.find("email = ?1", email).firstResult();
+    public Response addUser(@NotNull Usuario pUsuario, String email) {
+
+        responses = new Responses();
+        responses.messages = new ArrayList<>();
+        usuarioAuth = Usuario.find("email = ?1", email).firstResult();
 
         usuario = Usuario.find("email = ?1 and isAtivo = true ORDER BY id DESC", pUsuario.email).firstResult();
 
@@ -49,24 +51,38 @@ public class UsuarioController<pId> {
             } else {
                 responses.messages.add("Por favor, preencha a permissão do Usuário corretamente!");
             }
-            usuario.usuario = usuarioAuth.nome;
-            usuario.usuarioAcao = usuarioAuth.nome;
-            usuario.isAtivo = Boolean.TRUE;
-            usuario.dataAcao = new Date();
-            usuario.persist();
+            if (responses.messages.size() < 1) {
+                usuario.usuario = usuarioAuth.nome;
+                usuario.usuarioAcao = usuarioAuth.nome;
+                usuario.isAtivo = Boolean.TRUE;
+                usuario.dataAcao = new Date();
+                usuario.persist();
 
+                responses.status = 201;
+                responses.data = usuario;
+                responses.messages.add("Usuário Cadastrado com sucesso!");
+            } else {
+                return Response.ok(responses).status(Response.Status.NOT_ACCEPTABLE).build();
+            }
+            return Response.ok(responses).status(Response.Status.CREATED).build();
         } else {
+            responses.status = 500;
+            responses.data = usuario;
             responses.messages.add("Usuário já cadastrado!");
+            return Response.ok(responses).status(Response.Status.NOT_ACCEPTABLE).build();
         }
     }
 
-    public void updateUser(@NotNull Usuario pUsuario, String email) {
+    public Response updateUser(@NotNull Usuario pUsuario, String email) {
 
-        Usuario usuarioAuth = Usuario.find("email = ?1", email).firstResult();
+        responses = new Responses();
+        responses.messages = new ArrayList<>();
 
-        usuario = Usuario.find("id = ?1 and isAtivo = true ORDER BY id DESC", pUsuario.id).firstResult();
 
-        if (usuario != null) {
+        try {
+            usuario = Usuario.find("id = ?1 and isAtivo = true ORDER BY id DESC", pUsuario.id).firstResult();
+            usuarioAuth = Usuario.find("email = ?1", email).firstResult();
+
             if (pUsuario.email == null && pUsuario.nome == null && pUsuario.password == null
                     && pUsuario.roleUsuario == null) {
                 responses.messages.add("Informe os dados para atualizar o Usuário.");
@@ -94,55 +110,103 @@ public class UsuarioController<pId> {
                 usuario.usuarioAcao = usuarioAuth.nome;
                 usuario.dataAcao = new Date();
                 usuario.persist();
+
+                responses.status = 200;
+                responses.data = usuario;
+                responses.messages.add("Usuário atualizado com sucesso!");
             }
-        } else {
+            return Response.ok(responses).status(Response.Status.ACCEPTED).build();
+        } catch (Exception e) {
+            responses.status = 500;
+            responses.data = usuario;
             responses.messages.add("Não foi possível atualizar o Usuário.");
+            return Response.ok(responses).status(Response.Status.BAD_REQUEST).build();
         }
     }
 
-    public void deleteUser(@NotNull List<Long> pListIdusuario, String email) {
+    public Response deleteUser(@NotNull List<Long> pListIdusuario, String email) {
 
-        Usuario usuarioAuth = Usuario.find("email = ?1", email).firstResult();
+        Integer countList = pListIdusuario.size();
+        List<Usuario> usuarioList = new ArrayList<>();
+        responses = new Responses();
+        responses.messages = new ArrayList<>();
+        usuarioAuth = Usuario.find("email = ?1", email).firstResult();
 
-        pListIdusuario.forEach((pUsuario) -> {
-            Usuario usuario = Usuario.find("id = ?1 and isAtivo = true ORDER BY id DESC", pUsuario).firstResult();
+        try {
+            pListIdusuario.forEach((pUsuario) -> {
+                Usuario usuario = Usuario.find("id = ?1 and isAtivo = true ORDER BY id DESC", pUsuario).firstResult();
 
-            if (usuario != null) {
                 usuario.usuarioAcao = usuarioAuth.nome;
                 usuario.isAtivo = Boolean.FALSE;
                 usuario.dataAcao = new Date();
                 usuario.systemDateDeleted = new Date();
                 usuario.persist();
+                usuarioList.add(usuario);
+            });
+            if (pListIdusuario.size() <= 1) {
+                responses.status = 200;
+                responses.data = usuario;
+                responses.messages.add("Usuário reativado com sucesso!");
             } else {
-                if (pListIdusuario.size() <= 1) {
-                    throw new NotFoundException("Usuário não localizado ou já excluído.");
-                } else {
-                    throw new NotFoundException("Usuários não localizados ou já excluídos.");
-                }
+                responses.status = 200;
+                responses.dataList = Collections.singletonList(usuarioList);
+                responses.messages.add(countList + " Usuários reativados com sucesso!");
             }
-        });
+            return Response.ok(responses).status(Response.Status.ACCEPTED).build();
+        } catch (Exception e) {
+            if (pListIdusuario.size() <= 1) {
+                responses.status = 500;
+                responses.data = usuario;
+                responses.messages.add("Usuário não localizado ou já excluído.");
+            } else {
+                responses.status = 500;
+                responses.dataList = Collections.singletonList(usuarioList);
+                responses.messages.add("Usuários não localizados ou já excluídos.");
+            }
+            return Response.ok(responses).status(Response.Status.BAD_REQUEST).build();
+        }
     }
 
-    public void reactivateUser(@NotNull List<Long> pListIdusuario, String email) {
+    public Response reactivateUser(@NotNull List<Long> pListIdusuario, String email) {
 
-        Usuario usuarioAuth = Usuario.find("email = ?1", email).firstResult();
+        Integer countList = pListIdusuario.size();
+        List<Usuario> usuarioList = new ArrayList<>();
+        responses = new Responses();
+        responses.messages = new ArrayList<>();
+        usuarioAuth = Usuario.find("email = ?1", email).firstResult();
 
-        pListIdusuario.forEach((pUsuario) -> {
-            Usuario usuario = Usuario.find("id = ?1 and isAtivo = false ORDER BY id DESC", pUsuario).firstResult();
+        try {
+            pListIdusuario.forEach((pUsuario) -> {
+                Usuario usuario = Usuario.find("id = ?1 and isAtivo = false ORDER BY id DESC", pUsuario).firstResult();
 
-            if (usuario != null) {
                 usuario.usuarioAcao = usuarioAuth.nome;
                 usuario.isAtivo = Boolean.TRUE;
                 usuario.dataAcao = new Date();
-                usuario.systemDateDeleted = null;
+                usuario.systemDateDeleted = new Date();
                 usuario.persist();
+                usuarioList.add(usuario);
+            });
+            if (pListIdusuario.size() <= 1) {
+                responses.status = 200;
+                responses.data = usuario;
+                responses.messages.add("Usuário reativado com sucesso!");
             } else {
-                if (pListIdusuario.size() <= 1) {
-                    throw new NotFoundException("Usuário inativo não localizado ou já reativado.");
-                } else {
-                    throw new NotFoundException("Usuários inativos não localizados ou já reativados.");
-                }
+                responses.status = 200;
+                responses.dataList = Collections.singletonList(usuarioList);
+                responses.messages.add(countList + " Usuários reativados com sucesso!");
             }
-        });
+            return Response.ok(responses).status(Response.Status.ACCEPTED).build();
+        } catch (Exception e) {
+            if (pListIdusuario.size() <= 1) {
+                responses.status = 500;
+                responses.data = usuario;
+                responses.messages.add("Usuário não localizado ou já reativado.");
+            } else {
+                responses.status = 500;
+                responses.dataList = Collections.singletonList(usuarioList);
+                responses.messages.add("Usuários não localizados ou já reativados.");
+            }
+            return Response.ok(responses).status(Response.Status.BAD_REQUEST).build();
+        }
     }
 }

@@ -51,6 +51,9 @@ public class Animal extends PanacheEntityBase {
     public String origem;
 
     @Column()
+    public String orgao;
+
+    @Column()
     public boolean isAtivo;
 
     @ManyToOne()
@@ -92,6 +95,11 @@ public class Animal extends PanacheEntityBase {
     @OneToMany(fetch = FetchType.LAZY, targetEntity = EnriquecimentoAmbiental.class, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "animal")
     @JsonIgnoreProperties("animal")
     List<EnriquecimentoAmbiental> enriquecimentoAmbientalList;
+
+    @LazyCollection(LazyCollectionOption.FALSE)
+    @OneToMany(fetch = FetchType.LAZY, targetEntity = Profile.class, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "animal")
+    @JsonIgnoreProperties("animal")
+    List<Profile> profileList;
 
     public Animal() {
 

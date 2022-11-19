@@ -17,7 +17,6 @@ import javax.ws.rs.core.SecurityContext;
 import java.security.Principal;
 import java.util.List;
 
-
 @Path("/enriquecimentoAmbiental")
 public class EnriquecimentoAmbientalResources {
 
@@ -26,11 +25,12 @@ public class EnriquecimentoAmbientalResources {
     EnriquecimentoAmbiental enriquecimentoAmbiental;
 
     Responses responses;
+
     @GET
     @Path("{id}")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
-    @RolesAllowed({"veterinario", "biologo", "dev"})
+    @RolesAllowed({ "veterinario", "biologo", "dev" })
     public Response getById(@PathParam("id") Long pId) {
         enriquecimentoAmbiental = EnriquecimentoAmbiental.findById(pId);
         return Response.ok(enriquecimentoAmbiental).status(200).build();
@@ -40,9 +40,9 @@ public class EnriquecimentoAmbientalResources {
     @Path("/count")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
-    @RolesAllowed({"veterinario", "biologo", "dev"})
+    @RolesAllowed({ "veterinario", "biologo", "dev" })
     public Response count(@QueryParam("ativo") @DefaultValue("true") Boolean ativo,
-                          @QueryParam("strgFilter") @DefaultValue("") String strgFilter) {
+            @QueryParam("strgFilter") @DefaultValue("") String strgFilter) {
         String query = "isAtivo = " + ativo + " " + strgFilter;
         long enriquecimentoAmbiental = EnriquecimentoAmbiental.count(query);
         return Response.ok(enriquecimentoAmbiental).status(200).build();
@@ -52,87 +52,102 @@ public class EnriquecimentoAmbientalResources {
     @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
-    @RolesAllowed({"veterinario", "biologo", "dev"})
+    @RolesAllowed({ "veterinario", "biologo", "dev" })
     public Response list(@QueryParam("sort") @DefaultValue("desc") @NotNull String sortQuery,
-                         @QueryParam("page") @DefaultValue("0") int pageIndex,
-                         @QueryParam("size") @DefaultValue("20") int pageSize,
-                         @QueryParam("ativo") @DefaultValue("true") Boolean ativo,
-                         @QueryParam("strgFilter") @DefaultValue("") String strgFilter,
-                         @QueryParam("strgOrder") @DefaultValue("id") String strgOrder
-    ) {
+            @QueryParam("page") @DefaultValue("0") int pageIndex,
+            @QueryParam("size") @DefaultValue("20") int pageSize,
+            @QueryParam("ativo") @DefaultValue("true") Boolean ativo,
+            @QueryParam("strgFilter") @DefaultValue("") String strgFilter,
+            @QueryParam("strgOrder") @DefaultValue("id") String strgOrder) {
         String query = "isAtivo = " + ativo + " " + strgFilter + " " + "order by " + strgOrder + " " + sortQuery;
         PanacheQuery<EnriquecimentoAmbiental> enriquecimentoAmbiental;
         enriquecimentoAmbiental = EnriquecimentoAmbiental.find(query);
         return Response.ok(enriquecimentoAmbiental.page(Page.of(pageIndex, pageSize)).list()).status(200).build();
     }
-    
+
     @POST
     @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
-    @RolesAllowed({"veterinario", "biologo", "dev"})
+    @RolesAllowed({ "veterinario", "biologo", "dev" })
     public Response add(EnriquecimentoAmbiental pEnriquecimentoAmbiental, @Context @NotNull SecurityContext context) {
-        responses = new Responses();
-        responses.status = 201;
-        responses.message = "Enriquecimento Ambiental cadastrado com sucesso!";
-        Principal json = context.getUserPrincipal();
-        String email = json.getName();
-        controller.addEnriquecimentoAmbiental(pEnriquecimentoAmbiental, email);
-        return Response.ok(responses).status(201, "Enriquecimento Ambiental cadastrado com sucesso!").build();
+        try{
+            Principal json = context.getUserPrincipal();
+            String email = json.getName();
+          return controller.addEnriquecimentoAmbiental(pEnriquecimentoAmbiental, email);
+        } catch (Exception e) {
+            responses = new Responses();
+            responses.status = 500;
+            responses.messages.add("Não foi possível cadastrar o Enriquecimento Ambiental.");
+            return Response.ok(responses).status(Response.Status.BAD_REQUEST).build();
+        }
+
     }
 
     @PUT
     @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
-    @RolesAllowed({"veterinario", "biologo", "dev"})
-    public Response update(EnriquecimentoAmbiental pEnriquecimentoAmbiental, @Context @NotNull SecurityContext context) {
-        responses = new Responses();
-        responses.status = 200;
-        responses.message = "Enriquecimento Ambiental atualizado com sucesso!";
-        Principal json = context.getUserPrincipal();
-        String email = json.getName();
-        controller.updateEnriquecimentoAmbiental(pEnriquecimentoAmbiental, email);
-        return Response.ok(responses).status(200, "Enriquecimento Ambiental atualizado com sucesso!").build();
+    @RolesAllowed({ "veterinario", "biologo", "dev" })
+    public Response update(EnriquecimentoAmbiental pEnriquecimentoAmbiental,
+                           @Context @NotNull SecurityContext context) {
+        try{
+            Principal json = context.getUserPrincipal();
+            String email = json.getName();
+            return controller.updateEnriquecimentoAmbiental(pEnriquecimentoAmbiental, email);
+        } catch (Exception e) {
+            responses = new Responses();
+            responses.status = 500;
+            responses.messages.add("Não foi possível atualizar o Enriquecimento Ambiental.");
+            return Response.ok(responses).status(Response.Status.BAD_REQUEST).build();
+        }
     }
 
     @DELETE
     @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
-    @RolesAllowed({"veterinario", "biologo", "dev"})
+    @RolesAllowed({ "veterinario", "biologo", "dev" })
     public Response deleteList(List<Long> pListEnriquecimentoAmbiental, @Context @NotNull SecurityContext context) {
-        Integer countList = pListEnriquecimentoAmbiental.size();
-        responses = new Responses();
-        responses.status = 200;
-        if(pListEnriquecimentoAmbiental.size() <= 1){
-            responses.message = "Enriquecimento Ambiental excluído com sucesso!";
-        } else {
-            responses.message = countList + " Enriquecimentos Ambientais exclúidos com sucesso!";
+        try{
+            Principal json = context.getUserPrincipal();
+            String email = json.getName();
+            return  controller.deleteEnriquecimentoAmbiental(pListEnriquecimentoAmbiental, email);
+        } catch (Exception e) {
+            if (pListEnriquecimentoAmbiental.size() <= 1) {
+                responses = new Responses();
+                responses.status = 500;
+                responses.messages.add("Não foi possível excluir o Enriquecimento Ambiental.");
+            } else {
+                responses = new Responses();
+                responses.status = 406;
+                responses.messages.add("Não foi possível excluir os Enriquecimentos Ambientais.");
+            }
+            return Response.ok(responses).status(Response.Status.BAD_REQUEST).build();
         }
-        Principal json = context.getUserPrincipal();
-        String email = json.getName();
-        controller.deleteEnriquecimentoAmbiental(pListEnriquecimentoAmbiental, email);
-        return Response.ok(responses).status(200, "Enriquecimento Ambiental excluído com sucesso!").build();
     }
 
     @PUT
     @Path("/reactivate")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
-    @RolesAllowed({"veterinario", "biologo", "dev"})
+    @RolesAllowed({ "veterinario", "biologo", "dev" })
     public Response reactivateList(List<Long> pListEnriquecimentoAmbiental, @Context @NotNull SecurityContext context) {
-        Integer countList = pListEnriquecimentoAmbiental.size();
-        responses = new Responses();
-        responses.status = 200;
-        if(pListEnriquecimentoAmbiental.size() <= 1){
-            responses.message = "Enriquecimento Ambiental recuperado com sucesso!";
-        } else {
-            responses.message = countList + " Enriquecimentos Ambientais recuperados com sucesso!";
+        try {
+            Principal json = context.getUserPrincipal();
+            String email = json.getName();
+          return controller.reactivateEnriquecimentoAmbiental(pListEnriquecimentoAmbiental, email);
+        } catch (Exception e) {
+            if (pListEnriquecimentoAmbiental.size() <= 1) {
+                responses = new Responses();
+                responses.status = 500;
+                responses.messages.add("Não foi possível excluir o Enriquecimento Ambiental.");
+            } else {
+                responses = new Responses();
+                responses.status = 406;
+                responses.messages.add("Não foi possível excluir os Enriquecimentos Ambientais.");
+            }
+            return Response.ok(responses).status(Response.Status.BAD_REQUEST).build();
         }
-        Principal json = context.getUserPrincipal();
-        String email = json.getName();
-        controller.reactivateEnriquecimentoAmbiental(pListEnriquecimentoAmbiental, email);
-        return Response.ok(responses).status(200,"Enriquecimento Ambiental recuperado com sucesso!").build();
     }
 }

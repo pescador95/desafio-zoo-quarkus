@@ -15,8 +15,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
 import java.security.Principal;
+import java.util.Arrays;
 import java.util.List;
-
 
 @Path("/medicacao")
 public class MedicacaoResources {
@@ -31,7 +31,7 @@ public class MedicacaoResources {
     @Path("{id}")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
-    @RolesAllowed({"veterinario", "biologo", "dev"})
+    @RolesAllowed({ "veterinario", "biologo", "dev" })
     public Response getById(@PathParam("id") Long pId) {
         medicacao = Medicacao.findById(pId);
         return Response.ok(medicacao).status(200).build();
@@ -41,9 +41,9 @@ public class MedicacaoResources {
     @Path("/count")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
-    @RolesAllowed({"veterinario", "biologo", "dev"})
+    @RolesAllowed({ "veterinario", "biologo", "dev" })
     public Response count(@QueryParam("ativo") @DefaultValue("true") Boolean ativo,
-                          @QueryParam("strgFilter") @DefaultValue("") String strgFilter) {
+            @QueryParam("strgFilter") @DefaultValue("") String strgFilter) {
         String query = "isAtivo = " + ativo + " " + strgFilter;
         long medicacao = Medicacao.count(query);
         return Response.ok(medicacao).status(200).build();
@@ -54,12 +54,11 @@ public class MedicacaoResources {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
     public Response list(@QueryParam("sort") @DefaultValue("desc") @NotNull String sortQuery,
-                         @QueryParam("page") @DefaultValue("0") int pageIndex,
-                         @QueryParam("size") @DefaultValue("20") int pageSize,
-                         @QueryParam("ativo") @DefaultValue("true") Boolean ativo,
-                         @QueryParam("strgFilter") @DefaultValue("") String strgFilter,
-                         @QueryParam("strgOrder") @DefaultValue("id") String strgOrder
-    ) {
+            @QueryParam("page") @DefaultValue("0") int pageIndex,
+            @QueryParam("size") @DefaultValue("20") int pageSize,
+            @QueryParam("ativo") @DefaultValue("true") Boolean ativo,
+            @QueryParam("strgFilter") @DefaultValue("") String strgFilter,
+            @QueryParam("strgOrder") @DefaultValue("id") String strgOrder) {
         String query = "isAtivo = " + ativo + " " + strgFilter + " " + "order by " + strgOrder + " " + sortQuery;
         PanacheQuery<Medicacao> medicacao;
         medicacao = Medicacao.find(query);
@@ -70,45 +69,45 @@ public class MedicacaoResources {
     @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
-    @RolesAllowed({"veterinario", "biologo", "dev"})
+    @RolesAllowed({ "veterinario", "biologo", "dev" })
     public Response add(Medicacao pMedicacao, @Context @NotNull SecurityContext context) {
         responses = new Responses();
         responses.status = 201;
-        responses.message = "Medicação cadastrado com sucesso!";
+        responses.messages.add("Medicação cadastrado com sucesso!");
         Principal json = context.getUserPrincipal();
         String email = json.getName();
         controller.addMedicacao(pMedicacao, email);
-        return Response.ok(responses).status(201,"Medicação cadastrada com sucesso!").build();
+        return Response.ok(responses).status(201, "Medicação cadastrada com sucesso!").build();
     }
 
     @PUT
     @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
-    @RolesAllowed({"veterinario", "biologo", "dev"})
+    @RolesAllowed({ "veterinario", "biologo", "dev" })
     public Response update(Medicacao pMedicacao, @Context @NotNull SecurityContext context) {
         responses = new Responses();
         responses.status = 200;
-        responses.message = "Medicação atualizado com sucesso!";
+        responses.messages.add("Medicação atualizado com sucesso!");
         Principal json = context.getUserPrincipal();
         String email = json.getName();
         controller.updateMedicacao(pMedicacao, email);
-        return Response.ok(responses).status(200,"Medicação atualizada com sucesso!").build();
+        return Response.ok(responses).status(200, "Medicação atualizada com sucesso!").build();
     }
 
     @DELETE
     @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
-    @RolesAllowed({"veterinario", "biologo", "dev"})
+    @RolesAllowed({ "veterinario", "biologo", "dev" })
     public Response deleteList(List<Long> pListMedicacao, @Context @NotNull SecurityContext context) {
         Integer countList = pListMedicacao.size();
         responses = new Responses();
         responses.status = 200;
-        if(pListMedicacao.size() <= 1){
-            responses.message = "Medicação excluída com sucesso!";
+        if (pListMedicacao.size() <= 1) {
+            responses.messages.add("Medicação excluída com sucesso!");
         } else {
-            responses.message = countList + " Medicações exclúidas com sucesso!";
+            responses.messages.add(countList + " Medicações exclúidas com sucesso!");
         }
         Principal json = context.getUserPrincipal();
         String email = json.getName();
@@ -120,15 +119,15 @@ public class MedicacaoResources {
     @Path("/reactivate")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
-    @RolesAllowed({"veterinario", "biologo", "dev"})
+    @RolesAllowed({ "veterinario", "biologo", "dev" })
     public Response reactivateList(List<Long> pListMedicacao, @Context @NotNull SecurityContext context) {
         Integer countList = pListMedicacao.size();
         responses = new Responses();
         responses.status = 200;
-        if(pListMedicacao.size() <= 1){
-            responses.message = "Medicação recuperada com sucesso!";
+        if (pListMedicacao.size() <= 1) {
+            responses.messages.add("Medicação recuperada com sucesso!");
         } else {
-            responses.message = countList + " Medicações recuperadas com sucesso!";
+            responses.messages.add(countList + " Medicações recuperadas com sucesso!");
         }
         Principal json = context.getUserPrincipal();
         String email = json.getName();

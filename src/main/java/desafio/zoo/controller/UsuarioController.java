@@ -1,12 +1,12 @@
 package desafio.zoo.controller;
 
+import desafio.zoo.model.Responses;
 import desafio.zoo.model.Usuario;
 import io.quarkus.elytron.security.common.BcryptUtil;
 import org.jetbrains.annotations.NotNull;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.transaction.Transactional;
-import javax.ws.rs.BadRequestException;
 import javax.ws.rs.NotFoundException;
 import java.util.Date;
 import java.util.List;
@@ -16,6 +16,8 @@ import java.util.Objects;
 @Transactional
 public class UsuarioController<pId> {
     private Usuario usuario = new Usuario();
+
+    Responses responses;
 
     public void addUser(@NotNull Usuario pUsuario, String email) {
 
@@ -29,23 +31,23 @@ public class UsuarioController<pId> {
             if (pUsuario.email != null) {
                 usuario.email = pUsuario.email;
             } else {
-                throw new BadRequestException("Por favor, preencha o email do Usuário corretamente!");
+                responses.messages.add("Por favor, preencha o email do Usuário corretamente!");
             }
             if (pUsuario.nome != null) {
                 usuario.nome = pUsuario.nome;
             } else {
-                throw new BadRequestException("Por favor, preencha o nome do Usuário corretamente!");
+                responses.messages.add("Por favor, preencha o nome do Usuário corretamente!");
             }
             if (pUsuario.password != null) {
                 usuario.password = BcryptUtil.bcryptHash(pUsuario.password);
             } else {
-                throw new BadRequestException("Por favor, preencha a senha do Usuário corretamente!");
+                responses.messages.add("Por favor, preencha a senha do Usuário corretamente!");
             }
 
             if (pUsuario.roleUsuario != null) {
                 usuario.roleUsuario = pUsuario.roleUsuario;
             } else {
-                throw new BadRequestException("Por favor, preencha a permissão do Usuário corretamente!");
+                responses.messages.add("Por favor, preencha a permissão do Usuário corretamente!");
             }
             usuario.usuario = usuarioAuth.nome;
             usuario.usuarioAcao = usuarioAuth.nome;
@@ -54,7 +56,7 @@ public class UsuarioController<pId> {
             usuario.persist();
 
         } else {
-            throw new BadRequestException("Usuário já cadastrado!");
+            responses.messages.add("Usuário já cadastrado!");
         }
     }
 
@@ -67,7 +69,7 @@ public class UsuarioController<pId> {
         if (usuario != null) {
             if (pUsuario.email == null && pUsuario.nome == null && pUsuario.password == null
                     && pUsuario.roleUsuario == null) {
-                throw new BadRequestException("Informe os dados para atualizar o Usuário.");
+                responses.messages.add("Informe os dados para atualizar o Usuário.");
             } else {
                 if (pUsuario.email != null) {
                     if (!usuario.email.equals(pUsuario.email)) {
@@ -94,7 +96,7 @@ public class UsuarioController<pId> {
                 usuario.persist();
             }
         } else {
-            throw new BadRequestException("Não foi possível atualizar o Usuário.");
+            responses.messages.add("Não foi possível atualizar o Usuário.");
         }
     }
 
@@ -129,7 +131,7 @@ public class UsuarioController<pId> {
             Usuario usuario = Usuario.find("id = ?1 and isAtivo = false ORDER BY id DESC", pUsuario).firstResult();
 
             if (usuario != null) {
-              usuario.usuarioAcao = usuarioAuth.nome;
+                usuario.usuarioAcao = usuarioAuth.nome;
                 usuario.isAtivo = Boolean.TRUE;
                 usuario.dataAcao = new Date();
                 usuario.systemDateDeleted = null;

@@ -2,13 +2,14 @@ package desafio.zoo.controller;
 
 import desafio.zoo.model.HistoricoClinico;
 import desafio.zoo.model.Medicacao;
+import desafio.zoo.model.Responses;
 import desafio.zoo.model.Usuario;
 import org.jetbrains.annotations.NotNull;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.transaction.Transactional;
-import javax.ws.rs.BadRequestException;
 import javax.ws.rs.NotFoundException;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -20,9 +21,12 @@ public class MedicacaoController {
 
     public Medicacao medicacao;
     public Usuario usuario;
+    Responses responses;
+    Usuario usuarioAuth;
 
     public void addMedicacao(@NotNull Medicacao pMedicacao, String email) {
 
+        usuarioAuth = Usuario.find("email = ?1", email).firstResult();
         medicacao = Medicacao
                 .find("historicoClinico = ?1 and isAtivo = true ORDER BY id DESC", pMedicacao.historicoClinico)
                 .firstResult();
@@ -36,46 +40,49 @@ public class MedicacaoController {
             if (pMedicacao.nomeMedicacao != null) {
                 medicacao.nomeMedicacao = pMedicacao.nomeMedicacao;
             } else {
-                throw new BadRequestException("Por favor, preencha o nome da Medicação corretamente!");
+                responses.messages.add("Por favor, preencha o nome da Medicação corretamente!");
             }
             if (pMedicacao.viaAdministracao != null) {
                 medicacao.viaAdministracao = pMedicacao.viaAdministracao;
 
             } else {
-                throw new BadRequestException("Por favor, preencha a Via de Administração da Medicação corretamente!");
+                responses.messages = Arrays
+                        .asList("Por favor, preencha a Via de Administração da Medicação corretamente!");
             }
             if (pMedicacao.posologia != null) {
                 medicacao.posologia = pMedicacao.posologia;
 
             } else {
-                throw new BadRequestException("Por favor, preencha a posologia da Medicação corretamente!");
+                responses.messages.add("Por favor, preencha a posologia da Medicação corretamente!");
             }
             if (pMedicacao.frequencia != null) {
                 medicacao.frequencia = pMedicacao.frequencia;
             } else {
-                throw new BadRequestException("Por favor, preencha a Frequência da Medicação corretamente!");
+                responses.messages.add("Por favor, preencha a Frequência da Medicação corretamente!");
             }
             medicacao.isAtivo = Boolean.TRUE;
-            medicacao.usuario = Usuario.find("email = ?1", email).firstResult();
-            medicacao.usuarioAcao = Usuario.find("email = ?1", email).firstResult();
+            medicacao.usuario = usuarioAuth;
+            medicacao.usuarioAcao = usuarioAuth;
             medicacao.dataAcao = new Date();
 
             medicacao.persist();
 
         } else {
-            throw new BadRequestException("medicação já cadastrada!");
+            responses.messages.add("medicação já cadastrada!");
         }
 
     }
 
     public void updateMedicacao(@NotNull Medicacao pMedicacao, String email) {
 
+        usuarioAuth = Usuario.find("email = ?1", email).firstResult();
+
         medicacao = Medicacao.find("id = ?1 and isAtivo = true ORDER BY id DESC", pMedicacao.id).firstResult();
 
         if (medicacao != null) {
             if (pMedicacao.historicoClinico == null && pMedicacao.nomeMedicacao == null && pMedicacao.posologia == null
                     && pMedicacao.viaAdministracao == null && pMedicacao.frequencia == null) {
-                throw new BadRequestException("Informe os dados para atualizar a Medicação.");
+                responses.messages.add("Informe os dados para atualizar a Medicação.");
             } else {
                 if (pMedicacao.nomeMedicacao != null) {
                     if (!medicacao.nomeMedicacao.equals(pMedicacao.nomeMedicacao)) {
@@ -101,17 +108,19 @@ public class MedicacaoController {
                         medicacao.historicoClinico = HistoricoClinico.findById(pMedicacao.historicoClinico.id);
                     }
                 }
-                medicacao.usuarioAcao = Usuario.find("email = ?1", email).firstResult();
+                medicacao.usuarioAcao = usuarioAuth;
                 medicacao.dataAcao = new Date();
                 medicacao.persist();
             }
         } else {
-            throw new BadRequestException("Não foi possível atualizar a medicação.");
+            responses.messages.add("Não foi possível atualizar a medicação.");
 
         }
     }
 
     public void deleteMedicacao(List<Long> pListMedicacao, String email) {
+
+        usuarioAuth = Usuario.find("email = ?1", email).firstResult();
 
         pListMedicacao.forEach((pMedicacao) -> {
             medicacao = Medicacao.find("id = ?1 and isAtivo = true ORDER BY id DESC", pMedicacao).firstResult();
@@ -119,7 +128,7 @@ public class MedicacaoController {
             if (medicacao != null) {
                 medicacao.isAtivo = Boolean.FALSE;
                 medicacao.dataAcao = new Date();
-                medicacao.usuarioAcao = Usuario.find("email = ?1", email).firstResult();
+                medicacao.usuarioAcao = usuarioAuth;
                 medicacao.systemDateDeleted = new Date();
                 medicacao.persist();
             } else {
@@ -134,13 +143,15 @@ public class MedicacaoController {
 
     public void reactivateMedicacao(List<Long> pListMedicacao, String email) {
 
+        usuarioAuth = Usuario.find("email = ?1", email).firstResult();
+
         pListMedicacao.forEach((pMedicacao) -> {
             medicacao = Medicacao.find("id = ?1 and isAtivo = false ORDER BY id DESC", pMedicacao).firstResult();
 
             if (medicacao != null) {
                 medicacao.isAtivo = Boolean.TRUE;
                 medicacao.dataAcao = new Date();
-                medicacao.usuarioAcao = Usuario.find("email = ?1", email).firstResult();
+                medicacao.usuarioAcao = usuarioAuth;
                 medicacao.systemDateDeleted = null;
                 medicacao.persist();
             } else {

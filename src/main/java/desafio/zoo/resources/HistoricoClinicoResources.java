@@ -18,7 +18,6 @@ import javax.ws.rs.core.SecurityContext;
 import java.security.Principal;
 import java.util.List;
 
-
 @Path("/historicoClinico")
 public class HistoricoClinicoResources {
 
@@ -27,11 +26,12 @@ public class HistoricoClinicoResources {
     HistoricoClinico historicoClinico;
 
     Responses responses;
+
     @GET
     @Path("{id}")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
-    @RolesAllowed({"veterinario", "biologo", "dev"})
+    @RolesAllowed({ "veterinario", "biologo", "dev" })
     public Response getById(@PathParam("id") Long pId) {
         historicoClinico = HistoricoEtologico.findById(pId);
         return Response.ok(historicoClinico).status(200).build();
@@ -41,9 +41,9 @@ public class HistoricoClinicoResources {
     @Path("/count")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
-    @RolesAllowed({"veterinario", "biologo", "dev"})
+    @RolesAllowed({ "veterinario", "biologo", "dev" })
     public Response count(@QueryParam("ativo") @DefaultValue("true") Boolean ativo,
-                          @QueryParam("strgFilter") @DefaultValue("") String strgFilter) {
+            @QueryParam("strgFilter") @DefaultValue("") String strgFilter) {
         String query = "isAtivo = " + ativo + " " + strgFilter;
         long historicoEtologico = HistoricoEtologico.count(query);
         return Response.ok(historicoEtologico).status(200).build();
@@ -53,14 +53,13 @@ public class HistoricoClinicoResources {
     @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
-    @RolesAllowed({"veterinario", "biologo", "dev"})
+    @RolesAllowed({ "veterinario", "biologo", "dev" })
     public Response list(@QueryParam("sort") @DefaultValue("desc") @NotNull String sortQuery,
-                         @QueryParam("page") @DefaultValue("0") int pageIndex,
-                         @QueryParam("size") @DefaultValue("20") int pageSize,
-                         @QueryParam("ativo") @DefaultValue("true") Boolean ativo,
-                         @QueryParam("strgFilter") @DefaultValue("") String strgFilter,
-                         @QueryParam("strgOrder") @DefaultValue("id") String strgOrder
-    ) {
+            @QueryParam("page") @DefaultValue("0") int pageIndex,
+            @QueryParam("size") @DefaultValue("20") int pageSize,
+            @QueryParam("ativo") @DefaultValue("true") Boolean ativo,
+            @QueryParam("strgFilter") @DefaultValue("") String strgFilter,
+            @QueryParam("strgOrder") @DefaultValue("id") String strgOrder) {
         String query = "isAtivo = " + ativo + " " + strgFilter + " " + "order by " + strgOrder + " " + sortQuery;
         PanacheQuery<HistoricoClinico> historicoClinico;
         historicoClinico = HistoricoClinico.find(query);
@@ -71,69 +70,83 @@ public class HistoricoClinicoResources {
     @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
-    @RolesAllowed({"veterinario", "biologo", "dev"})
+    @RolesAllowed({ "veterinario", "biologo", "dev" })
     public Response add(HistoricoClinico pHistoricoClinico, @Context @NotNull SecurityContext context) {
-        responses = new Responses();
-        responses.status = 201;
-        responses.message = "Histórico Clínico cadastrado com sucesso!";
-        Principal json = context.getUserPrincipal();
-        String email = json.getName();
-        controller.addHistoricoClinico(pHistoricoClinico, email);
-        return Response.ok(responses).status(201, "Histórico Clínico cadastrado com sucesso!").build();
+        try{
+            Principal json = context.getUserPrincipal();
+            String email = json.getName();
+            return controller.addHistoricoClinico(pHistoricoClinico, email);
+        } catch (Exception e) {
+            responses = new Responses();
+            responses.status = 406;
+            responses.messages.add("Não foi possível cadastrar o Histórico Clínico.");
+            return Response.ok(responses).status(Response.Status.NOT_ACCEPTABLE).build();
+        }
     }
 
     @PUT
     @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
-    @RolesAllowed({"veterinario", "biologo", "dev"})
+    @RolesAllowed({ "veterinario", "biologo", "dev" })
     public Response update(HistoricoClinico pHistoricoClinico, @Context @NotNull SecurityContext context) {
+        try{
+            Principal json = context.getUserPrincipal();
+            String email = json.getName();
+            return controller.updateHistoricoClinico(pHistoricoClinico, email);
+        } catch (Exception e) {}
         responses = new Responses();
-        responses.status = 200;
-        responses.message = "Histórico Clínico atualizado com sucesso!";
-        Principal json = context.getUserPrincipal();
-        String email = json.getName();
-        controller.updateHistoricoClinico(pHistoricoClinico, email);
-        return Response.ok(responses).status(200, "Histórico Clínico atualizado com sucesso!").build();
+        responses.status = 500;
+        responses.messages.add("Não foi possível atualizar o Histórico Clínico.");
+        return Response.ok(responses).status(Response.Status.BAD_REQUEST).build();
     }
 
     @DELETE
     @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
-    @RolesAllowed({"veterinario", "biologo", "dev"})
+    @RolesAllowed({ "veterinario", "biologo", "dev" })
     public Response deleteList(List<Long> pListIdHistoricoClinico, @Context @NotNull SecurityContext context) {
-        Integer countList = pListIdHistoricoClinico.size();
-        responses = new Responses();
-        responses.status = 200;
-        if(pListIdHistoricoClinico.size() <= 1){
-            responses.message = "Histórico Clínico excluído com sucesso!";
-        } else {
-            responses.message = countList + " Históricos Clínicos exclúidos com sucesso!";
+        try {
+            Principal json = context.getUserPrincipal();
+            String email = json.getName();
+            return controller.deleteHistoricoClinico(pListIdHistoricoClinico, email);
+        } catch (Exception e) {
+            if (pListIdHistoricoClinico.size() <= 1) {
+                responses = new Responses();
+                responses.status = 500;
+                responses.messages.add("Não foi possível excluir o Histórico Clínico.");
+            } else {
+                responses = new Responses();
+                responses.status = 500;
+                responses.messages.add("Não foi possível excluir os Históricos Clínicos.");
+            }
+            return Response.ok(responses).status(Response.Status.BAD_REQUEST).build();
         }
-        Principal json = context.getUserPrincipal();
-        String email = json.getName();
-        controller.deleteHistoricoClinico(pListIdHistoricoClinico, email);
-        return Response.ok(responses).status(200, "Histórico Clínico excluído com sucesso!").build();
     }
+
 
     @PUT
     @Path("/reactivate")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
-    @RolesAllowed({"veterinario", "biologo", "dev"})
+    @RolesAllowed({ "veterinario", "biologo", "dev" })
     public Response reactivateList(List<Long> pListIdHistoricoClinico, @Context @NotNull SecurityContext context) {
-        Integer countList = pListIdHistoricoClinico.size();
-        responses = new Responses();
-        responses.status = 200;
-        if(pListIdHistoricoClinico.size() <= 1){
-            responses.message = "Histórico Clínico recuperado com sucesso!";
-        } else {
-            responses.message = countList + " Históricos Clínicos recuperados com sucesso!";
+        try {
+            Principal json = context.getUserPrincipal();
+            String email = json.getName();
+          return controller.reactivateHistoricoClinico(pListIdHistoricoClinico, email);
+        } catch (Exception e) {
+            if (pListIdHistoricoClinico.size() <= 1) {
+                responses = new Responses();
+                responses.status = 500;
+                responses.messages.add("Não foi possível reativar o Histórico Clínico.");
+            } else {
+                responses = new Responses();
+                responses.status = 500;
+                responses.messages.add("Não foi possível reativar os Históricos Clínicos.");
+            }
+            return Response.ok(responses).status(Response.Status.BAD_REQUEST).build();
         }
-        Principal json = context.getUserPrincipal();
-        String email = json.getName();
-        controller.reactivateHistoricoClinico(pListIdHistoricoClinico, email);
-        return Response.ok(responses).status(200, "Histórico Clínico recuperado com sucesso!").build();
     }
 }

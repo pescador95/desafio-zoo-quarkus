@@ -2,12 +2,12 @@ package desafio.zoo.controller;
 
 import desafio.zoo.model.Animal;
 import desafio.zoo.model.HistoricoEtologico;
+import desafio.zoo.model.Responses;
 import desafio.zoo.model.Usuario;
 import org.jetbrains.annotations.NotNull;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.transaction.Transactional;
-import javax.ws.rs.BadRequestException;
 import javax.ws.rs.NotFoundException;
 import java.util.Date;
 import java.util.List;
@@ -20,12 +20,16 @@ public class HistoricoEtologicoController {
 
     public HistoricoEtologico historicoEtologico;
     public Animal animal;
-    
+    Responses responses;
+    Usuario usuarioAuth;
+
     public void addHistoricoEtologico(@NotNull HistoricoEtologico pHistoricoEtologico, String email) {
+
+        usuarioAuth = Usuario.find("email = ?1", email).firstResult();
 
         historicoEtologico = HistoricoEtologico
                 .find("animal = ?1 and isAtivo = true ORDER BY id DESC", pHistoricoEtologico.animal).firstResult();
-        animal = Animal.find("id = ?", pHistoricoEtologico.animal.id).firstResult();
+        animal = Animal.find("id = ?1", pHistoricoEtologico.animal.id).firstResult();
 
         if (historicoEtologico == null) {
             historicoEtologico = new HistoricoEtologico();
@@ -33,43 +37,45 @@ public class HistoricoEtologicoController {
             if (pHistoricoEtologico.animal != null) {
                 historicoEtologico.animal = Animal.findById(pHistoricoEtologico.animal.id);
             } else {
-                throw new BadRequestException("Por favor, informar o Animal do Histórico Etológico.");
+                responses.messages.add("Por favor, informar o Animal do Histórico Etológico.");
             }
             if (pHistoricoEtologico.dataEtologico != null) {
                 historicoEtologico.dataEtologico = pHistoricoEtologico.dataEtologico;
 
             } else {
-                throw new BadRequestException("Por favor, preencha a Data do evento Etológico corretamente!");
+                responses.messages.add("Por favor, preencha a Data do evento Etológico corretamente!");
             }
             if (pHistoricoEtologico.nomeEtologico != null) {
                 historicoEtologico.nomeEtologico = pHistoricoEtologico.nomeEtologico;
 
             } else {
-                throw new BadRequestException(
+                responses.messages.add(
                         "Por favor, preencha o Nome Etológico do Histórico Etológico corretamente!");
             }
             if (pHistoricoEtologico.descricaoEtologico != null) {
                 historicoEtologico.descricaoEtologico = pHistoricoEtologico.descricaoEtologico;
             } else {
-                throw new BadRequestException(
+                responses.messages.add(
                         "Por favor, preencha a Descriação Etológica do Histórico Etológico corretamente!");
             }
 
             historicoEtologico.nomeAnimal = animal.nomeApelido;
             historicoEtologico.isAtivo = Boolean.TRUE;
-            historicoEtologico.usuario = Usuario.find("email = ?1", email).firstResult();
-            historicoEtologico.usuarioAcao = Usuario.find("email = ?1", email).firstResult();
+            historicoEtologico.usuario = usuarioAuth;
+            historicoEtologico.usuarioAcao = usuarioAuth;
             historicoEtologico.dataAcao = new Date();
 
             historicoEtologico.persist();
 
         } else {
-            throw new BadRequestException("HistoricoEtologico já cadastrado!");
+            responses.messages.add("HistoricoEtologico já cadastrado!");
         }
 
     }
 
     public void updateHistoricoEtologico(@NotNull HistoricoEtologico pHistoricoEtologico, String email) {
+
+        usuarioAuth = Usuario.find("email = ?1", email).firstResult();
 
         historicoEtologico = HistoricoEtologico
                 .find("id = ?1 and isAtivo = true ORDER BY id DESC", pHistoricoEtologico.id).firstResult();
@@ -77,7 +83,7 @@ public class HistoricoEtologicoController {
         if (historicoEtologico != null) {
             if (pHistoricoEtologico.dataEtologico == null && pHistoricoEtologico.nomeEtologico == null
                     && pHistoricoEtologico.descricaoEtologico == null && pHistoricoEtologico.animal == null) {
-                throw new BadRequestException("Informe os dados para atualizar o Histórico Etológico.");
+                responses.messages.add("Informe os dados para atualizar o Histórico Etológico.");
             } else {
                 if (pHistoricoEtologico.dataEtologico != null) {
                     if (!Objects.equals(historicoEtologico.dataEtologico, pHistoricoEtologico.dataEtologico)) {
@@ -101,19 +107,20 @@ public class HistoricoEtologicoController {
                     }
                 }
 
-
                 historicoEtologico.nomeAnimal = historicoEtologico.animal.nomeApelido;
-                historicoEtologico.usuarioAcao = Usuario.find("email = ?1", email).firstResult();
+                historicoEtologico.usuarioAcao = usuarioAuth;
                 historicoEtologico.dataAcao = new Date();
                 historicoEtologico.persist();
             }
         } else {
-            throw new BadRequestException("Não foi possível atualizar o Histórico Etológico.");
+            responses.messages.add("Não foi possível atualizar o Histórico Etológico.");
 
         }
     }
 
     public void deleteHistoricoEtologico(List<Long> pListHistoricoEtologico, String email) {
+
+        usuarioAuth = Usuario.find("email = ?1", email).firstResult();
 
         pListHistoricoEtologico.forEach((pHistoricoEtologico) -> {
             historicoEtologico = HistoricoEtologico
@@ -122,7 +129,7 @@ public class HistoricoEtologicoController {
             if (historicoEtologico != null) {
                 historicoEtologico.isAtivo = Boolean.FALSE;
                 historicoEtologico.dataAcao = new Date();
-                historicoEtologico.usuarioAcao = Usuario.find("email = ?1", email).firstResult();
+                historicoEtologico.usuarioAcao = usuarioAuth;
                 historicoEtologico.systemDateDeleted = new Date();
                 historicoEtologico.persist();
             } else {
@@ -137,6 +144,8 @@ public class HistoricoEtologicoController {
 
     public void reactivateHistoricoEtologico(List<Long> pListHistoricoEtologico, String email) {
 
+        usuarioAuth = Usuario.find("email = ?1", email).firstResult();
+
         pListHistoricoEtologico.forEach((pHistoricoEtologico) -> {
             historicoEtologico = HistoricoEtologico
                     .find("id = ?1 and isAtivo = false ORDER BY id DESC", pHistoricoEtologico).firstResult();
@@ -144,7 +153,7 @@ public class HistoricoEtologicoController {
             if (historicoEtologico != null) {
                 historicoEtologico.isAtivo = Boolean.TRUE;
                 historicoEtologico.dataAcao = new Date();
-                historicoEtologico.usuarioAcao = Usuario.find("email = ?1", email).firstResult();
+                historicoEtologico.usuarioAcao = usuarioAuth;
                 historicoEtologico.systemDateDeleted = null;
                 historicoEtologico.persist();
             } else {

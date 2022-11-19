@@ -15,8 +15,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
 import java.security.Principal;
+import java.util.Arrays;
 import java.util.List;
-
 
 @Path("/historicoEtologico")
 public class HistoricoEtologicoResources {
@@ -31,7 +31,7 @@ public class HistoricoEtologicoResources {
     @Path("{id}")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
-    @RolesAllowed({"veterinario", "biologo", "dev"})
+    @RolesAllowed({ "veterinario", "biologo", "dev" })
     public Response getById(@PathParam("id") Long pId) {
         historicoEtologico = HistoricoEtologico.findById(pId);
         return Response.ok(historicoEtologico).status(200).build();
@@ -41,9 +41,9 @@ public class HistoricoEtologicoResources {
     @Path("/count")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
-    @RolesAllowed({"veterinario", "biologo", "dev"})
+    @RolesAllowed({ "veterinario", "biologo", "dev" })
     public Response count(@QueryParam("ativo") @DefaultValue("true") Boolean ativo,
-                          @QueryParam("strgFilter") @DefaultValue("") String strgFilter) {
+            @QueryParam("strgFilter") @DefaultValue("") String strgFilter) {
         String query = "isAtivo = " + ativo + " " + strgFilter;
         long historicoEtologico = HistoricoEtologico.count(query);
         return Response.ok(historicoEtologico).status(200).build();
@@ -53,14 +53,13 @@ public class HistoricoEtologicoResources {
     @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
-    @RolesAllowed({"veterinario", "biologo", "dev"})
+    @RolesAllowed({ "veterinario", "biologo", "dev" })
     public Response list(@QueryParam("sort") @DefaultValue("desc") @NotNull String sortQuery,
-                         @QueryParam("page") @DefaultValue("0") int pageIndex,
-                         @QueryParam("size") @DefaultValue("20") int pageSize,
-                         @QueryParam("ativo") @DefaultValue("true") Boolean ativo,
-                         @QueryParam("strgFilter") @DefaultValue("") String strgFilter,
-                         @QueryParam("strgOrder") @DefaultValue("id") String strgOrder
-    ) {
+            @QueryParam("page") @DefaultValue("0") int pageIndex,
+            @QueryParam("size") @DefaultValue("20") int pageSize,
+            @QueryParam("ativo") @DefaultValue("true") Boolean ativo,
+            @QueryParam("strgFilter") @DefaultValue("") String strgFilter,
+            @QueryParam("strgOrder") @DefaultValue("id") String strgOrder) {
         String query = "isAtivo = " + ativo + " " + strgFilter + " " + "order by " + strgOrder + " " + sortQuery;
         PanacheQuery<HistoricoEtologico> historicoEtologico;
         historicoEtologico = HistoricoEtologico.find(query);
@@ -71,11 +70,11 @@ public class HistoricoEtologicoResources {
     @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
-    @RolesAllowed({"veterinario", "biologo", "dev"})
+    @RolesAllowed({ "veterinario", "biologo", "dev" })
     public Response add(HistoricoEtologico pHistoricoEtologico, @Context @NotNull SecurityContext context) {
         responses = new Responses();
         responses.status = 201;
-        responses.message = "Histórico Etológico cadastrado com sucesso!";
+        responses.messages.add("Histórico Etológico cadastrado com sucesso!");
         Principal json = context.getUserPrincipal();
         String email = json.getName();
         controller.addHistoricoEtologico(pHistoricoEtologico, email);
@@ -86,11 +85,11 @@ public class HistoricoEtologicoResources {
     @Path("/update")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
-    @RolesAllowed({"veterinario", "biologo", "dev"})
+    @RolesAllowed({ "veterinario", "biologo", "dev" })
     public Response update(HistoricoEtologico pHistoricoEtologico, @Context @NotNull SecurityContext context) {
         responses = new Responses();
         responses.status = 200;
-        responses.message = "Histórico Etológico atualizado com sucesso!";
+        responses.messages.add("Histórico Etológico atualizado com sucesso!");
         Principal json = context.getUserPrincipal();
         String email = json.getName();
         controller.updateHistoricoEtologico(pHistoricoEtologico, email);
@@ -101,35 +100,35 @@ public class HistoricoEtologicoResources {
     @Path("/delete")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
-    @RolesAllowed({"veterinario", "biologo", "dev"})
+    @RolesAllowed({ "veterinario", "biologo", "dev" })
     public Response deleteList(List<Long> pListHistoricoEtologico, @Context @NotNull SecurityContext context) {
         Integer countList = pListHistoricoEtologico.size();
         responses = new Responses();
         responses.status = 200;
-        if(pListHistoricoEtologico.size() <= 1){
-            responses.message = "Histórico Etológico excluído com sucesso!";
+        if (pListHistoricoEtologico.size() <= 1) {
+            responses.messages.add("Histórico Etológico excluído com sucesso!");
         } else {
-            responses.message = countList + " Históricos Etológicos exclúidos com sucesso!";
+            responses.messages.add(countList + " Históricos Etológicos exclúidos com sucesso!");
         }
         Principal json = context.getUserPrincipal();
         String email = json.getName();
         controller.deleteHistoricoEtologico(pListHistoricoEtologico, email);
-        return Response.ok(responses).status(200,"Histórico Etológico excluído com sucesso!" ).build();
+        return Response.ok(responses).status(200, "Histórico Etológico excluído com sucesso!").build();
     }
 
     @PUT
     @Path("/reactivate")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
-    @RolesAllowed({"veterinario", "biologo", "dev"})
+    @RolesAllowed({ "veterinario", "biologo", "dev" })
     public Response reactivateList(List<Long> pListHistoricoEtologico, @Context @NotNull SecurityContext context) {
         Integer countList = pListHistoricoEtologico.size();
         responses = new Responses();
         responses.status = 200;
-        if(pListHistoricoEtologico.size() <= 1){
-            responses.message = "Histórico Etológico recuperado com sucesso!";
+        if (pListHistoricoEtologico.size() <= 1) {
+            responses.messages.add("Histórico Etológico recuperado com sucesso!");
         } else {
-            responses.message = countList + " Históricos Etológicos recuperados com sucesso!";
+            responses.messages.add(countList + " Históricos Etológicos recuperados com sucesso!");
         }
         Principal json = context.getUserPrincipal();
         String email = json.getName();

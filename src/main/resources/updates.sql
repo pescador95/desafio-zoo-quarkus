@@ -15,4 +15,4 @@ SELECT setval('historicoetologico_id_seq', (select MAX(id) from historicoetologi
 SELECT setval('medicacao_id_seq', (select MAX(id) from medicacao));
 SELECT setval('nutricao_id_seq', (select MAX(id) from nutricao));
 SELECT setval('usuario_id_seq', (select MAX(id) from usuario));
-
+SELECT setval('profile_id_seq', (select MAX(id) from profile));

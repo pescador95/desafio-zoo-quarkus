@@ -33,7 +33,7 @@ public class UsuarioResources {
     @RolesAllowed({ "veterinario", "biologo", "dev" })
     public Response getById(@PathParam("id") Long pId) {
         usuario = Usuario.findById(pId);
-        return Response.ok(usuario).status(200).build();
+        return Response.ok(usuario).status(Response.Status.ACCEPTED).build();
     }
 
     @GET
@@ -45,7 +45,7 @@ public class UsuarioResources {
             @QueryParam("strgFilter") @DefaultValue("") String strgFilter) {
         String query = "isAtivo = " + ativo + " " + strgFilter;
         long usuario = Usuario.count(query);
-        return Response.ok(usuario).status(200).build();
+        return Response.ok(usuario).status(Response.Status.ACCEPTED).build();
     }
 
     @GET
@@ -62,7 +62,7 @@ public class UsuarioResources {
         String query = "isAtivo = " + ativo + " " + strgFilter + " order by " + strgOrder + " " + sortQuery;
         PanacheQuery<Usuario> usuario;
         usuario = Usuario.find(query);
-        return Response.ok(usuario.page(Page.of(pageIndex, pageSize)).list()).status(200).build();
+        return Response.ok(usuario.page(Page.of(pageIndex, pageSize)).list()).status(Response.Status.ACCEPTED).build();
     }
 
     @GET
@@ -75,7 +75,7 @@ public class UsuarioResources {
         Principal json = context.getUserPrincipal();
         String email = json.getName();
         Usuario usuario = Usuario.find("email = ?1", email).firstResult();
-        return Response.ok(usuario).status(200).build();
+        return Response.ok(usuario).status(Response.Status.ACCEPTED).build();
     }
 
     @POST

@@ -33,7 +33,7 @@ public class HistoricoEtologicoResources {
     @RolesAllowed({ "veterinario", "biologo", "dev" })
     public Response getById(@PathParam("id") Long pId) {
         historicoEtologico = HistoricoEtologico.findById(pId);
-        return Response.ok(historicoEtologico).status(200).build();
+        return Response.ok(historicoEtologico).status(Response.Status.ACCEPTED).build();
     }
 
     @GET
@@ -45,7 +45,7 @@ public class HistoricoEtologicoResources {
             @QueryParam("strgFilter") @DefaultValue("") String strgFilter) {
         String query = "isAtivo = " + ativo + " " + strgFilter;
         long historicoEtologico = HistoricoEtologico.count(query);
-        return Response.ok(historicoEtologico).status(200).build();
+        return Response.ok(historicoEtologico).status(Response.Status.ACCEPTED).build();
     }
 
     @GET
@@ -62,7 +62,8 @@ public class HistoricoEtologicoResources {
         String query = "isAtivo = " + ativo + " " + strgFilter + " " + "order by " + strgOrder + " " + sortQuery;
         PanacheQuery<HistoricoEtologico> historicoEtologico;
         historicoEtologico = HistoricoEtologico.find(query);
-        return Response.ok(historicoEtologico.page(Page.of(pageIndex, pageSize)).list()).status(200).build();
+        return Response.ok(historicoEtologico.page(Page.of(pageIndex, pageSize)).list())
+                .status(Response.Status.ACCEPTED).build();
     }
 
     @POST

@@ -25,15 +25,15 @@ public class Usuario extends PanacheEntityBase {
     @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "usuarioIdSequence")
     @Id
     public Long id;
-    @Column(nullable = false)
+    @Column(nullable = Boolean.FALSE)
     public String nome;
 
-    @Column(nullable = false)
+    @Column(nullable = Boolean.FALSE)
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @Password
     public String password;
 
-    @Column(nullable = false)
+    @Column(nullable = Boolean.FALSE)
     @Username
     public String email;
 

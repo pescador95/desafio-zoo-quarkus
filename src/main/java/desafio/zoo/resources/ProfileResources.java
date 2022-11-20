@@ -39,21 +39,21 @@ public class ProfileResources {
 
             return Response.ok(profile).build();
         } catch (RuntimeException e) {
-            return Response.ok(e.getMessage(), MediaType.TEXT_PLAIN).status(404).build();
+            return Response.ok(e.getMessage(), MediaType.TEXT_PLAIN).status(Response.Status.BAD_REQUEST).build();
         }
     }
 
     @POST
     @Path("/")
     public Response sendUpload(@MultipartForm FormData pData, @QueryParam("fileRefence") String pFileRefence,
-                               @QueryParam("idAnimal") Long pIdAnimal) {
+            @QueryParam("idAnimal") Long pIdAnimal) {
 
         try {
             Profile profile = controller.sendUpload(pData, pFileRefence, pIdAnimal);
 
-            return Response.ok(profile).status(201).build();
+            return Response.ok(profile).status(Response.Status.CREATED).build();
         } catch (IOException e) {
-            return Response.ok(e.getMessage(), MediaType.TEXT_PLAIN).status(401).build();
+            return Response.ok(e.getMessage(), MediaType.TEXT_PLAIN).status(Response.Status.UNAUTHORIZED).build();
         }
     }
 
@@ -66,7 +66,7 @@ public class ProfileResources {
 
             return Response.status(204).build();
         } catch (IOException e) {
-            return Response.ok(e.getMessage(), MediaType.TEXT_PLAIN).status(404).build();
+            return Response.ok(e.getMessage(), MediaType.TEXT_PLAIN).status(Response.Status.BAD_REQUEST).build();
         }
     }
 }

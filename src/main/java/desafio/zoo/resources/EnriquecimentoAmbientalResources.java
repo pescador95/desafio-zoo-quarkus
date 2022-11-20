@@ -33,7 +33,7 @@ public class EnriquecimentoAmbientalResources {
     @RolesAllowed({ "veterinario", "biologo", "dev" })
     public Response getById(@PathParam("id") Long pId) {
         enriquecimentoAmbiental = EnriquecimentoAmbiental.findById(pId);
-        return Response.ok(enriquecimentoAmbiental).status(200).build();
+        return Response.ok(enriquecimentoAmbiental).status(Response.Status.ACCEPTED).build();
     }
 
     @GET
@@ -45,7 +45,7 @@ public class EnriquecimentoAmbientalResources {
             @QueryParam("strgFilter") @DefaultValue("") String strgFilter) {
         String query = "isAtivo = " + ativo + " " + strgFilter;
         long enriquecimentoAmbiental = EnriquecimentoAmbiental.count(query);
-        return Response.ok(enriquecimentoAmbiental).status(200).build();
+        return Response.ok(enriquecimentoAmbiental).status(Response.Status.ACCEPTED).build();
     }
 
     @GET
@@ -62,7 +62,8 @@ public class EnriquecimentoAmbientalResources {
         String query = "isAtivo = " + ativo + " " + strgFilter + " " + "order by " + strgOrder + " " + sortQuery;
         PanacheQuery<EnriquecimentoAmbiental> enriquecimentoAmbiental;
         enriquecimentoAmbiental = EnriquecimentoAmbiental.find(query);
-        return Response.ok(enriquecimentoAmbiental.page(Page.of(pageIndex, pageSize)).list()).status(200).build();
+        return Response.ok(enriquecimentoAmbiental.page(Page.of(pageIndex, pageSize)).list())
+                .status(Response.Status.ACCEPTED).build();
     }
 
     @POST

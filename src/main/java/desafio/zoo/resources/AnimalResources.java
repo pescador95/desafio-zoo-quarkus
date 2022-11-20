@@ -32,7 +32,7 @@ public class AnimalResources {
     @RolesAllowed({ "veterinario", "biologo", "dev" })
     public Response getById(@PathParam("id") Long pId) {
         animal = Animal.findById(pId);
-        return Response.ok(animal).status(200).build();
+        return Response.ok(animal).status(Response.Status.ACCEPTED).build();
     }
 
     @GET
@@ -44,7 +44,7 @@ public class AnimalResources {
             @QueryParam("strgFilter") @DefaultValue("") String strgFilter) {
         String query = "isAtivo = " + ativo + " " + strgFilter;
         long animais = Animal.count(query);
-        return Response.ok(animais).status(200).build();
+        return Response.ok(animais).status(Response.Status.ACCEPTED).build();
     }
 
     @GET
@@ -61,7 +61,7 @@ public class AnimalResources {
         PanacheQuery<Animal> animais;
         String query = "isAtivo = " + ativo + " " + strgFilter + " " + "order by " + strgOrder + " " + sortQuery;
         animais = Animal.find(query);
-        return Response.ok(animais.page(Page.of(pageIndex, pageSize)).list()).status(200).build();
+        return Response.ok(animais.page(Page.of(pageIndex, pageSize)).list()).status(Response.Status.ACCEPTED).build();
     }
 
     @POST

@@ -12,11 +12,7 @@ import java.util.Date;
 public class Medicacao extends PanacheEntityBase {
 
     @Column()
-    @SequenceGenerator(
-            name = "medicacaoIdSequence",
-            sequenceName = "medicacao_id_seq",
-            allocationSize = 1
-    )
+    @SequenceGenerator(name = "medicacaoIdSequence", sequenceName = "medicacao_id_seq", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "medicacaoIdSequence")
     @Id
     public Long id;
@@ -27,7 +23,7 @@ public class Medicacao extends PanacheEntityBase {
     @GeneratedValue
     public HistoricoClinico historicoClinico;
 
-    @Column(nullable = false)
+    @Column(nullable = Boolean.FALSE)
     public String nomeMedicacao;
 
     @Column()
@@ -36,7 +32,7 @@ public class Medicacao extends PanacheEntityBase {
     @Column()
     public String posologia;
 
-    @Column(nullable = false)
+    @Column(nullable = Boolean.FALSE)
     public String frequencia;
 
     @Column()
@@ -66,4 +62,3 @@ public class Medicacao extends PanacheEntityBase {
 
     }
 }
-

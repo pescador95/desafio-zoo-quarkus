@@ -13,11 +13,7 @@ import java.util.Date;
 public class HistoricoEtologico extends PanacheEntityBase {
 
     @Column()
-    @SequenceGenerator(
-            name = "historicoEtologicoIdSequence",
-            sequenceName = "historicoEtologico_id_seq",
-            allocationSize = 1
-    )
+    @SequenceGenerator(name = "historicoEtologicoIdSequence", sequenceName = "historicoEtologico_id_seq", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "historicoEtologicoIdSequence")
     @Id
     public Long id;
@@ -36,7 +32,7 @@ public class HistoricoEtologico extends PanacheEntityBase {
     @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
     public Date dataEtologico;
 
-    @Column(nullable = false)
+    @Column(nullable = Boolean.FALSE)
     public String nomeEtologico;
 
     @Column()
@@ -69,4 +65,3 @@ public class HistoricoEtologico extends PanacheEntityBase {
 
     }
 }
-

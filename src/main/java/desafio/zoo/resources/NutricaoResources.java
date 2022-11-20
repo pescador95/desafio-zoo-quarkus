@@ -33,7 +33,7 @@ public class NutricaoResources {
     @RolesAllowed({ "veterinario", "biologo", "dev" })
     public Response getById(@PathParam("id") Long pId) {
         nutricao = Nutricao.findById(pId);
-        return Response.ok(nutricao).status(200).build();
+        return Response.ok(nutricao).status(Response.Status.ACCEPTED).build();
     }
 
     @GET
@@ -45,7 +45,7 @@ public class NutricaoResources {
             @QueryParam("strgFilter") @DefaultValue("") String strgFilter) {
         String query = "isAtivo = " + ativo + " " + strgFilter;
         long nutricao = Nutricao.count(query);
-        return Response.ok(nutricao).status(200).build();
+        return Response.ok(nutricao).status(Response.Status.ACCEPTED).build();
     }
 
     @GET
@@ -62,7 +62,7 @@ public class NutricaoResources {
         String query = "isAtivo = " + ativo + " " + strgFilter + " " + "order by " + strgOrder + " " + sortQuery;
         PanacheQuery<Nutricao> nutricao;
         nutricao = Nutricao.find(query);
-        return Response.ok(nutricao.page(Page.of(pageIndex, pageSize)).list()).status(200).build();
+        return Response.ok(nutricao.page(Page.of(pageIndex, pageSize)).list()).status(Response.Status.ACCEPTED).build();
     }
 
     @POST

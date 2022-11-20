@@ -32,7 +32,7 @@ public class HistoricoEtologico extends PanacheEntityBase {
     @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
     public Date dataEtologico;
 
-    @Column(nullable = Boolean.FALSE)
+    @Column(nullable = false)
     public String nomeEtologico;
 
     @Column()

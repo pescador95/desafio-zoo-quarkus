@@ -22,16 +22,17 @@ public class EnriquecimentoAmbientalController {
 
     Usuario usuarioAuth;
 
-    public Response addEnriquecimentoAmbiental(@NotNull EnriquecimentoAmbiental pEnriquecimentoAmbiental, String email) {
+    public Response addEnriquecimentoAmbiental(@NotNull EnriquecimentoAmbiental pEnriquecimentoAmbiental,
+            String email) {
 
         responses = new Responses();
         responses.messages = new ArrayList<>();
         usuarioAuth = Usuario.find("email = ?1", email).firstResult();
 
         enriquecimentoAmbiental = EnriquecimentoAmbiental.find(
-                        "animal = ?1 and dataEnriquecimento = ?2 and nomeEnriquecimento = ?3 and descricaoEnriquecimento = ?4 and isAtivo = true ORDER BY id DESC",
-                        pEnriquecimentoAmbiental.animal, pEnriquecimentoAmbiental.dataEnriquecimento,
-                        pEnriquecimentoAmbiental.nomeEnriquecimento, pEnriquecimentoAmbiental.descricaoEnriquecimento)
+                "animal = ?1 and dataEnriquecimento = ?2 and nomeEnriquecimento = ?3 and descricaoEnriquecimento = ?4 and isAtivo = true ORDER BY id DESC",
+                pEnriquecimentoAmbiental.animal, pEnriquecimentoAmbiental.dataEnriquecimento,
+                pEnriquecimentoAmbiental.nomeEnriquecimento, pEnriquecimentoAmbiental.descricaoEnriquecimento)
                 .firstResult();
         animal = Animal.find("id = ?1", pEnriquecimentoAmbiental.animal.id).firstResult();
 
@@ -77,18 +78,19 @@ public class EnriquecimentoAmbientalController {
                 responses.messages.add("Enriquecimento Ambiental cradastrado com sucesso!");
 
             } else {
-                return Response.ok(responses).status(Response.Status.NOT_ACCEPTABLE).build();
+                return Response.ok(responses).status(Response.Status.BAD_REQUEST).build();
             }
             return Response.ok(responses).status(Response.Status.CREATED).build();
         } else {
             responses.status = 200;
             responses.data = enriquecimentoAmbiental;
             responses.messages.add("Enriquecimento Ambiental já cadastrado!");
-            return Response.ok(responses).status(Response.Status.NOT_ACCEPTABLE).build();
+            return Response.ok(responses).status(Response.Status.BAD_REQUEST).build();
         }
     }
 
-    public Response updateEnriquecimentoAmbiental(@NotNull EnriquecimentoAmbiental pEnriquecimentoAmbiental, String email) {
+    public Response updateEnriquecimentoAmbiental(@NotNull EnriquecimentoAmbiental pEnriquecimentoAmbiental,
+            String email) {
 
         responses = new Responses();
         responses.messages = new ArrayList<>();
@@ -96,25 +98,29 @@ public class EnriquecimentoAmbientalController {
         try {
             usuarioAuth = Usuario.find("email = ?1", email).firstResult();
 
-            enriquecimentoAmbiental = EnriquecimentoAmbiental.find("id = ?1 and isAtivo = true ORDER BY id DESC", pEnriquecimentoAmbiental.id).firstResult();
+            enriquecimentoAmbiental = EnriquecimentoAmbiental
+                    .find("id = ?1 and isAtivo = true ORDER BY id DESC", pEnriquecimentoAmbiental.id).firstResult();
             if (pEnriquecimentoAmbiental.dataEnriquecimento == null
                     && pEnriquecimentoAmbiental.nomeEnriquecimento == null
                     && pEnriquecimentoAmbiental.descricaoEnriquecimento == null) {
                 responses.messages.add("Informe os dados para atualizar o Enriquecimento Ambiental.");
             } else {
-                if (pEnriquecimentoAmbiental.dataEnriquecimento != null && enriquecimentoAmbiental.dataEnriquecimento != null) {
+                if (pEnriquecimentoAmbiental.dataEnriquecimento != null
+                        && enriquecimentoAmbiental.dataEnriquecimento != null) {
                     if (!Objects.equals(enriquecimentoAmbiental.dataEnriquecimento,
                             pEnriquecimentoAmbiental.dataEnriquecimento)) {
                         enriquecimentoAmbiental.dataEnriquecimento = pEnriquecimentoAmbiental.dataEnriquecimento;
                     }
                 }
-                if (pEnriquecimentoAmbiental.nomeEnriquecimento != null && enriquecimentoAmbiental.nomeEnriquecimento != null) {
+                if (pEnriquecimentoAmbiental.nomeEnriquecimento != null
+                        && enriquecimentoAmbiental.nomeEnriquecimento != null) {
                     if (!enriquecimentoAmbiental.nomeEnriquecimento
                             .equals(pEnriquecimentoAmbiental.nomeEnriquecimento)) {
                         enriquecimentoAmbiental.nomeEnriquecimento = pEnriquecimentoAmbiental.nomeEnriquecimento;
                     }
                 }
-                if (pEnriquecimentoAmbiental.descricaoEnriquecimento != null && enriquecimentoAmbiental.descricaoEnriquecimento != null) {
+                if (pEnriquecimentoAmbiental.descricaoEnriquecimento != null
+                        && enriquecimentoAmbiental.descricaoEnriquecimento != null) {
                     if (!enriquecimentoAmbiental.descricaoEnriquecimento
                             .equals(pEnriquecimentoAmbiental.descricaoEnriquecimento)) {
                         enriquecimentoAmbiental.descricaoEnriquecimento = pEnriquecimentoAmbiental.descricaoEnriquecimento;
@@ -141,7 +147,7 @@ public class EnriquecimentoAmbientalController {
             responses.status = 500;
             responses.data = enriquecimentoAmbiental;
             responses.messages.add("Não foi possível atualizar o Enriquecimento Ambiental.");
-            return Response.ok(responses).status(Response.Status.NOT_ACCEPTABLE).build();
+            return Response.ok(responses).status(Response.Status.BAD_REQUEST).build();
         }
     }
 
@@ -153,13 +159,11 @@ public class EnriquecimentoAmbientalController {
         responses.messages = new ArrayList<>();
         usuarioAuth = Usuario.find("email = ?1", email).firstResult();
 
-
         try {
             pListEnriquecimentoAmbiental.forEach((pEnriquecimentoAmbiental) -> {
 
                 enriquecimentoAmbiental = EnriquecimentoAmbiental
                         .find("id = ?1 and isAtivo = true ORDER BY id DESC", pEnriquecimentoAmbiental).firstResult();
-
 
                 enriquecimentoAmbiental.isAtivo = Boolean.FALSE;
                 enriquecimentoAmbiental.dataAcao = new Date();
@@ -237,9 +241,3 @@ public class EnriquecimentoAmbientalController {
         }
     }
 }
-
-
-
-
-
-

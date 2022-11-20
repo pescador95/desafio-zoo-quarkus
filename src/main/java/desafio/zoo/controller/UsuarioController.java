@@ -62,14 +62,14 @@ public class UsuarioController<pId> {
                 responses.data = usuario;
                 responses.messages.add("Usuário Cadastrado com sucesso!");
             } else {
-                return Response.ok(responses).status(Response.Status.NOT_ACCEPTABLE).build();
+                return Response.ok(responses).status(Response.Status.BAD_REQUEST).build();
             }
             return Response.ok(responses).status(Response.Status.CREATED).build();
         } else {
             responses.status = 500;
             responses.data = usuario;
             responses.messages.add("Usuário já cadastrado!");
-            return Response.ok(responses).status(Response.Status.NOT_ACCEPTABLE).build();
+            return Response.ok(responses).status(Response.Status.BAD_REQUEST).build();
         }
     }
 
@@ -77,7 +77,6 @@ public class UsuarioController<pId> {
 
         responses = new Responses();
         responses.messages = new ArrayList<>();
-
 
         try {
             usuario = Usuario.find("id = ?1 and isAtivo = true ORDER BY id DESC", pUsuario.id).firstResult();

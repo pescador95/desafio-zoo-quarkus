@@ -17,7 +17,6 @@ import javax.ws.rs.core.SecurityContext;
 import java.security.Principal;
 import java.util.List;
 
-
 @Path("/animal")
 public class AnimalResources {
 
@@ -30,7 +29,7 @@ public class AnimalResources {
     @Path("{id}")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
-    @RolesAllowed({"veterinario", "biologo", "dev"})
+    @RolesAllowed({ "veterinario", "biologo", "dev" })
     public Response getById(@PathParam("id") Long pId) {
         animal = Animal.findById(pId);
         return Response.ok(animal).status(200).build();
@@ -40,9 +39,9 @@ public class AnimalResources {
     @Path("/count")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
-    @RolesAllowed({"veterinario", "biologo", "dev"})
+    @RolesAllowed({ "veterinario", "biologo", "dev" })
     public Response count(@QueryParam("ativo") @DefaultValue("true") Boolean ativo,
-                          @QueryParam("strgFilter") @DefaultValue("") String strgFilter) {
+            @QueryParam("strgFilter") @DefaultValue("") String strgFilter) {
         String query = "isAtivo = " + ativo + " " + strgFilter;
         long animais = Animal.count(query);
         return Response.ok(animais).status(200).build();
@@ -52,14 +51,13 @@ public class AnimalResources {
     @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
-    @RolesAllowed({"veterinario", "biologo", "dev"})
+    @RolesAllowed({ "veterinario", "biologo", "dev" })
     public Response list(@QueryParam("sort") @DefaultValue("desc") @NotNull String sortQuery,
-                         @QueryParam("page") @DefaultValue("0") int pageIndex,
-                         @QueryParam("size") @DefaultValue("20") int pageSize,
-                         @QueryParam("ativo") @DefaultValue("true") Boolean ativo,
-                         @QueryParam("strgFilter") @DefaultValue("") String strgFilter,
-                         @QueryParam("strgOrder") @DefaultValue("id") String strgOrder
-    ) {
+            @QueryParam("page") @DefaultValue("0") int pageIndex,
+            @QueryParam("size") @DefaultValue("10") int pageSize,
+            @QueryParam("ativo") @DefaultValue("true") Boolean ativo,
+            @QueryParam("strgFilter") @DefaultValue("") String strgFilter,
+            @QueryParam("strgOrder") @DefaultValue("id") String strgOrder) {
         PanacheQuery<Animal> animais;
         String query = "isAtivo = " + ativo + " " + strgFilter + " " + "order by " + strgOrder + " " + sortQuery;
         animais = Animal.find(query);
@@ -70,7 +68,7 @@ public class AnimalResources {
     @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
-    @RolesAllowed({"veterinario", "biologo", "dev"})
+    @RolesAllowed({ "veterinario", "biologo", "dev" })
     public Response add(Animal pAnimal, @Context @NotNull SecurityContext context) {
         try {
             Principal json = context.getUserPrincipal();
@@ -78,9 +76,9 @@ public class AnimalResources {
             return controller.addAnimal(pAnimal, email);
         } catch (Exception e) {
             responses = new Responses();
-            responses.status = 406;
+            responses.status = 400;
             responses.messages.add("Não foi possível cadastrar o animal.");
-            return Response.ok(responses).status(Response.Status.NOT_ACCEPTABLE).build();
+            return Response.ok(responses).status(Response.Status.BAD_REQUEST).build();
         }
     }
 
@@ -88,7 +86,7 @@ public class AnimalResources {
     @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
-    @RolesAllowed({"veterinario", "biologo", "dev"})
+    @RolesAllowed({ "veterinario", "biologo", "dev" })
     public Response update(Animal pAnimal, @Context @NotNull SecurityContext context) {
         try {
             Principal json = context.getUserPrincipal();
@@ -106,7 +104,7 @@ public class AnimalResources {
     @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
-    @RolesAllowed({"veterinario", "biologo", "dev"})
+    @RolesAllowed({ "veterinario", "biologo", "dev" })
     public Response deleteList(List<Long> pListIdAnimal, @Context @NotNull SecurityContext context) {
         try {
             Principal json = context.getUserPrincipal();
@@ -130,7 +128,7 @@ public class AnimalResources {
     @Path("/reactivate")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
-    @RolesAllowed({"veterinario", "biologo", "dev"})
+    @RolesAllowed({ "veterinario", "biologo", "dev" })
     public Response reactivateList(List<Long> pListIdAnimal, @Context @NotNull SecurityContext context) {
         try {
             Principal json = context.getUserPrincipal();
@@ -143,7 +141,7 @@ public class AnimalResources {
                 responses.messages.add("Não foi possível reativar o animal.");
             } else {
                 responses = new Responses();
-                responses.status = 406;
+                responses.status = 500;
                 responses.messages.add("Não foi possível reativar os animais.");
             }
             return Response.ok(responses).status(Response.Status.BAD_REQUEST).build();

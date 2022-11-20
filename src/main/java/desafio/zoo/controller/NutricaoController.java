@@ -29,7 +29,8 @@ public class NutricaoController {
         responses.messages = new ArrayList<>();
         usuarioAuth = Usuario.find("email = ?1", email).firstResult();
 
-        nutricao = Nutricao.find("animal = ?1 and isAtivo = true and dataInicio = ?2 ORDER BY id DESC", pNutricao.animal, pNutricao.dataInicio).firstResult();
+        nutricao = Nutricao.find("animal = ?1 and isAtivo = true and dataInicio = ?2 ORDER BY id DESC",
+                pNutricao.animal, pNutricao.dataInicio).firstResult();
         animal = Animal.find("id = ?1", pNutricao.animal.id).firstResult();
 
         if (nutricao == null) {
@@ -73,14 +74,14 @@ public class NutricaoController {
                 responses.data = nutricao;
                 responses.messages.add("Ficha de nutrição Cadastrada com sucesso!");
             } else {
-                return Response.ok(responses).status(Response.Status.NOT_ACCEPTABLE).build();
+                return Response.ok(responses).status(Response.Status.BAD_REQUEST).build();
             }
             return Response.ok(responses).status(Response.Status.CREATED).build();
         } else {
             responses.status = 500;
             responses.data = nutricao;
             responses.messages.add("Ficha de nutrição já cadastrada!");
-            return Response.ok(responses).status(Response.Status.NOT_ACCEPTABLE).build();
+            return Response.ok(responses).status(Response.Status.BAD_REQUEST).build();
         }
     }
 
@@ -148,7 +149,6 @@ public class NutricaoController {
             pListIdnutricao.forEach((pNutricao) -> {
                 nutricao = Nutricao.find("id = ?1 and isAtivo = true ORDER BY id DESC", pNutricao).firstResult();
 
-
                 nutricao.isAtivo = Boolean.FALSE;
                 nutricao.dataAcao = new Date();
                 nutricao.usuarioAcao = usuarioAuth;
@@ -191,7 +191,6 @@ public class NutricaoController {
         try {
             pListIdnutricao.forEach((pNutricao) -> {
                 nutricao = Nutricao.find("id = ?1 and isAtivo = false ORDER BY id DESC", pNutricao).firstResult();
-
 
                 nutricao.isAtivo = Boolean.TRUE;
                 nutricao.dataAcao = new Date();

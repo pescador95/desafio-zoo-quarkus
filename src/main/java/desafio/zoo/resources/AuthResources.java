@@ -30,7 +30,7 @@ public class AuthResources {
     public Response auth(Auth data) {
         try {
             auth = authController.login(data);
-            return Response.ok(auth).status(200).build();
+            return Response.ok(auth).status(Response.Status.ACCEPTED).build();
         } catch (Exception e) {
             return Response.ok(responses).status(Response.Status.UNAUTHORIZED).build();
         }
@@ -45,7 +45,7 @@ public class AuthResources {
     public Response refreshToken(Auth data) {
         try {
             auth = authController.refreshToken(data);
-            return Response.ok(auth).status(200).build();
+            return Response.ok(auth).status(Response.Status.ACCEPTED).build();
         } catch (Exception e) {
             return Response.ok(responses).status(Response.Status.UNAUTHORIZED).build();
         }

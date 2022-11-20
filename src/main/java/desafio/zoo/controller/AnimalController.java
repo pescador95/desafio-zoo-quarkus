@@ -89,14 +89,14 @@ public class AnimalController {
                 responses.data = animal;
                 responses.messages.add("Animal Cadastrado com sucesso!");
             } else {
-                return Response.ok(responses).status(Response.Status.NOT_ACCEPTABLE).build();
+                return Response.ok(responses).status(Response.Status.BAD_REQUEST).build();
             }
             return Response.ok(responses).status(Response.Status.CREATED).build();
         } else {
-            responses.status = 500;
+            responses.status = 400;
             responses.data = animal;
             responses.messages.add("Animal já cadastrado!");
-            return Response.ok(responses).status(Response.Status.NOT_ACCEPTABLE).build();
+            return Response.ok(responses).status(Response.Status.BAD_REQUEST).build();
         }
     }
 

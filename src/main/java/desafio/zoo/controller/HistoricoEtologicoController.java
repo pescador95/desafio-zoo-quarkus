@@ -28,7 +28,9 @@ public class HistoricoEtologicoController {
         usuarioAuth = Usuario.find("email = ?1", email).firstResult();
 
         historicoEtologico = HistoricoEtologico
-                .find("animal = ?1 and isAtivo = true and dataEtologico =? 2 ORDER BY id DESC", pHistoricoEtologico.animal, pHistoricoEtologico.dataEtologico).firstResult();
+                .find("animal = ?1 and isAtivo = true and dataEtologico =? 2 ORDER BY id DESC",
+                        pHistoricoEtologico.animal, pHistoricoEtologico.dataEtologico)
+                .firstResult();
         animal = Animal.find("id = ?1", pHistoricoEtologico.animal.id).firstResult();
 
         if (historicoEtologico == null) {
@@ -73,14 +75,14 @@ public class HistoricoEtologicoController {
                 responses.data = historicoEtologico;
                 responses.messages.add("Histórico Etológico Cadastrado com sucesso!");
             } else {
-                return Response.ok(responses).status(Response.Status.NOT_ACCEPTABLE).build();
+                return Response.ok(responses).status(Response.Status.BAD_REQUEST).build();
             }
             return Response.ok(responses).status(Response.Status.CREATED).build();
         } else {
             responses.status = 500;
             responses.data = historicoEtologico;
             responses.messages.add("HistoricoEtologico já cadastrado!");
-            return Response.ok(responses).status(Response.Status.NOT_ACCEPTABLE).build();
+            return Response.ok(responses).status(Response.Status.BAD_REQUEST).build();
         }
     }
 
@@ -89,10 +91,10 @@ public class HistoricoEtologicoController {
         responses = new Responses();
         responses.messages = new ArrayList<>();
 
-
         try {
 
-            historicoEtologico = HistoricoEtologico.find("id = ?1 and isAtivo = true ORDER BY id DESC", pHistoricoEtologico.id).firstResult();
+            historicoEtologico = HistoricoEtologico
+                    .find("id = ?1 and isAtivo = true ORDER BY id DESC", pHistoricoEtologico.id).firstResult();
             usuarioAuth = Usuario.find("email = ?1", email).firstResult();
 
             if (pHistoricoEtologico.dataEtologico == null && pHistoricoEtologico.nomeEtologico == null
@@ -140,7 +142,6 @@ public class HistoricoEtologicoController {
         }
     }
 
-
     public Response deleteHistoricoEtologico(List<Long> pListHistoricoEtologico, String email) {
 
         List<HistoricoEtologico> historicoEtologicoList = new ArrayList<>();
@@ -151,7 +152,8 @@ public class HistoricoEtologicoController {
         try {
             pListHistoricoEtologico.forEach((pHistoricoEtologico) -> {
 
-                historicoEtologico = HistoricoEtologico.find("id = ?1 and isAtivo = true ORDER BY id DESC", pHistoricoEtologico).firstResult();
+                historicoEtologico = HistoricoEtologico
+                        .find("id = ?1 and isAtivo = true ORDER BY id DESC", pHistoricoEtologico).firstResult();
 
                 historicoEtologico.isAtivo = Boolean.FALSE;
                 historicoEtologico.dataAcao = new Date();
@@ -194,7 +196,8 @@ public class HistoricoEtologicoController {
         try {
             pListHistoricoEtologico.forEach((pHistoricoEtologico) -> {
 
-                historicoEtologico = HistoricoEtologico.find("id = ?1 and isAtivo = false ORDER BY id DESC", pHistoricoEtologico).firstResult();
+                historicoEtologico = HistoricoEtologico
+                        .find("id = ?1 and isAtivo = false ORDER BY id DESC", pHistoricoEtologico).firstResult();
 
                 historicoEtologico.isAtivo = Boolean.TRUE;
                 historicoEtologico.dataAcao = new Date();

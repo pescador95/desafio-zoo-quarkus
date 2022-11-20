@@ -40,9 +40,9 @@ public class RecoverPasswordController {
             responses.messages.add("Enviado uma nova senha para o email informado.");
         } else {
             responses = new Responses();
-            responses.status = 404;
+            responses.status = 400;
             responses.messages.add("Não foi possível localizar um cadastro com o email informado.");
-            return Response.ok(responses).status(Response.Status.NOT_FOUND).build();
+            return Response.ok(responses).status(Response.Status.BAD_REQUEST).build();
         }
         return Response.ok(responses).status(Response.Status.ACCEPTED).build();
     }

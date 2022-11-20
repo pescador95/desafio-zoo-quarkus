@@ -16,3 +16,5 @@ SELECT setval('medicacao_id_seq', (select MAX(id) from medicacao));
 SELECT setval('nutricao_id_seq', (select MAX(id) from nutricao));
 SELECT setval('usuario_id_seq', (select MAX(id) from usuario));
 SELECT setval('profile_id_seq', (select MAX(id) from profile));
+update animal set orgao = 'Ibama - Instituto Brasileiro do Meio Ambiente' where id between 1 and 499;
+update animal set orgao = 'IAP - Instituto Ambiental do Paraná' where id between 500 and 1000;

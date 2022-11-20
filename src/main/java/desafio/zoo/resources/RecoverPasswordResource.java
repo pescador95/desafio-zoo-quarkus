@@ -31,9 +31,9 @@ public class RecoverPasswordResource {
             return controller.sendEmail(email);
         } catch (Exception e) {
             responses = new Responses();
-            responses.status = 404;
+            responses.status = 500;
             responses.messages.add("Não foi possível localizar um cadastro com o email informado.");
-            return Response.ok(responses).status(Response.Status.NOT_FOUND).build();
+            return Response.ok(responses).status(Response.Status.BAD_REQUEST).build();
         }
     }
 
@@ -41,16 +41,16 @@ public class RecoverPasswordResource {
     @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
-    @RolesAllowed({"veterinario", "biologo", "dev"})
+    @RolesAllowed({ "veterinario", "biologo", "dev" })
     public Response update(Usuario pUsuario, @Context @NotNull SecurityContext context,
-                           @QueryParam("password") String password) {
+            @QueryParam("password") String password) {
         try {
             Principal json = context.getUserPrincipal();
             String email = json.getName();
             return controller.updatePassword(email, password);
         } catch (Exception e) {
             responses = new Responses();
-            responses.status = 404;
+            responses.status = 500;
             responses.messages.add("Não foi possível atualizar a senha.");
             return Response.ok(responses).status(Response.Status.BAD_REQUEST).build();
         }

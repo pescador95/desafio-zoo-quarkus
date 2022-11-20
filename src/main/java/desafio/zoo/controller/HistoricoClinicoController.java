@@ -32,7 +32,9 @@ public class HistoricoClinicoController {
         usuarioAuth = Usuario.find("email = ?1", email).firstResult();
 
         historicoClinico = HistoricoClinico
-                .find("animal = ?1 and isAtivo = true and dataHistoricoClinico =?2 ORDER BY id DESC", pHistoricoClinico.animal, pHistoricoClinico.dataHistoricoClinico).firstResult();
+                .find("animal = ?1 and isAtivo = true and dataHistoricoClinico =?2 ORDER BY id DESC",
+                        pHistoricoClinico.animal, pHistoricoClinico.dataHistoricoClinico)
+                .firstResult();
         animal = Animal.find("id = ?1", pHistoricoClinico.animal.id).firstResult();
 
         if (historicoClinico == null) {
@@ -104,14 +106,14 @@ public class HistoricoClinicoController {
                 responses.data = historicoClinico;
                 responses.messages.add("Histórico Clínico com sucesso!");
             } else {
-                return Response.ok(responses).status(Response.Status.NOT_ACCEPTABLE).build();
+                return Response.ok(responses).status(Response.Status.BAD_REQUEST).build();
             }
             return Response.ok(responses).status(Response.Status.CREATED).build();
         } else {
             responses.status = 500;
             responses.data = historicoClinico;
             responses.messages.add("Histórico Clínico já cadastrado!");
-            return Response.ok(responses).status(Response.Status.NOT_ACCEPTABLE).build();
+            return Response.ok(responses).status(Response.Status.BAD_REQUEST).build();
         }
     }
 
@@ -122,7 +124,8 @@ public class HistoricoClinicoController {
 
         try {
 
-            historicoClinico = HistoricoClinico.find("id = ?1 and isAtivo = true ORDER BY id DESC", pHistoricoClinico.id).firstResult();
+            historicoClinico = HistoricoClinico
+                    .find("id = ?1 and isAtivo = true ORDER BY id DESC", pHistoricoClinico.id).firstResult();
             usuarioAuth = Usuario.find("email = ?1", email).firstResult();
 
             if (pHistoricoClinico.etco2 == null && pHistoricoClinico.temperaturaAnimal == null
@@ -148,7 +151,8 @@ public class HistoricoClinicoController {
                         historicoClinico.spo2 = pHistoricoClinico.spo2;
                     }
                 }
-                if (pHistoricoClinico.frequenciaRespiratoria != null && historicoClinico.frequenciaRespiratoria != null) {
+                if (pHistoricoClinico.frequenciaRespiratoria != null
+                        && historicoClinico.frequenciaRespiratoria != null) {
                     if (!historicoClinico.frequenciaRespiratoria.equals(pHistoricoClinico.frequenciaRespiratoria)) {
                         historicoClinico.frequenciaRespiratoria = pHistoricoClinico.frequenciaRespiratoria;
                     }
@@ -212,7 +216,8 @@ public class HistoricoClinicoController {
 
             pListIdHistoricoClinico.forEach((pHistoricoClinico) -> {
 
-                historicoClinico = HistoricoClinico.find("id = ?1 and isAtivo = true ORDER BY id DESC", pHistoricoClinico).firstResult();
+                historicoClinico = HistoricoClinico
+                        .find("id = ?1 and isAtivo = true ORDER BY id DESC", pHistoricoClinico).firstResult();
 
                 historicoClinico.isAtivo = Boolean.FALSE;
                 historicoClinico.dataAcao = new Date();
@@ -256,7 +261,8 @@ public class HistoricoClinicoController {
 
             pListIdHistoricoClinico.forEach((pHistoricoClinico) -> {
 
-                historicoClinico = HistoricoClinico.find("id = ?1 and isAtivo = false ORDER BY id DESC", pHistoricoClinico).firstResult();
+                historicoClinico = HistoricoClinico
+                        .find("id = ?1 and isAtivo = false ORDER BY id DESC", pHistoricoClinico).firstResult();
 
                 historicoClinico.isAtivo = Boolean.TRUE;
                 historicoClinico.dataAcao = new Date();

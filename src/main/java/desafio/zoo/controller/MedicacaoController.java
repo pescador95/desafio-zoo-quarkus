@@ -26,7 +26,9 @@ public class MedicacaoController {
         responses = new Responses();
         responses.messages = new ArrayList<>();
         usuarioAuth = Usuario.find("email = ?1", email).firstResult();
-        medicacao = Medicacao.find("historicoClinico = ?1 and isAtivo = true ORDER BY id DESC", pMedicacao.historicoClinico).firstResult();
+        medicacao = Medicacao
+                .find("historicoClinico = ?1 and isAtivo = true ORDER BY id DESC", pMedicacao.historicoClinico)
+                .firstResult();
 
         if (medicacao == null) {
             medicacao = new Medicacao();
@@ -68,14 +70,14 @@ public class MedicacaoController {
                 responses.data = medicacao;
                 responses.messages.add("Medicação Cadastrada com sucesso!");
             } else {
-                return Response.ok(responses).status(Response.Status.NOT_ACCEPTABLE).build();
+                return Response.ok(responses).status(Response.Status.BAD_REQUEST).build();
             }
             return Response.ok(responses).status(Response.Status.CREATED).build();
         } else {
             responses.status = 500;
             responses.data = medicacao;
             responses.messages.add("medicação já cadastrada!");
-            return Response.ok(responses).status(Response.Status.NOT_ACCEPTABLE).build();
+            return Response.ok(responses).status(Response.Status.BAD_REQUEST).build();
         }
     }
 
@@ -85,7 +87,6 @@ public class MedicacaoController {
         responses.messages = new ArrayList<>();
 
         try {
-
 
             medicacao = Medicacao.find("id = ?1 and isAtivo = true ORDER BY id DESC", pMedicacao.id).firstResult();
             usuarioAuth = Usuario.find("email = ?1", email).firstResult();

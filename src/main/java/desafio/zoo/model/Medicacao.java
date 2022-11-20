@@ -23,7 +23,7 @@ public class Medicacao extends PanacheEntityBase {
     @GeneratedValue
     public HistoricoClinico historicoClinico;
 
-    @Column(nullable = false)
+    @Column(nullable = Boolean.FALSE)
     public String nomeMedicacao;
 
     @Column()
@@ -32,7 +32,7 @@ public class Medicacao extends PanacheEntityBase {
     @Column()
     public String posologia;
 
-    @Column(nullable = false)
+    @Column(nullable = Boolean.FALSE)
     public String frequencia;
 
     @Column()

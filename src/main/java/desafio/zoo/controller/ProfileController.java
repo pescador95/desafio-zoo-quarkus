@@ -42,10 +42,11 @@ public class ProfileController {
     @Transactional
     public Profile sendUpload(@NotNull FormData data, String pFileRefence, Long pIdAnimal) throws IOException {
 
-        List<String> mimetype = Arrays.asList("image/jpg", "image/jpeg", "image/gif", "image/png", "application/pdf", "document/doc", "document/docx", "application/zip", "application/vnd.sealed.xls");
+        List<String> mimetype = Arrays.asList("image/jpg", "image/jpeg","application/msword", "application/vnd.ms-excel", "application/xml", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "image/gif", "image/png", "text/plain", "application/vnd.ms-powerpoint", "application/pdf", "text/csv", "document/doc", "document/docx", "application/vnd.openxmlformats-officedocument.presentationml.presentation", "application/zip", "application/vnd.sealed.xls");
 
         if (!mimetype.contains(data.getFile().contentType())) {
-            throw new IOException("Tipo de arquivo não suportado.");
+            System.out.println(data.getFile().contentType());
+            throw new IOException("Tipo de arquivo não suportado. Aceito somente arquivos nos formatos: ppt, pptx csv, doc, docx, txt, pdf, xlsx, xml, xls, jpg, jpeg, png e zip.");
         }
 
         if (data.getFile().size() > 1024 * 1024 * 4) {
@@ -54,7 +55,7 @@ public class ProfileController {
 
         Profile profile = new Profile();
 
-        String fileName = UUID.randomUUID() + "-" + data.getFile().fileName();
+        String fileName = data.getFile().fileName();
 
         profile.originalName = data.getFile().fileName();
 

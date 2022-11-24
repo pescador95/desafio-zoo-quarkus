@@ -63,6 +63,8 @@ public class MedicacaoController {
                 medicacao.isAtivo = Boolean.TRUE;
                 medicacao.usuario = usuarioAuth;
                 medicacao.usuarioAcao = usuarioAuth;
+                medicacao.usuarioNome = usuarioAuth.nome;
+                medicacao.usuarioAcaoNome = usuarioAuth.nome;
                 medicacao.dataAcao = new Date();
 
                 medicacao.persist();
@@ -124,6 +126,7 @@ public class MedicacaoController {
                     }
                 }
                 medicacao.usuarioAcao = usuarioAuth;
+                medicacao.usuarioAcaoNome = usuarioAuth.nome;
                 medicacao.dataAcao = new Date();
                 medicacao.persist();
 
@@ -155,6 +158,7 @@ public class MedicacaoController {
                 medicacao.isAtivo = Boolean.FALSE;
                 medicacao.dataAcao = new Date();
                 medicacao.usuarioAcao = usuarioAuth;
+                medicacao.usuarioAcaoNome = usuarioAuth.nome;
                 medicacao.systemDateDeleted = new Date();
                 medicacao.persist();
                 medicacaoList.add(medicacao);
@@ -198,6 +202,7 @@ public class MedicacaoController {
                 medicacao.isAtivo = Boolean.TRUE;
                 medicacao.dataAcao = new Date();
                 medicacao.usuarioAcao = usuarioAuth;
+                medicacao.usuarioAcaoNome = usuarioAuth.nome;
                 medicacao.systemDateDeleted = new Date();
                 medicacao.persist();
                 medicacaoList.add(medicacao);

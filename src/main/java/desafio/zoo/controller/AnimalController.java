@@ -81,6 +81,8 @@ public class AnimalController {
                 animal.isAtivo = Boolean.TRUE;
                 animal.usuario = usuarioAuth;
                 animal.usuarioAcao = usuarioAuth;
+                animal.usuarioNome = usuarioAuth.nome;
+                animal.usuarioAcaoNome = usuarioAuth.nome;
                 animal.dataAcao = new Date();
 
                 animal.persist();
@@ -163,6 +165,7 @@ public class AnimalController {
                     }
                 }
                 animal.usuarioAcao = usuarioAuth;
+                animal.usuarioAcaoNome = usuarioAuth.nome;
                 animal.dataAcao = new Date();
                 animal.persist();
 
@@ -195,6 +198,7 @@ public class AnimalController {
                 animal.isAtivo = Boolean.FALSE;
                 animal.dataAcao = new Date();
                 animal.usuarioAcao = usuarioAuth;
+                animal.usuarioAcaoNome = usuarioAuth.nome;
                 animal.systemDateDeleted = new Date();
                 animal.persist();
                 animalList.add(animal);
@@ -239,6 +243,7 @@ public class AnimalController {
                 animal.isAtivo = Boolean.TRUE;
                 animal.dataAcao = new Date();
                 animal.usuarioAcao = usuarioAuth;
+                animal.usuarioAcaoNome = usuarioAuth.nome;
                 animal.systemDateDeleted = null;
                 animal.persist();
                 animalList.add(animal);

@@ -69,6 +69,8 @@ public class EnriquecimentoAmbientalController {
                 enriquecimentoAmbiental.isAtivo = Boolean.TRUE;
                 enriquecimentoAmbiental.usuario = usuarioAuth;
                 enriquecimentoAmbiental.usuarioAcao = usuarioAuth;
+                enriquecimentoAmbiental.usuarioNome = usuarioAuth.nome;
+                enriquecimentoAmbiental.usuarioAcaoNome = usuarioAuth.nome;
                 enriquecimentoAmbiental.dataAcao = new Date();
 
                 enriquecimentoAmbiental.persist();
@@ -135,6 +137,7 @@ public class EnriquecimentoAmbientalController {
 
                 enriquecimentoAmbiental.nomeAnimal = enriquecimentoAmbiental.animal.nomeApelido;
                 enriquecimentoAmbiental.usuarioAcao = usuarioAuth;
+                enriquecimentoAmbiental.usuarioAcaoNome = usuarioAuth.nome;
                 enriquecimentoAmbiental.dataAcao = new Date();
                 enriquecimentoAmbiental.persist();
 
@@ -168,6 +171,7 @@ public class EnriquecimentoAmbientalController {
                 enriquecimentoAmbiental.isAtivo = Boolean.FALSE;
                 enriquecimentoAmbiental.dataAcao = new Date();
                 enriquecimentoAmbiental.usuarioAcao = usuarioAuth;
+                enriquecimentoAmbiental.usuarioAcaoNome = usuarioAuth.nome;
                 enriquecimentoAmbiental.systemDateDeleted = new Date();
                 enriquecimentoAmbiental.persist();
                 enriquecimentoAmbientalList.add(enriquecimentoAmbiental);
@@ -213,6 +217,7 @@ public class EnriquecimentoAmbientalController {
                 enriquecimentoAmbiental.isAtivo = Boolean.TRUE;
                 enriquecimentoAmbiental.dataAcao = new Date();
                 enriquecimentoAmbiental.usuarioAcao = usuarioAuth;
+                enriquecimentoAmbiental.usuarioAcaoNome = usuarioAuth.nome;
                 enriquecimentoAmbiental.systemDateDeleted = null;
                 enriquecimentoAmbiental.persist();
                 enriquecimentoAmbientalList.add(enriquecimentoAmbiental);

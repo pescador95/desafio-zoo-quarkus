@@ -20,12 +20,12 @@ public class HistoricoEtologico extends PanacheEntityBase {
 
     @ManyToOne()
     @JsonIgnoreProperties("historicoEtologico")
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @JoinColumn(name = "animalId")
     @GeneratedValue
     public Animal animal;
 
     @Column()
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     public String nomeAnimal;
 
     @Column()
@@ -43,15 +43,23 @@ public class HistoricoEtologico extends PanacheEntityBase {
 
     @ManyToOne()
     @JsonIgnoreProperties("historicoEtologico")
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @JoinColumn(name = "userId", insertable = false, updatable = false)
     @GeneratedValue
     public Usuario usuario;
 
     @ManyToOne()
     @JsonIgnoreProperties("historicoEtologico")
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @JoinColumn(name = "userId")
     @GeneratedValue
     public Usuario usuarioAcao;
+
+    @Column()
+    public String usuarioNome;
+
+    @Column()
+    public String usuarioAcaoNome;
 
     @Column()
     @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")

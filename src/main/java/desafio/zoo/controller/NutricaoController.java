@@ -66,6 +66,8 @@ public class NutricaoController {
                 nutricao.nomeAnimal = animal.nomeApelido;
                 nutricao.usuario = usuarioAuth;
                 nutricao.usuarioAcao = usuarioAuth;
+                nutricao.usuarioNome = usuarioAuth.nome;
+                nutricao.usuarioAcaoNome = usuarioAuth.nome;
                 nutricao.dataAcao = new Date();
 
                 nutricao.persist();
@@ -121,6 +123,7 @@ public class NutricaoController {
                 }
                 nutricao.nomeAnimal = nutricao.animal.nomeApelido;
                 nutricao.usuarioAcao = usuarioAuth;
+                nutricao.usuarioAcaoNome = usuarioAuth.nome;
                 nutricao.dataAcao = new Date();
                 nutricao.persist();
 
@@ -152,6 +155,7 @@ public class NutricaoController {
                 nutricao.isAtivo = Boolean.FALSE;
                 nutricao.dataAcao = new Date();
                 nutricao.usuarioAcao = usuarioAuth;
+                nutricao.usuarioAcaoNome = usuarioAuth.nome;
                 nutricao.systemDateDeleted = new Date();
                 nutricao.persist();
                 nutricaoList.add(nutricao);
@@ -195,6 +199,7 @@ public class NutricaoController {
                 nutricao.isAtivo = Boolean.TRUE;
                 nutricao.dataAcao = new Date();
                 nutricao.usuarioAcao = usuarioAuth;
+                nutricao.usuarioAcaoNome = usuarioAuth.nome;
                 nutricao.systemDateDeleted = new Date();
                 nutricao.persist();
                 nutricaoList.add(nutricao);

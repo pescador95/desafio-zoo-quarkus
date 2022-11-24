@@ -2,7 +2,6 @@ package desafio.zoo.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import io.quarkus.security.jpa.Password;
 import io.quarkus.security.jpa.Roles;
@@ -25,11 +24,11 @@ public class Usuario extends PanacheEntityBase {
     @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "usuarioIdSequence")
     @Id
     public Long id;
+
     @Column(nullable = false)
     public String nome;
 
     @Column(nullable = false)
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @Password
     public String password;
 

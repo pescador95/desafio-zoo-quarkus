@@ -2,6 +2,7 @@ package desafio.zoo.resources;
 
 import desafio.zoo.controller.ProfileController;
 import desafio.zoo.model.Profile;
+import desafio.zoo.model.Responses;
 import desafio.zoo.utils.FormData;
 import org.jboss.resteasy.reactive.MultipartForm;
 
@@ -13,6 +14,7 @@ import javax.ws.rs.core.Response;
 import java.io.IOException;
 import java.util.List;
 
+
 @Path("uploads")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.MULTIPART_FORM_DATA)
@@ -21,7 +23,7 @@ public class ProfileResources {
 
     @Inject
     ProfileController controller;
-
+    Responses responses;
     @GET
     @Path("/")
     public Response listUploads() {
@@ -51,9 +53,7 @@ public class ProfileResources {
             @QueryParam("idAnimal") Long pIdAnimal) {
 
         try {
-            Profile profile = controller.sendUpload(pData, pFileRefence, pIdAnimal);
-
-            return Response.ok(profile).status(Response.Status.CREATED).build();
+            return controller.sendUpload(pData, pFileRefence, pIdAnimal);
         } catch (IOException e) {
             return Response.ok(e.getMessage(), MediaType.TEXT_PLAIN).status(Response.Status.UNAUTHORIZED).build();
         }
@@ -61,13 +61,21 @@ public class ProfileResources {
 
     @DELETE
     @Path("{id}")
-    public Response removeUpload(@PathParam("id") Long id) {
+    public Response removeUpload(@PathParam("id") List<Long> pListIdProfile) {
 
         try {
-            controller.removeUpload(id);
-            return Response.ok().status(200).build();
-        } catch (IOException e) {
-            return Response.ok(e.getMessage(), MediaType.TEXT_PLAIN).status(Response.Status.BAD_REQUEST).build();
+            return controller.removeUpload(pListIdProfile);
+        } catch (Exception e) {
+            if (pListIdProfile.size() <= 1) {
+                responses = new Responses();
+                responses.status = 500;
+                responses.messages.add("Não foi possível excluir o Arquivo.");
+            } else {
+                responses = new Responses();
+                responses.status = 500;
+                responses.messages.add("Não foi possível excluir os Arquivos.");
+            }
+            return Response.ok(responses).status(Response.Status.BAD_REQUEST).build();
         }
     }
 }

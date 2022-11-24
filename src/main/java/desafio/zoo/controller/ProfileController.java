@@ -2,6 +2,7 @@ package desafio.zoo.controller;
 
 import desafio.zoo.model.Animal;
 import desafio.zoo.model.Profile;
+import desafio.zoo.model.Responses;
 import desafio.zoo.repository.ProfileRepository;
 import desafio.zoo.utils.FormData;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
@@ -10,9 +11,11 @@ import org.jetbrains.annotations.NotNull;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
+import javax.ws.rs.core.Response;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -26,6 +29,8 @@ public class ProfileController {
 
     @Inject
     ProfileRepository repository;
+
+    Responses responses;
 
     public List<Profile> listUploads() {
         return repository.listAll();
@@ -42,62 +47,91 @@ public class ProfileController {
         return profile;
     }
 
-    public Profile sendUpload(@NotNull FormData data, String pFileRefence, Long pIdAnimal) throws IOException {
+    public Response sendUpload(@NotNull FormData data, String pFileRefence, Long pIdAnimal) throws IOException {
+
+        responses = new Responses();
+        responses.messages = new ArrayList<>();
 
         String originalName = data.getFile().fileName();
 
-       Profile profileCheck = Profile.find("originalname = ?1 and filereference =?2 and animalid = ?3", originalName, pFileRefence, pIdAnimal).firstResult();
+        Profile profileCheck = Profile.find("originalname = ?1 and filereference =?2 and animalid = ?3", originalName, pFileRefence, pIdAnimal).firstResult();
 
-       if(profileCheck == null) {
-           List<String> mimetype = Arrays.asList("image/jpg", "image/jpeg", "application/msword", "application/vnd.ms-excel", "application/xml", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "image/gif", "image/png", "text/plain", "application/vnd.ms-powerpoint", "application/pdf", "text/csv", "document/doc", "document/docx", "application/vnd.openxmlformats-officedocument.presentationml.presentation", "application/zip", "application/vnd.sealed.xls");
+        if (profileCheck == null) {
+            List<String> mimetype = Arrays.asList("image/jpg", "image/jpeg", "application/msword", "application/vnd.ms-excel", "application/xml", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "image/gif", "image/png", "text/plain", "application/vnd.ms-powerpoint", "application/pdf", "text/csv", "document/doc", "document/docx", "application/vnd.openxmlformats-officedocument.presentationml.presentation", "application/zip", "application/vnd.sealed.xls");
 
-           if (!mimetype.contains(data.getFile().contentType())) {
-               System.out.println(data.getFile().contentType());
-               throw new IOException("Tipo de arquivo não suportado. Aceito somente arquivos nos formatos: ppt, pptx csv, doc, docx, txt, pdf, xlsx, xml, xls, jpg, jpeg, png e zip.");
-           }
+            if (!mimetype.contains(data.getFile().contentType())) {
+                System.out.println(data.getFile().contentType());
+                throw new IOException("Tipo de arquivo não suportado. Aceito somente arquivos nos formatos: ppt, pptx csv, doc, docx, txt, pdf, xlsx, xml, xls, jpg, jpeg, png e zip.");
+            }
 
-           if (data.getFile().size() > 1024 * 1024 * 4) {
-               throw new IOException("Arquivo muito grande.");
-           }
+            if (data.getFile().size() > 1024 * 1024 * 4) {
+                throw new IOException("Arquivo muito grande.");
+            }
 
-           Profile profile = new Profile();
+            Profile profile = new Profile();
 
-           String fileName = pFileRefence + " - " + pIdAnimal + "- " + data.getFile().fileName();
+            String fileName = pFileRefence + " - " + pIdAnimal + "- " + data.getFile().fileName();
 
-           profile.originalName = data.getFile().fileName();
+            profile.originalName = data.getFile().fileName();
 
-           profile.keyName = fileName;
+            profile.keyName = fileName;
 
-           profile.mimetype = data.getFile().contentType();
+            profile.mimetype = data.getFile().contentType();
 
-           profile.fileSize = data.getFile().size();
+            profile.fileSize = data.getFile().size();
 
-           profile.dataCriado = new Date();
+            profile.dataCriado = new Date();
 
-           profile.animal = Animal.findById(pIdAnimal);
+            profile.animal = Animal.findById(pIdAnimal);
 
-           profile.fileReference = pFileRefence;
+            profile.fileReference = pFileRefence;
 
-           profile.persist();
+            profile.persist();
 
-           Files.copy(data.getFile().filePath(), Paths.get(directory + fileName));
-
-           return profile;
-       }else {
-           throw new IOException("Já existe um arquivo.");
-       }
+            Files.copy(data.getFile().filePath(), Paths.get(directory + fileName));
+            responses.status = 200;
+            responses.messages.add("Arquivo adicionado com sucesso!");
+            return Response.ok(responses).status(Response.Status.ACCEPTED).build();
+        } else {
+            responses.status = 500;
+            responses.messages.add("Já existe um arquivo com o mesmo nome. Verifique!");
+        }
+        return Response.ok(responses).status(Response.Status.BAD_REQUEST).build();
     }
 
-    public void removeUpload(Long id) throws IOException {
+    public Response removeUpload(List<Long> pListIdProfile) {
 
-        Profile profile = Profile.findById(id);
+        Integer countList = pListIdProfile.size();
+        responses = new Responses();
+        responses.messages = new ArrayList<>();
 
-        if (profile == null) {
-            throw new IOException("Arquivo não encontrado.");
-        }
-
-        Files.deleteIfExists(Paths.get(directory + profile.keyName));
-
-        Profile.delete("id = ?1", profile.id);
+        try {
+            pListIdProfile.forEach((pProfile) -> {
+                Profile profile = Profile.findById(pListIdProfile);
+                try {
+                    Files.deleteIfExists(Paths.get(directory + profile.keyName));
+                    Profile.delete("id = ?1", profile.id);
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
+            });
+            if (pListIdProfile.size() <= 1) {
+                responses.status = 200;
+                responses.messages.add("Arquivo excluído com sucesso!");
+            } else {
+                responses.status = 200;
+                responses.messages.add(countList + " Arquivos excluídos com sucesso!");
+            }
+            return Response.ok(responses).status(Response.Status.ACCEPTED).build();
+        } catch (Exception e) {
+            if (pListIdProfile.size() <= 1) {
+                responses.status = 500;
+                responses.messages.add("Arquivo não localizado ou já excluído.");
+            } else {
+                responses.status = 500;
+                responses.messages.add("Arquivos não localizados ou já excluídos.");
+            }
+            return Response.ok(responses).status(Response.Status.BAD_REQUEST).build();
         }
     }
+}

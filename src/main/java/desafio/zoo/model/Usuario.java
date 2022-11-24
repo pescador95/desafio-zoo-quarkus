@@ -30,6 +30,7 @@ public class Usuario extends PanacheEntityBase {
 
     @Column(nullable = false)
     @Password
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     public String password;
 
     @Column(nullable = false)

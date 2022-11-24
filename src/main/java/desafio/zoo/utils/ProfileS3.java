@@ -1,5 +1,5 @@
-package desafio.zoo.views;
-//TODO CRIAR COLUMNS IGUAL AO MODEL DE PROFILE
+package desafio.zoo.utils;
+
 import java.util.List;
 
 import desafio.zoo.model.Profile;
@@ -7,7 +7,7 @@ import desafio.zoo.utils.FileObject;
 import io.quarkus.runtime.annotations.RegisterForReflection;
 
 @RegisterForReflection
-public class ProfileS3View {
+public class ProfileS3 {
 
     private List<Profile> profiles;
 
@@ -17,12 +17,12 @@ public class ProfileS3View {
 
     private FileObject fileObject;
 
-    public ProfileS3View(List<Profile> profiles, List<FileObject> fileObjects) {
+    public ProfileS3(List<Profile> profiles, List<FileObject> fileObjects) {
         this.profiles = profiles;
         this.fileObjects = fileObjects;
     }
 
-    public ProfileS3View(Profile profile, FileObject fileObject) {
+    public ProfileS3(Profile profile, FileObject fileObject) {
         this.profile = profile;
         this.fileObject = fileObject;
     }

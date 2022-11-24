@@ -13,9 +13,12 @@ import javax.transaction.Transactional;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
 
 @ApplicationScoped
+@Transactional
 public class ProfileController {
 
     @ConfigProperty(name = "quarkus.http.body.uploads-directory")
@@ -28,18 +31,17 @@ public class ProfileController {
         return repository.listAll();
     }
 
-    public Optional<Profile> findOne(Long id) {
+    public Profile findOne(Long id) {
 
-        Optional<Profile> profileOp = repository.findByIdOptional(id);
+        Profile profile = Profile.findById(id);
 
-        if (profileOp.isEmpty()) {
+        if (profile == null) {
             throw new RuntimeException("File not found");
         }
 
-        return profileOp;
+        return profile;
     }
 
-    @Transactional
     public Profile sendUpload(@NotNull FormData data, String pFileRefence, Long pIdAnimal) throws IOException {
 
         List<String> mimetype = Arrays.asList("image/jpg", "image/jpeg","application/msword", "application/vnd.ms-excel", "application/xml", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "image/gif", "image/png", "text/plain", "application/vnd.ms-powerpoint", "application/pdf", "text/csv", "document/doc", "document/docx", "application/vnd.openxmlformats-officedocument.presentationml.presentation", "application/zip", "application/vnd.sealed.xls");
@@ -71,26 +73,23 @@ public class ProfileController {
 
         profile.fileReference = pFileRefence;
 
-        repository.persist(profile);
+        profile.persist();
 
         Files.copy(data.getFile().filePath(), Paths.get(directory + fileName));
 
         return profile;
     }
 
-    @Transactional
     public void removeUpload(Long id) throws IOException {
 
-        Optional<Profile> profileOp = repository.findByIdOptional(id);
+        Profile profile = Profile.findById(id);
 
-        if (profileOp.isEmpty()) {
+        if (profile == null) {
             throw new IOException("Arquivo não encontrado.");
         }
 
-        Profile profile = profileOp.get();
-
-        repository.delete(profile);
-
         Files.deleteIfExists(Paths.get(directory + profile.keyName));
+
+        Profile.delete("id = ?1", profile.id);
+        }
     }
-}

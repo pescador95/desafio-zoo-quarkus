@@ -6,16 +6,17 @@ import desafio.zoo.utils.FormData;
 import org.jboss.resteasy.reactive.MultipartForm;
 
 import javax.inject.Inject;
+import javax.transaction.Transactional;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.IOException;
 import java.util.List;
-import java.util.Optional;
 
 @Path("uploads")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.MULTIPART_FORM_DATA)
+@Transactional
 public class ProfileResources {
 
     @Inject
@@ -35,7 +36,8 @@ public class ProfileResources {
     public Response findOne(@PathParam("id") Long id) {
 
         try {
-            Optional<Profile> profile = controller.findOne(id);
+            Profile profile = controller.findOne(id);
+
 
             return Response.ok(profile).build();
         } catch (RuntimeException e) {
@@ -63,8 +65,7 @@ public class ProfileResources {
 
         try {
             controller.removeUpload(id);
-
-            return Response.status(204).build();
+            return Response.ok().status(200).build();
         } catch (IOException e) {
             return Response.ok(e.getMessage(), MediaType.TEXT_PLAIN).status(Response.Status.BAD_REQUEST).build();
         }

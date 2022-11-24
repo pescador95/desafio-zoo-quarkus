@@ -1,13 +1,14 @@
 package desafio.zoo.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 
 import javax.persistence.*;
 import java.util.Date;
 
 @Entity
 @Table(name = "profile")
-public class Profile {
+public class Profile extends PanacheEntityBase {
 
     @Column()
     @SequenceGenerator(name = "profileIdSequence", sequenceName = "profile_id_seq", allocationSize = 1)

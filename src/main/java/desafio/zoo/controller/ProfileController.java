@@ -44,40 +44,48 @@ public class ProfileController {
 
     public Profile sendUpload(@NotNull FormData data, String pFileRefence, Long pIdAnimal) throws IOException {
 
-        List<String> mimetype = Arrays.asList("image/jpg", "image/jpeg","application/msword", "application/vnd.ms-excel", "application/xml", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "image/gif", "image/png", "text/plain", "application/vnd.ms-powerpoint", "application/pdf", "text/csv", "document/doc", "document/docx", "application/vnd.openxmlformats-officedocument.presentationml.presentation", "application/zip", "application/vnd.sealed.xls");
+        String originalName = data.getFile().fileName();
 
-        if (!mimetype.contains(data.getFile().contentType())) {
-            System.out.println(data.getFile().contentType());
-            throw new IOException("Tipo de arquivo não suportado. Aceito somente arquivos nos formatos: ppt, pptx csv, doc, docx, txt, pdf, xlsx, xml, xls, jpg, jpeg, png e zip.");
-        }
+       Profile profileCheck = Profile.find("originalname = ?1 and filereference =?2 and animalid = ?3", originalName, pFileRefence, pIdAnimal).firstResult();
 
-        if (data.getFile().size() > 1024 * 1024 * 4) {
-            throw new IOException("Arquivo muito grande.");
-        }
+       if(profileCheck == null) {
+           List<String> mimetype = Arrays.asList("image/jpg", "image/jpeg", "application/msword", "application/vnd.ms-excel", "application/xml", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "image/gif", "image/png", "text/plain", "application/vnd.ms-powerpoint", "application/pdf", "text/csv", "document/doc", "document/docx", "application/vnd.openxmlformats-officedocument.presentationml.presentation", "application/zip", "application/vnd.sealed.xls");
 
-        Profile profile = new Profile();
+           if (!mimetype.contains(data.getFile().contentType())) {
+               System.out.println(data.getFile().contentType());
+               throw new IOException("Tipo de arquivo não suportado. Aceito somente arquivos nos formatos: ppt, pptx csv, doc, docx, txt, pdf, xlsx, xml, xls, jpg, jpeg, png e zip.");
+           }
 
-        String fileName = data.getFile().fileName();
+           if (data.getFile().size() > 1024 * 1024 * 4) {
+               throw new IOException("Arquivo muito grande.");
+           }
 
-        profile.originalName = data.getFile().fileName();
+           Profile profile = new Profile();
 
-        profile.keyName = fileName;
+           String fileName = pFileRefence + " - " + pIdAnimal + "- " + data.getFile().fileName();
 
-        profile.mimetype = data.getFile().contentType();
+           profile.originalName = data.getFile().fileName();
 
-        profile.fileSize = data.getFile().size();
+           profile.keyName = fileName;
 
-        profile.dataCriado = new Date();
+           profile.mimetype = data.getFile().contentType();
 
-        profile.animal = Animal.findById(pIdAnimal);
+           profile.fileSize = data.getFile().size();
 
-        profile.fileReference = pFileRefence;
+           profile.dataCriado = new Date();
 
-        profile.persist();
+           profile.animal = Animal.findById(pIdAnimal);
 
-        Files.copy(data.getFile().filePath(), Paths.get(directory + fileName));
+           profile.fileReference = pFileRefence;
 
-        return profile;
+           profile.persist();
+
+           Files.copy(data.getFile().filePath(), Paths.get(directory + fileName));
+
+           return profile;
+       }else {
+           throw new IOException("Já existe um arquivo.");
+       }
     }
 
     public void removeUpload(Long id) throws IOException {

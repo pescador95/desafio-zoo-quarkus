@@ -70,7 +70,7 @@ public class ProfileController {
 
             Profile profile = new Profile();
 
-            String fileName = pFileRefence + " - " + pIdAnimal + "- " + data.getFile().fileName();
+            String fileName = pFileRefence + " - " + pIdAnimal + " - " + data.getFile().fileName();
 
             profile.originalName = data.getFile().fileName();
 

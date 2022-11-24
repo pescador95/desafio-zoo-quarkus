@@ -67,6 +67,8 @@ public class HistoricoEtologicoController {
                 historicoEtologico.isAtivo = Boolean.TRUE;
                 historicoEtologico.usuario = usuarioAuth;
                 historicoEtologico.usuarioAcao = usuarioAuth;
+                historicoEtologico.usuarioNome = usuarioAuth.nome;
+                historicoEtologico.usuarioAcaoNome = usuarioAuth.nome;
                 historicoEtologico.dataAcao = new Date();
 
                 historicoEtologico.persist();
@@ -126,6 +128,7 @@ public class HistoricoEtologicoController {
                 }
                 historicoEtologico.nomeAnimal = historicoEtologico.animal.nomeApelido;
                 historicoEtologico.usuarioAcao = usuarioAuth;
+                historicoEtologico.usuarioAcaoNome = usuarioAuth.nome;
                 historicoEtologico.dataAcao = new Date();
                 historicoEtologico.persist();
 
@@ -158,6 +161,7 @@ public class HistoricoEtologicoController {
                 historicoEtologico.isAtivo = Boolean.FALSE;
                 historicoEtologico.dataAcao = new Date();
                 historicoEtologico.usuarioAcao = usuarioAuth;
+                historicoEtologico.usuarioAcaoNome = usuarioAuth.nome;
                 historicoEtologico.systemDateDeleted = new Date();
                 historicoEtologico.persist();
                 historicoEtologicoList.add(historicoEtologico);
@@ -202,6 +206,7 @@ public class HistoricoEtologicoController {
                 historicoEtologico.isAtivo = Boolean.TRUE;
                 historicoEtologico.dataAcao = new Date();
                 historicoEtologico.usuarioAcao = usuarioAuth;
+                historicoEtologico.usuarioAcaoNome = usuarioAuth.nome;
                 historicoEtologico.systemDateDeleted = new Date();
                 historicoEtologico.persist();
                 historicoEtologicoList.add(historicoEtologico);

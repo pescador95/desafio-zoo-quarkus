@@ -13,23 +13,19 @@ import java.util.Date;
 public class EnriquecimentoAmbiental extends PanacheEntityBase {
 
     @Column()
-    @SequenceGenerator(
-            name = "enriquecimentoAmbientalIdSequence",
-            sequenceName = "enriquecimentoAmbiental_id_seq",
-            allocationSize = 1
-    )
+    @SequenceGenerator(name = "enriquecimentoAmbientalIdSequence", sequenceName = "enriquecimentoAmbiental_id_seq", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "enriquecimentoAmbientalIdSequence")
     @Id
     public Long id;
 
     @ManyToOne
     @JsonIgnoreProperties("enriquecimentoAmbiental")
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @JoinColumn(name = "animalId")
     @GeneratedValue
     public Animal animal;
 
     @Column()
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     public String nomeAnimal;
     @Column()
     @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
@@ -43,19 +39,26 @@ public class EnriquecimentoAmbiental extends PanacheEntityBase {
 
     @ManyToOne()
     @JsonIgnoreProperties("enriquecimentoAmbiental")
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @JoinColumn(name = "userId")
     @GeneratedValue
     public Usuario usuarioAcao;
 
     @ManyToOne()
     @JsonIgnoreProperties("enriquecimentoAmbiental")
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @JoinColumn(name = "userId", insertable = false, updatable = false)
     @GeneratedValue
     public Usuario usuario;
 
     @Column()
-    public boolean isAtivo;
+    public String usuarioNome;
 
+    @Column()
+    public String usuarioAcaoNome;
+
+    @Column()
+    public boolean isAtivo;
 
     @Column()
     @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
@@ -69,4 +72,3 @@ public class EnriquecimentoAmbiental extends PanacheEntityBase {
 
     }
 }
-

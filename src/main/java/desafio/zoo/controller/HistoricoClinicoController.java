@@ -98,6 +98,8 @@ public class HistoricoClinicoController {
                 historicoClinico.isAtivo = Boolean.TRUE;
                 historicoClinico.usuario = usuarioAuth;
                 historicoClinico.usuarioAcao = usuarioAuth;
+                historicoClinico.usuarioNome = usuarioAuth.nome;
+                historicoClinico.usuarioAcaoNome = usuarioAuth.nome;
                 historicoClinico.dataAcao = new Date();
 
                 historicoClinico.persist();
@@ -189,6 +191,7 @@ public class HistoricoClinicoController {
                 }
                 historicoClinico.nomeAnimal = historicoClinico.animal.nomeApelido;
                 historicoClinico.usuarioAcao = usuarioAuth;
+                historicoClinico.usuarioAcaoNome = usuarioAuth.nome;
                 historicoClinico.dataAcao = new Date();
                 historicoClinico.persist();
 
@@ -222,6 +225,7 @@ public class HistoricoClinicoController {
                 historicoClinico.isAtivo = Boolean.FALSE;
                 historicoClinico.dataAcao = new Date();
                 historicoClinico.usuarioAcao = usuarioAuth;
+                historicoClinico.usuarioAcaoNome = usuarioAuth.nome;
                 historicoClinico.systemDateDeleted = new Date();
                 historicoClinico.persist();
             });
@@ -267,6 +271,7 @@ public class HistoricoClinicoController {
                 historicoClinico.isAtivo = Boolean.TRUE;
                 historicoClinico.dataAcao = new Date();
                 historicoClinico.usuarioAcao = usuarioAuth;
+                historicoClinico.usuarioAcaoNome = usuarioAuth.nome;
                 historicoClinico.systemDateDeleted = new Date();
                 historicoClinico.persist();
             });

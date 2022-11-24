@@ -2,6 +2,7 @@ package desafio.zoo.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 
 import javax.persistence.*;
@@ -40,15 +41,23 @@ public class Medicacao extends PanacheEntityBase {
 
     @ManyToOne()
     @JsonIgnoreProperties("medicacao")
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @JoinColumn(name = "userId", insertable = false, updatable = false)
     @GeneratedValue
     public Usuario usuario;
 
     @ManyToOne()
     @JsonIgnoreProperties("medicacao")
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @JoinColumn(name = "userId")
     @GeneratedValue
     public Usuario usuarioAcao;
+
+    @Column()
+    public String usuarioNome;
+
+    @Column()
+    public String usuarioAcaoNome;
 
     @Column()
     @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")

@@ -13,25 +13,19 @@ import java.util.Date;
 public class Nutricao extends PanacheEntityBase {
 
     @Column()
-    @SequenceGenerator(
-            name = "nutricaoIdSequence",
-            sequenceName = "nutricao_id_seq",
-            allocationSize = 1
-    )
+    @SequenceGenerator(name = "nutricaoIdSequence", sequenceName = "nutricao_id_seq", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "nutricaoIdSequence")
     @Id
     public Long id;
 
-
     @ManyToOne()
     @JsonIgnoreProperties("nutricao")
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @JoinColumn(name = "animalId")
     @GeneratedValue
-    public
-    Animal animal;
+    public Animal animal;
 
     @Column()
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     public String nomeAnimal;
 
     @Column()
@@ -50,15 +44,23 @@ public class Nutricao extends PanacheEntityBase {
 
     @ManyToOne()
     @JsonIgnoreProperties("nutricao")
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @JoinColumn(name = "userId", insertable = false, updatable = false)
     @GeneratedValue
     public Usuario usuario;
 
     @ManyToOne()
     @JsonIgnoreProperties("nutricao")
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @JoinColumn(name = "userId")
     @GeneratedValue
     public Usuario usuarioAcao;
+
+    @Column()
+    public String usuarioNome;
+
+    @Column()
+    public String usuarioAcaoNome;
 
     @Column()
     @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
@@ -73,4 +75,3 @@ public class Nutricao extends PanacheEntityBase {
     }
 
 }
-

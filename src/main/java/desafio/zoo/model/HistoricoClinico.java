@@ -13,23 +13,19 @@ import java.util.Date;
 public class HistoricoClinico extends PanacheEntityBase {
 
     @Column()
-    @SequenceGenerator(
-            name = "historicoClinicoIdSequence",
-            sequenceName = "historicoClinico_id_seq",
-            allocationSize = 1
-    )
+    @SequenceGenerator(name = "historicoClinicoIdSequence", sequenceName = "historicoClinico_id_seq", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "historicoClinicoIdSequence")
     @Id
     public Long id;
 
     @ManyToOne
     @JsonIgnoreProperties("historicoClinico")
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @JoinColumn(name = "animalId")
     @GeneratedValue
     public Animal animal;
 
     @Column()
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     public String nomeAnimal;
 
     @Column()
@@ -68,15 +64,23 @@ public class HistoricoClinico extends PanacheEntityBase {
 
     @ManyToOne()
     @JsonIgnoreProperties("historicoClinico")
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @JoinColumn(name = "userId", insertable = false, updatable = false)
     @GeneratedValue
     public Usuario usuario;
 
     @ManyToOne()
     @JsonIgnoreProperties("historicoClinico")
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @JoinColumn(name = "userId")
     @GeneratedValue
     public Usuario usuarioAcao;
+
+    @Column()
+    public String usuarioNome;
+
+    @Column()
+    public String usuarioAcaoNome;
 
     @Column()
     @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
@@ -90,4 +94,3 @@ public class HistoricoClinico extends PanacheEntityBase {
 
     }
 }
-

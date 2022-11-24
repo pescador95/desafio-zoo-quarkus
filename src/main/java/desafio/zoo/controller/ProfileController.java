@@ -84,6 +84,8 @@ public class ProfileController {
 
             profile.animal = Animal.findById(pIdAnimal);
 
+            profile.nomeAnimal = profile.animal.nomeApelido;
+
             profile.fileReference = pFileRefence;
 
             profile.persist();

@@ -3,6 +3,14 @@ update historicoetologico set nomeanimal = animal.nomeapelido from animal where 
 update enriquecimentoambiental set nomeanimal = animal.nomeapelido from animal where enriquecimentoambiental.animalid = animal.id;
 update nutricao set nomeanimal = animal.nomeapelido from animal where nutricao.animalid = animal.id;
 update usuario set usuario = usuario.nome;
+update historicoclinico set usuarionome = usuario.nome from usuario where historicoclinico.userid = usuario.id;
+update historicoclinico set usuarioacaonome = usuario.nome from usuario where historicoclinico.userid = usuario.id;
+update historicoetologico set usuarioacaonome = usuario.nome from usuario where historicoetologico.userid = usuario.id;
+update historicoetologico set usuarionome = usuario.nome from usuario where historicoetologico.userid = usuario.id;
+update enriquecimentoambiental set usuarioacaonome = usuario.nome from usuario where enriquecimentoambiental.userid = usuario.id;
+update enriquecimentoambiental set usuarionome = usuario.nome from usuario where enriquecimentoambiental.userid = usuario.id;
+update nutricao set usuarioacaonome = usuario.nome from usuario where nutricao.userid = usuario.id;
+update nutricao set usuarionome = usuario.nome from usuario where nutricao.userid = usuario.id;
 update animal set idade = 'Filhote' where id between 1 and 333;
 update animal set idade = 'Adulto' where id between 334 and 667;
 update animal set idade = 'Idoso' where id between 668 and 1000;

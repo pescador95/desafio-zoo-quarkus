@@ -13,6 +13,8 @@ update nutricao set usuarioacaonome = usuario.nome from usuario where nutricao.u
 update nutricao set usuarionome = usuario.nome from usuario where nutricao.userid = usuario.id;
 update animal set usuarionome = usuario.nome from usuario where animal.userid = usuario.id;
 update animal set usuarioacaonome = usuario.nome from usuario where animal.userid = usuario.id;
+update medicacao set usuarionome = usuario.nome from usuario where medicacao.userid = usuario.id;
+update medicacao set usuarioacaonome = usuario.nome from usuario where medicacao.userid = usuario.id;
 update animal set idade = 'Filhote' where id between 1 and 333;
 update animal set idade = 'Adulto' where id between 334 and 667;
 update animal set idade = 'Idoso' where id between 668 and 1000;

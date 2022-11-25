@@ -6,6 +6,7 @@ import desafio.zoo.model.Responses;
 import desafio.zoo.utils.FormData;
 import org.jboss.resteasy.reactive.MultipartForm;
 
+import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import javax.ws.rs.*;
@@ -24,6 +25,20 @@ public class ProfileResources {
     @Inject
     ProfileController controller;
     Responses responses;
+
+    Profile profile;
+
+    @GET
+    @Path("/count")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes("application/json")
+    @RolesAllowed({ "veterinario", "biologo", "dev" })
+    public Response count(@QueryParam("ativo") @DefaultValue("true") Boolean ativo,
+                          @QueryParam("strgFilter") @DefaultValue("") String strgFilter) {
+        String query = "isAtivo = " + ativo + " " + strgFilter;
+        long uploads = Profile.count(query);
+        return Response.ok(uploads).status(Response.Status.ACCEPTED).build();
+    }
     @GET
     @Path("/")
     public Response listUploads() {

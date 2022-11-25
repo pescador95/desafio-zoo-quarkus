@@ -22,7 +22,7 @@ public class RecoverPasswordResource {
 
     Responses responses;
 
-    @GET
+    @POST
     @Path("{email}")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")

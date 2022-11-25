@@ -88,6 +88,8 @@ public class ProfileController {
 
             profile.fileReference = pFileRefence;
 
+            profile.isAtivo = Boolean.TRUE;
+
             profile.persist();
 
             Files.copy(data.getFile().filePath(), Paths.get(directory + fileName));

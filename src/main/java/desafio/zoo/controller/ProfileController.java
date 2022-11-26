@@ -1,6 +1,7 @@
 package desafio.zoo.controller;
 
 import desafio.zoo.model.Animal;
+import desafio.zoo.model.Nutricao;
 import desafio.zoo.model.Profile;
 import desafio.zoo.model.Responses;
 import desafio.zoo.repository.ProfileRepository;
@@ -24,6 +25,7 @@ import java.util.List;
 @Transactional
 public class ProfileController {
 
+    public Profile profile;
     @ConfigProperty(name = "quarkus.http.body.uploads-directory")
     String directory;
 
@@ -109,10 +111,11 @@ public class ProfileController {
 
         try {
             pListIdProfile.forEach((pProfile) -> {
-                Profile profile = Profile.findById(pListIdProfile);
+                profile = Profile.find("id = ?1 and isAtivo = true ORDER BY id DESC", pProfile).firstResult();
+
                 try {
-                    Files.deleteIfExists(Paths.get(directory + profile.keyName));
                     Profile.delete("id = ?1", profile.id);
+                    Files.deleteIfExists(Paths.get(directory + profile.keyName));
                 } catch (IOException ex) {
                     throw new RuntimeException(ex);
                 }

@@ -1,6 +1,8 @@
 package desafio.zoo.controller;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -26,8 +28,10 @@ import software.amazon.awssdk.services.s3.model.ListObjectsRequest;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 
 @ApplicationScoped
+@Transactional
 public class ProfileS3Controller {
 
+    public Profile profile;
     @ConfigProperty(name = "bucket.name")
     String bucketName;
 
@@ -75,7 +79,7 @@ public class ProfileS3Controller {
         return profileS3View;
     }
 
-    @Transactional
+
     public Response sendS3(@NotNull FormData data, String pFileRefence, Long pIdAnimal) throws IOException {
 
         responses = new Responses();
@@ -135,20 +139,41 @@ public class ProfileS3Controller {
         return Response.ok(responses).status(Response.Status.BAD_REQUEST).build();
     }
 
-    @Transactional
-    public void removeS3(Long id) {
 
-        Profile profile = Profile.findById(id);
+    public Response removeS3(List<Long> pListIdProfile) {
 
-        if (profile == null) {
-            throw new RuntimeException("Arquivo não encontrado.");
+        Integer countList = pListIdProfile.size();
+        responses = new Responses();
+        responses.messages = new ArrayList<>();
+
+        try {
+            pListIdProfile.forEach((pProfile) -> {
+                profile = Profile.find("id = ?1 and isAtivo = true ORDER BY id DESC", pProfile).firstResult();
+
+                Profile.delete("id = ?1", profile.id);
+
+                DeleteObjectRequest deleteObjectRequest = DeleteObjectRequest.builder().bucket(bucketName)
+                        .key(profile.keyName).build();
+                s3.deleteObject(deleteObjectRequest);
+
+            });
+            if (pListIdProfile.size() <= 1) {
+                responses.status = 200;
+                responses.messages.add("Arquivo excluído com sucesso!");
+            } else {
+                responses.status = 200;
+                responses.messages.add(countList + " Arquivos excluídos com sucesso!");
+            }
+            return Response.ok(responses).status(Response.Status.ACCEPTED).build();
+        } catch (Exception e) {
+            if (pListIdProfile.size() <= 1) {
+                responses.status = 500;
+                responses.messages.add("Arquivo não localizado ou já excluído.");
+            } else {
+                responses.status = 500;
+                responses.messages.add("Arquivos não localizados ou já excluídos.");
+            }
+            return Response.ok(responses).status(Response.Status.BAD_REQUEST).build();
         }
-
-        Profile.delete("id = ?1", profile.id);
-
-        DeleteObjectRequest deleteObjectRequest = DeleteObjectRequest.builder().bucket(bucketName)
-                .key(profile.keyName).build();
-
-        s3.deleteObject(deleteObjectRequest);
     }
 }

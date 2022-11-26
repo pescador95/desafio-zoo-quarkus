@@ -37,7 +37,7 @@ public class RecoverPasswordController {
                     + "segue a nova senha para realização do acesso ao sistema do Zoo: " + senha));
             responses.status = 200;
             responses.data = usuario;
-            responses.messages.add("Enviado uma nova senha para o email informado.");
+            responses.messages.add("Enviado uma nova senha para o email informado: " + email);
         } else {
             responses = new Responses();
             responses.status = 400;

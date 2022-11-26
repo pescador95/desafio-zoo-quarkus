@@ -1,4 +1,4 @@
-package desafio.zoo.utils;
+package desafio.zoo.model;
 
 import java.util.List;
 

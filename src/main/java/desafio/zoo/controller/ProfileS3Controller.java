@@ -1,31 +1,27 @@
 package desafio.zoo.controller;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.*;
-import java.util.stream.Collectors;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import javax.transaction.Transactional;
-import javax.ws.rs.core.Response;
-
 import desafio.zoo.model.Animal;
 import desafio.zoo.model.Profile;
+import desafio.zoo.model.ProfileS3;
 import desafio.zoo.model.Responses;
 import desafio.zoo.repository.ProfileRepository;
 import desafio.zoo.utils.FileObject;
 import desafio.zoo.utils.FormData;
-import desafio.zoo.model.ProfileS3;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
-
 import org.jetbrains.annotations.NotNull;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.DeleteObjectRequest;
 import software.amazon.awssdk.services.s3.model.ListObjectsRequest;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import javax.transaction.Transactional;
+import javax.ws.rs.core.Response;
+import java.io.IOException;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @ApplicationScoped
 @Transactional
@@ -118,7 +114,6 @@ public class ProfileS3Controller {
 
         profile.fileReference = pFileRefence;
 
-        profile.isAtivo = Boolean.TRUE;
 
         profile.persist();
 

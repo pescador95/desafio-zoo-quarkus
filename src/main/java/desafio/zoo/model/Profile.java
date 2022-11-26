@@ -45,9 +45,6 @@ public class Profile extends PanacheEntityBase {
     @Column()
     public String nomeAnimal;
 
-    @Column()
-    public Boolean isAtivo;
-
     public Profile() {
 
     }

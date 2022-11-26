@@ -1,7 +1,6 @@
 package desafio.zoo.controller;
 
 import desafio.zoo.model.Animal;
-import desafio.zoo.model.Nutricao;
 import desafio.zoo.model.Profile;
 import desafio.zoo.model.Responses;
 import desafio.zoo.repository.ProfileRepository;
@@ -88,7 +87,6 @@ public class ProfileController {
 
             profile.fileReference = pFileRefence;
 
-            profile.isAtivo = Boolean.TRUE;
 
             profile.persist();
 

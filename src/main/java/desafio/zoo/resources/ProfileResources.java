@@ -4,7 +4,10 @@ import desafio.zoo.controller.ProfileController;
 import desafio.zoo.model.Profile;
 import desafio.zoo.model.Responses;
 import desafio.zoo.utils.FormData;
+import io.quarkus.hibernate.orm.panache.PanacheQuery;
+import io.quarkus.panache.common.Page;
 import org.jboss.resteasy.reactive.MultipartForm;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
@@ -42,11 +45,17 @@ public class ProfileResources {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
     @RolesAllowed({ "veterinario", "biologo", "dev" })
-    public Response listUploads() {
+    public Response listUploads(@QueryParam("sort") @DefaultValue("desc") @NotNull String sortQuery,
+                                @QueryParam("page") @DefaultValue("0") int pageIndex,
+                                @QueryParam("size") @DefaultValue("10") int pageSize,
+                                @QueryParam("id") @DefaultValue("0") int id,
+                                @QueryParam("strgFilter") @DefaultValue("") String strgFilter,
+                                @QueryParam("strgOrder") @DefaultValue("id") String strgOrder) {
+        String query = "id > " + "0" + " " + strgFilter + " " + "order by " + strgOrder + " " + sortQuery;
+        PanacheQuery<Profile> profile;
+        profile = Profile.find(query);
 
-        List<Profile> profiles = controller.listUploads();
-
-        return Response.ok(profiles).build();
+        return Response.ok(profile.page(Page.of(pageIndex, pageSize)).list()).status(Response.Status.ACCEPTED).build();
     }
 
     @GET

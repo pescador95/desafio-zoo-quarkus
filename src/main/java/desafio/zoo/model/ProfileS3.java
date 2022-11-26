@@ -1,10 +1,8 @@
 package desafio.zoo.model;
 
-import java.util.List;
-
-import desafio.zoo.model.Profile;
 import desafio.zoo.utils.FileObject;
 import io.quarkus.runtime.annotations.RegisterForReflection;
+import java.util.List;
 
 @RegisterForReflection
 public class ProfileS3 {

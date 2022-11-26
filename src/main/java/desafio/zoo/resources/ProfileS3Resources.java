@@ -1,29 +1,29 @@
 package desafio.zoo.resources;
 
-import desafio.zoo.controller.ProfileController;
-import desafio.zoo.model.Profile;
-import desafio.zoo.model.Responses;
-import desafio.zoo.utils.FormData;
-import org.jboss.resteasy.reactive.MultipartForm;
-
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
-import javax.transaction.Transactional;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+
+import desafio.zoo.model.Profile;
+import desafio.zoo.controller.ProfileS3Controller;
+import desafio.zoo.model.Responses;
+import desafio.zoo.utils.FormData;
+import desafio.zoo.model.ProfileS3;
+import org.jboss.resteasy.reactive.MultipartForm;
+
 import java.io.IOException;
 import java.util.List;
 
-
-@Path("uploads")
-@Produces(MediaType.APPLICATION_JSON)
+@Path("s3")
 @Consumes(MediaType.MULTIPART_FORM_DATA)
-@Transactional
-public class ProfileResources {
+@Produces(MediaType.APPLICATION_JSON)
+public class ProfileS3Resources {
 
     @Inject
-    ProfileController controller;
+    ProfileS3Controller controller;
+
     Responses responses;
 
     @GET
@@ -42,11 +42,11 @@ public class ProfileResources {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
     @RolesAllowed({ "veterinario", "biologo", "dev" })
-    public Response listUploads() {
+    public Response listS3() {
 
-        List<Profile> profiles = controller.listUploads();
+        ProfileS3 objects = controller.listS3();
 
-        return Response.ok(profiles).build();
+        return Response.ok(objects).build();
     }
 
     @GET
@@ -57,21 +57,18 @@ public class ProfileResources {
     public Response findOne(@PathParam("id") Long id) {
 
         try {
-            Profile profile = controller.findOne(id);
-
+            ProfileS3 profile = controller.findOne(id);
 
             return Response.ok(profile).build();
         } catch (RuntimeException e) {
-            return Response.ok(e.getMessage(), MediaType.TEXT_PLAIN).status(Response.Status.BAD_REQUEST).build();
+            return Response.ok(e.getMessage(), MediaType.TEXT_PLAIN).status(404).build();
         }
     }
 
     @POST
-    @Path("/")
-    public Response sendUpload(@MultipartForm FormData pData, @QueryParam("fileRefence") String pFileRefence,
-                               @QueryParam("idAnimal") Long pIdAnimal) {
+    public Response sendS3(@MultipartForm FormData pData, @QueryParam("fileRefence") String pFileRefence, @QueryParam("idAnimal") Long pIdAnimal) {
         try {
-            return controller.sendUpload(pData, pFileRefence, pIdAnimal);
+        return controller.sendS3(pData, pFileRefence, pIdAnimal);
         } catch (IOException e) {
             return Response.ok(e.getMessage(), MediaType.TEXT_PLAIN).status(Response.Status.UNAUTHORIZED).build();
         }
@@ -82,10 +79,10 @@ public class ProfileResources {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
     @RolesAllowed({ "veterinario", "biologo", "dev" })
-    public Response removeUpload(List<Long> pListIdProfile) {
+    public Response removeS3(List<Long> pListIdProfile) {
 
         try {
-            return controller.removeUpload(pListIdProfile);
+            return controller.removeS3(pListIdProfile);
         } catch (Exception e) {
             if (pListIdProfile.size() <= 1) {
                 responses = new Responses();

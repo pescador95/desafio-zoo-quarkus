@@ -1,24 +1,28 @@
 package desafio.zoo.resources;
 
+import desafio.zoo.controller.ProfileS3Controller;
+import desafio.zoo.model.Profile;
+import desafio.zoo.model.ProfileS3;
+import desafio.zoo.model.Responses;
+import desafio.zoo.utils.FormData;
+import io.quarkus.hibernate.orm.panache.PanacheQuery;
+import io.quarkus.panache.common.Page;
+import org.jboss.resteasy.reactive.MultipartForm;
+import org.jetbrains.annotations.NotNull;
+
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
+import javax.transaction.Transactional;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-
-import desafio.zoo.model.Profile;
-import desafio.zoo.controller.ProfileS3Controller;
-import desafio.zoo.model.Responses;
-import desafio.zoo.utils.FormData;
-import desafio.zoo.model.ProfileS3;
-import org.jboss.resteasy.reactive.MultipartForm;
-
 import java.io.IOException;
 import java.util.List;
 
 @Path("s3")
 @Consumes(MediaType.MULTIPART_FORM_DATA)
 @Produces(MediaType.APPLICATION_JSON)
+@Transactional
 public class ProfileS3Resources {
 
     @Inject
@@ -42,11 +46,17 @@ public class ProfileS3Resources {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
     @RolesAllowed({ "veterinario", "biologo", "dev" })
-    public Response listS3() {
+    public Response listS3(@QueryParam("sort") @DefaultValue("desc") @NotNull String sortQuery,
+                           @QueryParam("page") @DefaultValue("0") int pageIndex,
+                           @QueryParam("size") @DefaultValue("10") int pageSize,
+                           @QueryParam("id") @DefaultValue("0") int id,
+                           @QueryParam("strgFilter") @DefaultValue("") String strgFilter,
+                           @QueryParam("strgOrder") @DefaultValue("id") String strgOrder) {
+        String query = "id > " + "0" + " " + strgFilter + " " + "order by " + strgOrder + " " + sortQuery;
+        PanacheQuery<Profile> profile;
+        profile = Profile.find(query);
 
-        ProfileS3 objects = controller.listS3();
-
-        return Response.ok(objects).build();
+        return Response.ok(profile.page(Page.of(pageIndex, pageSize)).list()).status(Response.Status.ACCEPTED).build();
     }
 
     @GET

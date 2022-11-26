@@ -39,6 +39,9 @@ public class ProfileResources {
     }
     @GET
     @Path("/")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes("application/json")
+    @RolesAllowed({ "veterinario", "biologo", "dev" })
     public Response listUploads() {
 
         List<Profile> profiles = controller.listUploads();
@@ -48,6 +51,9 @@ public class ProfileResources {
 
     @GET
     @Path("{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes("application/json")
+    @RolesAllowed({ "veterinario", "biologo", "dev" })
     public Response findOne(@PathParam("id") Long id) {
 
         try {
@@ -64,7 +70,6 @@ public class ProfileResources {
     @Path("/")
     public Response sendUpload(@MultipartForm FormData pData, @QueryParam("fileRefence") String pFileRefence,
                                @QueryParam("idAnimal") Long pIdAnimal) {
-
         try {
             return controller.sendUpload(pData, pFileRefence, pIdAnimal);
         } catch (IOException e) {
@@ -73,8 +78,11 @@ public class ProfileResources {
     }
 
     @DELETE
-    @Path("{id}")
-    public Response removeUpload(@PathParam("id") List<Long> pListIdProfile) {
+    @Path("/")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes("application/json")
+    @RolesAllowed({ "veterinario", "biologo", "dev" })
+    public Response removeUpload(List<Long> pListIdProfile) {
 
         try {
             return controller.removeUpload(pListIdProfile);

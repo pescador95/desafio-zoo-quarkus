@@ -14,6 +14,7 @@ import desafio.zoo.model.ProfileS3;
 import org.jboss.resteasy.reactive.MultipartForm;
 
 import java.io.IOException;
+import java.util.List;
 
 @Path("s3")
 @Consumes(MediaType.MULTIPART_FORM_DATA)
@@ -38,6 +39,9 @@ public class ProfileS3Resources {
     }
     @GET
     @Path("/")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes("application/json")
+    @RolesAllowed({ "veterinario", "biologo", "dev" })
     public Response listS3() {
 
         ProfileS3 objects = controller.listS3();
@@ -47,6 +51,9 @@ public class ProfileS3Resources {
 
     @GET
     @Path("{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes("application/json")
+    @RolesAllowed({ "veterinario", "biologo", "dev" })
     public Response findOne(@PathParam("id") Long id) {
 
         try {
@@ -68,15 +75,25 @@ public class ProfileS3Resources {
     }
 
     @DELETE
-    @Path("{id}")
-    public Response removeS3(@PathParam("id") Long id) {
+    @Path("/")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes("application/json")
+    @RolesAllowed({ "veterinario", "biologo", "dev" })
+    public Response removeS3(List<Long> pListIdProfile) {
 
         try {
-            controller.removeS3(id);
-
-            return Response.status(204).build();
-        } catch (RuntimeException e) {
-            return Response.ok(e.getMessage(), MediaType.TEXT_PLAIN).status(404).build();
+            return controller.removeS3(pListIdProfile);
+        } catch (Exception e) {
+            if (pListIdProfile.size() <= 1) {
+                responses = new Responses();
+                responses.status = 500;
+                responses.messages.add("Não foi possível excluir o Arquivo.");
+            } else {
+                responses = new Responses();
+                responses.status = 500;
+                responses.messages.add("Não foi possível excluir os Arquivos.");
+            }
+            return Response.ok(responses).status(Response.Status.BAD_REQUEST).build();
         }
     }
 }

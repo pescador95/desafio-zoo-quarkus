@@ -57,10 +57,10 @@ public class ProfileController {
         Profile profileCheck = Profile.find("originalname = ?1 and filereference =?2 and animalid = ?3", originalName, pFileRefence, pIdAnimal).firstResult();
 
         if (profileCheck == null) {
+            Profile profile = new Profile();
             List<String> mimetype = Arrays.asList("image/jpg", "image/jpeg", "application/msword", "application/vnd.ms-excel", "application/xml", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "image/gif", "image/png", "text/plain", "application/vnd.ms-powerpoint", "application/pdf", "text/csv", "document/doc", "document/docx", "application/vnd.openxmlformats-officedocument.presentationml.presentation", "application/zip", "application/vnd.sealed.xls");
 
             if (!mimetype.contains(data.getFile().contentType())) {
-                System.out.println(data.getFile().contentType());
                 throw new IOException("Tipo de arquivo não suportado. Aceito somente arquivos nos formatos: ppt, pptx csv, doc, docx, txt, pdf, xlsx, xml, xls, jpg, jpeg, png e zip.");
             }
 
@@ -68,9 +68,7 @@ public class ProfileController {
                 throw new IOException("Arquivo muito grande.");
             }
 
-            Profile profile = new Profile();
-
-            String fileName = pFileRefence + " - " + pIdAnimal + " - " + data.getFile().fileName();
+            String fileName = pFileRefence + "-" + pIdAnimal + "-" + data.getFile().fileName();
 
             profile.originalName = data.getFile().fileName();
 

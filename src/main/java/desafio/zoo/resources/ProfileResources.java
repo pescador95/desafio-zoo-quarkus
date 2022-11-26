@@ -26,8 +26,6 @@ public class ProfileResources {
     ProfileController controller;
     Responses responses;
 
-    Profile profile;
-
     @GET
     @Path("/count")
     @Produces(MediaType.APPLICATION_JSON)

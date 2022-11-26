@@ -1,22 +1,21 @@
 package desafio.zoo.controller;
 
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.io.IOException;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
+import javax.ws.rs.core.Response;
 
 import desafio.zoo.model.Animal;
 import desafio.zoo.model.Profile;
+import desafio.zoo.model.Responses;
 import desafio.zoo.repository.ProfileRepository;
 import desafio.zoo.utils.FileObject;
 import desafio.zoo.utils.FormData;
-import desafio.zoo.utils.ProfileS3;
+import desafio.zoo.model.ProfileS3;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 import org.jetbrains.annotations.NotNull;
@@ -27,7 +26,7 @@ import software.amazon.awssdk.services.s3.model.ListObjectsRequest;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 
 @ApplicationScoped
-public class S3Controller {
+public class ProfileS3Controller {
 
     @ConfigProperty(name = "bucket.name")
     String bucketName;
@@ -37,6 +36,8 @@ public class S3Controller {
 
     @Inject
     S3Client s3;
+
+    Responses responses;
 
     public ProfileS3 listS3() {
         List<Profile> profiles = repository.listAll();
@@ -75,9 +76,17 @@ public class S3Controller {
     }
 
     @Transactional
-    public Profile sendS3(@NotNull FormData data, String pFileRefence, Long pIdAnimal) {
+    public Response sendS3(@NotNull FormData data, String pFileRefence, Long pIdAnimal) throws IOException {
 
-        List<String> mimetype = Arrays.asList("image/jpg", "image/jpeg", "image/gif", "image/png", "application/pdf", "document/doc", "document/docx", "application/zip", "application/vnd.sealed.xls");
+        responses = new Responses();
+        responses.messages = new ArrayList<>();
+
+        String originalName = data.getFile().fileName();
+
+        Profile profileCheck = Profile.find("originalname = ?1 and filereference =?2 and animalid = ?3", originalName, pFileRefence, pIdAnimal).firstResult();
+        if (profileCheck == null) {
+        Profile profile = new Profile();
+        List<String> mimetype = Arrays.asList("image/jpg", "image/jpeg", "application/msword", "application/vnd.ms-excel", "application/xml", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "image/gif", "image/png", "text/plain", "application/vnd.ms-powerpoint", "application/pdf", "text/csv", "document/doc", "document/docx", "application/vnd.openxmlformats-officedocument.presentationml.presentation", "application/zip", "application/vnd.sealed.xls");
 
         if (!mimetype.contains(data.getFile().contentType())) {
             throw new RuntimeException("Arquivo não suportado.");
@@ -87,9 +96,7 @@ public class S3Controller {
             throw new RuntimeException("Arquivo muito grande.");
         }
 
-        Profile profile = new Profile();
-
-        String fileName = UUID.randomUUID() + "-" + data.getFile().fileName();
+        String fileName = pFileRefence + "-" + pIdAnimal + "-" + data.getFile().fileName();
 
         profile.originalName = data.getFile().fileName();
 
@@ -103,9 +110,13 @@ public class S3Controller {
 
         profile.animal = Animal.findById(pIdAnimal);
 
+        profile.nomeAnimal = profile.animal.nomeApelido;
+
         profile.fileReference = pFileRefence;
 
-        repository.persist(profile);
+        profile.isAtivo = Boolean.TRUE;
+
+        profile.persist();
 
         PutObjectRequest objectRequest = PutObjectRequest.builder().bucket(bucketName)
                 .key(fileName)
@@ -114,7 +125,14 @@ public class S3Controller {
 
         s3.putObject(objectRequest, RequestBody.fromFile(data.getFile().filePath()));
 
-        return profile;
+        responses.status = 200;
+        responses.messages.add("Arquivo adicionado com sucesso!");
+        return Response.ok(responses).status(Response.Status.ACCEPTED).build();
+    } else {
+        responses.status = 500;
+        responses.messages.add("Já existe um arquivo com o mesmo nome. Verifique!");
+    }
+        return Response.ok(responses).status(Response.Status.BAD_REQUEST).build();
     }
 
     @Transactional

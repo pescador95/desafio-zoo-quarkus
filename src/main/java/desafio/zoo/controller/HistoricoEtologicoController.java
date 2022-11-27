@@ -33,59 +33,63 @@ public class HistoricoEtologicoController {
                 .firstResult();
         animal = Animal.find("id = ?1", pHistoricoEtologico.animal.id).firstResult();
 
-        if (historicoEtologico == null) {
-            historicoEtologico = new HistoricoEtologico();
+        if(animal != null){
+            if (historicoEtologico == null) {
+                historicoEtologico = new HistoricoEtologico();
 
-            if (pHistoricoEtologico.animal != null) {
-                historicoEtologico.animal = Animal.findById(pHistoricoEtologico.animal.id);
+                if (pHistoricoEtologico.dataEtologico != null) {
+                    historicoEtologico.dataEtologico = pHistoricoEtologico.dataEtologico;
+
+                } else {
+                    responses.messages.add("Por favor, preencha a Data do evento Etológico corretamente!");
+                }
+                if (pHistoricoEtologico.nomeEtologico != null) {
+                    historicoEtologico.nomeEtologico = pHistoricoEtologico.nomeEtologico;
+
+                } else {
+                    responses.messages.add(
+                            "Por favor, preencha o Nome Etológico do Histórico Etológico corretamente!");
+                }
+                if (pHistoricoEtologico.descricaoEtologico != null) {
+                    historicoEtologico.descricaoEtologico = pHistoricoEtologico.descricaoEtologico;
+                } else {
+                    responses.messages.add(
+                            "Por favor, preencha a Descriação Etológica do Histórico Etológico corretamente!");
+                }
+
+                if (responses.messages.size() < 1) {
+                    historicoEtologico.animal = animal;
+                    historicoEtologico.nomeAnimal = animal.nomeApelido;
+                    historicoEtologico.isAtivo = Boolean.TRUE;
+                    historicoEtologico.usuario = usuarioAuth;
+                    historicoEtologico.usuarioAcao = usuarioAuth;
+                    historicoEtologico.usuarioNome = usuarioAuth.nome;
+                    historicoEtologico.usuarioAcaoNome = usuarioAuth.nome;
+                    historicoEtologico.dataAcao = new Date();
+
+                    historicoEtologico.persist();
+
+                    responses.status = 201;
+                    responses.data = historicoEtologico;
+                    responses.messages.add("Histórico Etológico Cadastrado com sucesso!");
+                } else {
+                    return Response.ok(responses).status(Response.Status.BAD_REQUEST).build();
+                }
+                return Response.ok(responses).status(Response.Status.CREATED).build();
             } else {
-                responses.messages.add("Por favor, informar o Animal do Histórico Etológico.");
-            }
-            if (pHistoricoEtologico.dataEtologico != null) {
-                historicoEtologico.dataEtologico = pHistoricoEtologico.dataEtologico;
-
-            } else {
-                responses.messages.add("Por favor, preencha a Data do evento Etológico corretamente!");
-            }
-            if (pHistoricoEtologico.nomeEtologico != null) {
-                historicoEtologico.nomeEtologico = pHistoricoEtologico.nomeEtologico;
-
-            } else {
-                responses.messages.add(
-                        "Por favor, preencha o Nome Etológico do Histórico Etológico corretamente!");
-            }
-            if (pHistoricoEtologico.descricaoEtologico != null) {
-                historicoEtologico.descricaoEtologico = pHistoricoEtologico.descricaoEtologico;
-            } else {
-                responses.messages.add(
-                        "Por favor, preencha a Descriação Etológica do Histórico Etológico corretamente!");
-            }
-
-            if (responses.messages.size() < 1) {
-
-                historicoEtologico.nomeAnimal = animal.nomeApelido;
-                historicoEtologico.isAtivo = Boolean.TRUE;
-                historicoEtologico.usuario = usuarioAuth;
-                historicoEtologico.usuarioAcao = usuarioAuth;
-                historicoEtologico.usuarioNome = usuarioAuth.nome;
-                historicoEtologico.usuarioAcaoNome = usuarioAuth.nome;
-                historicoEtologico.dataAcao = new Date();
-
-                historicoEtologico.persist();
-
-                responses.status = 201;
+                responses.status = 500;
                 responses.data = historicoEtologico;
-                responses.messages.add("Histórico Etológico Cadastrado com sucesso!");
-            } else {
+                responses.messages.add("HistoricoEtologico já cadastrado!");
                 return Response.ok(responses).status(Response.Status.BAD_REQUEST).build();
             }
-            return Response.ok(responses).status(Response.Status.CREATED).build();
         } else {
             responses.status = 500;
-            responses.data = historicoEtologico;
-            responses.messages.add("HistoricoEtologico já cadastrado!");
+            responses.data = pHistoricoEtologico;
+            responses.messages.add("Por favor, informar o Animal do HistoricoEtologico.");
             return Response.ok(responses).status(Response.Status.BAD_REQUEST).build();
         }
+
+
     }
 
     public Response updateHistoricoEtologico(@NotNull HistoricoEtologico pHistoricoEtologico, String email) {

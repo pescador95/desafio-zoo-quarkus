@@ -36,57 +36,65 @@ public class EnriquecimentoAmbientalController {
                 .firstResult();
         animal = Animal.find("id = ?1", pEnriquecimentoAmbiental.animal.id).firstResult();
 
-        if (enriquecimentoAmbiental == null) {
-            enriquecimentoAmbiental = new EnriquecimentoAmbiental();
+        if (animal != null){
+            if (enriquecimentoAmbiental == null) {
+                enriquecimentoAmbiental = new EnriquecimentoAmbiental();
 
-            if (pEnriquecimentoAmbiental.animal != null) {
-                enriquecimentoAmbiental.animal = Animal.findById(pEnriquecimentoAmbiental.animal.id);
+                if (pEnriquecimentoAmbiental.animal != null) {
+                    enriquecimentoAmbiental.animal = Animal.findById(pEnriquecimentoAmbiental.animal.id);
+                } else {
+                    responses.messages.add("Por favor, preencha o Animal do Enriquecimento Ambiental corretamente!");
+                }
+                if (pEnriquecimentoAmbiental.dataEnriquecimento != null) {
+                    enriquecimentoAmbiental.dataEnriquecimento = pEnriquecimentoAmbiental.dataEnriquecimento;
+
+                } else {
+                    responses.messages.add("Por favor, preencha a Data do Enriquecimento Ambiental corretamente!");
+                }
+                if (pEnriquecimentoAmbiental.nomeEnriquecimento != null) {
+                    enriquecimentoAmbiental.nomeEnriquecimento = pEnriquecimentoAmbiental.nomeEnriquecimento;
+
+                } else {
+                    responses.messages.add("Por favor, preencha o Nome do Enriquecimento Ambiental corretamente!");
+                }
+
+                if (pEnriquecimentoAmbiental.descricaoEnriquecimento != null) {
+                    enriquecimentoAmbiental.descricaoEnriquecimento = pEnriquecimentoAmbiental.descricaoEnriquecimento;
+
+                } else {
+                    responses.messages.add(
+                            "Por favor, preencha a Descrição do Enriquecimento Ambiental corretamente!");
+                }
+                if (responses.messages.size() < 1) {
+                    enriquecimentoAmbiental.animal = animal;
+                    enriquecimentoAmbiental.nomeAnimal = animal.nomeApelido;
+                    enriquecimentoAmbiental.isAtivo = Boolean.TRUE;
+                    enriquecimentoAmbiental.usuario = usuarioAuth;
+                    enriquecimentoAmbiental.usuarioAcao = usuarioAuth;
+                    enriquecimentoAmbiental.usuarioNome = usuarioAuth.nome;
+                    enriquecimentoAmbiental.usuarioAcaoNome = usuarioAuth.nome;
+                    enriquecimentoAmbiental.dataAcao = new Date();
+
+                    enriquecimentoAmbiental.persist();
+
+                    responses.status = 200;
+                    responses.data = enriquecimentoAmbiental;
+                    responses.messages.add("Enriquecimento Ambiental cradastrado com sucesso!");
+
+                } else {
+                    return Response.ok(responses).status(Response.Status.BAD_REQUEST).build();
+                }
+                return Response.ok(responses).status(Response.Status.CREATED).build();
             } else {
-                responses.messages.add("Por favor, preencha o Animal do Enriquecimento Ambiental corretamente!");
-            }
-            if (pEnriquecimentoAmbiental.dataEnriquecimento != null) {
-                enriquecimentoAmbiental.dataEnriquecimento = pEnriquecimentoAmbiental.dataEnriquecimento;
-
-            } else {
-                responses.messages.add("Por favor, preencha a Data do Enriquecimento Ambiental corretamente!");
-            }
-            if (pEnriquecimentoAmbiental.nomeEnriquecimento != null) {
-                enriquecimentoAmbiental.nomeEnriquecimento = pEnriquecimentoAmbiental.nomeEnriquecimento;
-
-            } else {
-                responses.messages.add("Por favor, preencha o Nome do Enriquecimento Ambiental corretamente!");
-            }
-
-            if (pEnriquecimentoAmbiental.descricaoEnriquecimento != null) {
-                enriquecimentoAmbiental.descricaoEnriquecimento = pEnriquecimentoAmbiental.descricaoEnriquecimento;
-
-            } else {
-                responses.messages.add(
-                        "Por favor, preencha a Descrição do Enriquecimento Ambiental corretamente!");
-            }
-            if (responses.messages.size() < 1) {
-                enriquecimentoAmbiental.nomeAnimal = animal.nomeApelido;
-                enriquecimentoAmbiental.isAtivo = Boolean.TRUE;
-                enriquecimentoAmbiental.usuario = usuarioAuth;
-                enriquecimentoAmbiental.usuarioAcao = usuarioAuth;
-                enriquecimentoAmbiental.usuarioNome = usuarioAuth.nome;
-                enriquecimentoAmbiental.usuarioAcaoNome = usuarioAuth.nome;
-                enriquecimentoAmbiental.dataAcao = new Date();
-
-                enriquecimentoAmbiental.persist();
-
-                responses.status = 200;
+                responses.status = 500;
                 responses.data = enriquecimentoAmbiental;
-                responses.messages.add("Enriquecimento Ambiental cradastrado com sucesso!");
-
-            } else {
+                responses.messages.add("Enriquecimento Ambiental já cadastrado!");
                 return Response.ok(responses).status(Response.Status.BAD_REQUEST).build();
             }
-            return Response.ok(responses).status(Response.Status.CREATED).build();
         } else {
-            responses.status = 200;
-            responses.data = enriquecimentoAmbiental;
-            responses.messages.add("Enriquecimento Ambiental já cadastrado!");
+            responses.status = 500;
+            responses.data = pEnriquecimentoAmbiental;
+            responses.messages.add("Por favor, informar o Animal do Enriquecimento Ambiental.");
             return Response.ok(responses).status(Response.Status.BAD_REQUEST).build();
         }
     }

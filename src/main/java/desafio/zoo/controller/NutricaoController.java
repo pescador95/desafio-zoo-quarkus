@@ -33,56 +33,63 @@ public class NutricaoController {
                 pNutricao.animal, pNutricao.dataInicio).firstResult();
         animal = Animal.find("id = ?1", pNutricao.animal.id).firstResult();
 
-        if (nutricao == null) {
-            nutricao = new Nutricao();
+        if(animal != null){
+            if (nutricao == null) {
+                nutricao = new Nutricao();
 
-            if (pNutricao.descricaoNutricao != null) {
-                nutricao.descricaoNutricao = pNutricao.descricaoNutricao;
-            } else {
-                responses.messages.add("Por favor, preencha a descrição da Nutrição corretamente!");
-            }
+                if (pNutricao.descricaoNutricao != null) {
+                    nutricao.descricaoNutricao = pNutricao.descricaoNutricao;
+                } else {
+                    responses.messages.add("Por favor, preencha a descrição da Nutrição corretamente!");
+                }
 
-            nutricao.isAtivo = Boolean.TRUE;
-
-            if (pNutricao.dataInicio != null) {
-                nutricao.dataInicio = pNutricao.dataInicio;
-            } else {
-                responses.messages.add("Por favor, preencha a data de Início da Nutrição corretamente!");
-            }
-
-            if (pNutricao.dataFim != null) {
-                nutricao.dataFim = pNutricao.dataFim;
-
-            } else {
-                responses.messages.add("Por favor, preencha a data fim da Nutrição corretamente!");
-            }
-            if (pNutricao.animal != null) {
-                nutricao.animal = Animal.findById(pNutricao.animal.id);
-            } else {
-                responses.messages.add("Por favor, preencha o Animal da Nutrição corretamente!");
-            }
-            if (responses.messages.size() < 1) {
                 nutricao.isAtivo = Boolean.TRUE;
-                nutricao.nomeAnimal = animal.nomeApelido;
-                nutricao.usuario = usuarioAuth;
-                nutricao.usuarioAcao = usuarioAuth;
-                nutricao.usuarioNome = usuarioAuth.nome;
-                nutricao.usuarioAcaoNome = usuarioAuth.nome;
-                nutricao.dataAcao = new Date();
 
-                nutricao.persist();
+                if (pNutricao.dataInicio != null) {
+                    nutricao.dataInicio = pNutricao.dataInicio;
+                } else {
+                    responses.messages.add("Por favor, preencha a data de Início da Nutrição corretamente!");
+                }
 
-                responses.status = 201;
-                responses.data = nutricao;
-                responses.messages.add("Ficha de nutrição Cadastrada com sucesso!");
+                if (pNutricao.dataFim != null) {
+                    nutricao.dataFim = pNutricao.dataFim;
+
+                } else {
+                    responses.messages.add("Por favor, preencha a data fim da Nutrição corretamente!");
+                }
+                if (pNutricao.animal != null) {
+                    nutricao.animal = Animal.findById(pNutricao.animal.id);
+                } else {
+                    responses.messages.add("Por favor, preencha o Animal da Nutrição corretamente!");
+                }
+                if (responses.messages.size() < 1) {
+                    nutricao.isAtivo = Boolean.TRUE;
+                    nutricao.nomeAnimal = animal.nomeApelido;
+                    nutricao.usuario = usuarioAuth;
+                    nutricao.usuarioAcao = usuarioAuth;
+                    nutricao.usuarioNome = usuarioAuth.nome;
+                    nutricao.usuarioAcaoNome = usuarioAuth.nome;
+                    nutricao.dataAcao = new Date();
+
+                    nutricao.persist();
+
+                    responses.status = 201;
+                    responses.data = nutricao;
+                    responses.messages.add("Ficha de nutrição Cadastrada com sucesso!");
+                } else {
+                    return Response.ok(responses).status(Response.Status.BAD_REQUEST).build();
+                }
+                return Response.ok(responses).status(Response.Status.CREATED).build();
             } else {
+                responses.status = 500;
+                responses.data = nutricao;
+                responses.messages.add("Ficha de nutrição já cadastrada!");
                 return Response.ok(responses).status(Response.Status.BAD_REQUEST).build();
             }
-            return Response.ok(responses).status(Response.Status.CREATED).build();
-        } else {
+        }else{
             responses.status = 500;
-            responses.data = nutricao;
-            responses.messages.add("Ficha de nutrição já cadastrada!");
+            responses.data = pNutricao;
+            responses.messages.add("Por favor, verifique o Animal da Ficha de nutrição.");
             return Response.ok(responses).status(Response.Status.BAD_REQUEST).build();
         }
     }

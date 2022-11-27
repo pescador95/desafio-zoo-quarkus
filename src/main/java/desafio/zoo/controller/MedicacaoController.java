@@ -20,67 +20,73 @@ public class MedicacaoController {
     public Usuario usuario;
     Responses responses;
     Usuario usuarioAuth;
+    HistoricoClinico historicoClinico;
 
     public Response addMedicacao(@NotNull Medicacao pMedicacao, String email) {
 
         responses = new Responses();
         responses.messages = new ArrayList<>();
         usuarioAuth = Usuario.find("email = ?1", email).firstResult();
-        medicacao = Medicacao
-                .find("historicoClinico = ?1 and isAtivo = true ORDER BY id DESC", pMedicacao.historicoClinico)
-                .firstResult();
+        medicacao = Medicacao.find("historicoClinico = ?1 and isAtivo = true ORDER BY id DESC", pMedicacao.historicoClinico).firstResult();
+        historicoClinico = HistoricoClinico.findById(pMedicacao.historicoClinico.id);
 
-        if (medicacao == null) {
-            medicacao = new Medicacao();
+        if(historicoClinico != null){
+            if (medicacao == null) {
+                medicacao = new Medicacao();
 
-            if (pMedicacao.historicoClinico != null) {
-                medicacao.historicoClinico = HistoricoClinico.findById(pMedicacao.historicoClinico.id);
-            }
-            if (pMedicacao.nomeMedicacao != null) {
-                medicacao.nomeMedicacao = pMedicacao.nomeMedicacao;
+                if (pMedicacao.nomeMedicacao != null) {
+                    medicacao.nomeMedicacao = pMedicacao.nomeMedicacao;
+                } else {
+                    responses.messages.add("Por favor, preencha o nome da Medicação corretamente!");
+                }
+                if (pMedicacao.viaAdministracao != null) {
+                    medicacao.viaAdministracao = pMedicacao.viaAdministracao;
+
+                } else {
+                    responses.messages.add("Por favor, preencha a Via de Administração da Medicação corretamente!");
+                }
+                if (pMedicacao.posologia != null) {
+                    medicacao.posologia = pMedicacao.posologia;
+
+                } else {
+                    responses.messages.add("Por favor, preencha a posologia da Medicação corretamente!");
+                }
+                if (pMedicacao.frequencia != null) {
+                    medicacao.frequencia = pMedicacao.frequencia;
+                } else {
+                    responses.messages.add("Por favor, preencha a Frequência da Medicação corretamente!");
+                }
+
+                if (responses.messages.size() < 1) {
+                    medicacao.historicoClinico = historicoClinico;
+                    medicacao.isAtivo = Boolean.TRUE;
+                    medicacao.usuario = usuarioAuth;
+                    medicacao.usuarioAcao = usuarioAuth;
+                    medicacao.usuarioNome = usuarioAuth.nome;
+                    medicacao.usuarioAcaoNome = usuarioAuth.nome;
+                    medicacao.dataAcao = new Date();
+
+                    medicacao.persist();
+                    responses.status = 201;
+                    responses.data = medicacao;
+                    responses.messages.add("Medicação Cadastrada com sucesso!");
+                } else {
+                    return Response.ok(responses).status(Response.Status.BAD_REQUEST).build();
+                }
+                return Response.ok(responses).status(Response.Status.CREATED).build();
             } else {
-                responses.messages.add("Por favor, preencha o nome da Medicação corretamente!");
-            }
-            if (pMedicacao.viaAdministracao != null) {
-                medicacao.viaAdministracao = pMedicacao.viaAdministracao;
-
-            } else {
-                responses.messages.add("Por favor, preencha a Via de Administração da Medicação corretamente!");
-            }
-            if (pMedicacao.posologia != null) {
-                medicacao.posologia = pMedicacao.posologia;
-
-            } else {
-                responses.messages.add("Por favor, preencha a posologia da Medicação corretamente!");
-            }
-            if (pMedicacao.frequencia != null) {
-                medicacao.frequencia = pMedicacao.frequencia;
-            } else {
-                responses.messages.add("Por favor, preencha a Frequência da Medicação corretamente!");
-            }
-
-            if (responses.messages.size() < 1) {
-                medicacao.isAtivo = Boolean.TRUE;
-                medicacao.usuario = usuarioAuth;
-                medicacao.usuarioAcao = usuarioAuth;
-                medicacao.usuarioNome = usuarioAuth.nome;
-                medicacao.usuarioAcaoNome = usuarioAuth.nome;
-                medicacao.dataAcao = new Date();
-
-                medicacao.persist();
-                responses.status = 201;
+                responses.status = 500;
                 responses.data = medicacao;
-                responses.messages.add("Medicação Cadastrada com sucesso!");
-            } else {
+                responses.messages.add("medicação já cadastrada!");
                 return Response.ok(responses).status(Response.Status.BAD_REQUEST).build();
             }
-            return Response.ok(responses).status(Response.Status.CREATED).build();
         } else {
             responses.status = 500;
-            responses.data = medicacao;
-            responses.messages.add("medicação já cadastrada!");
+            responses.data = pMedicacao;
+            responses.messages.add("Por favor, verifique o histórico clínico da medicação.");
             return Response.ok(responses).status(Response.Status.BAD_REQUEST).build();
         }
+
     }
 
     public Response updateMedicacao(@NotNull Medicacao pMedicacao, String email) {

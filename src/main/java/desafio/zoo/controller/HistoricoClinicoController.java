@@ -37,86 +37,92 @@ public class HistoricoClinicoController {
                 .firstResult();
         animal = Animal.find("id = ?1", pHistoricoClinico.animal.id).firstResult();
 
-        if (historicoClinico == null) {
-            historicoClinico = new HistoricoClinico();
+        if (animal != null) {
+            if (historicoClinico == null) {
+                historicoClinico = new HistoricoClinico();
 
-            if (pHistoricoClinico.animal != null) {
-                historicoClinico.animal = Animal.findById(pHistoricoClinico.animal.id);
-            } else {
-                responses.messages.add("Por favor, informar o Animal do Histórico Clínico.");
-            }
-            if (pHistoricoClinico.etco2 != null) {
-                historicoClinico.etco2 = pHistoricoClinico.etco2;
-            } else {
-                responses.messages.add("Por favor, informar o etco2 do Animal no Histórico Clínico.");
-            }
-            if (pHistoricoClinico.spo2 != null) {
-                historicoClinico.spo2 = pHistoricoClinico.spo2;
-            } else {
-                responses.messages.add("Por favor, informar o spo2 do Animal no Histórico Clínico.");
-            }
-            if (pHistoricoClinico.temperaturaAnimal != null) {
-                historicoClinico.temperaturaAnimal = pHistoricoClinico.temperaturaAnimal;
-            } else {
-                responses.messages.add("Por favor, informar a temperatura do Animal no Histórico Clínico.");
-            }
-            if (pHistoricoClinico.ps != null) {
-                historicoClinico.ps = pHistoricoClinico.ps;
-            } else {
-                responses.messages.add("Por favor, informar o ps do Animal no Histórico Clínico.");
-            }
-            if (pHistoricoClinico.frequenciaRespiratoria != null) {
-                historicoClinico.frequenciaRespiratoria = pHistoricoClinico.frequenciaRespiratoria;
-            } else {
-                responses.messages.add("Por favor, informar o frequencia Respiratória do Animal no Histórico Clínico.");
-            }
-            if (pHistoricoClinico.frequenciaCardiaca != null) {
-                historicoClinico.frequenciaCardiaca = pHistoricoClinico.frequenciaCardiaca;
-            } else {
-                responses.messages.add("Por favor, informar o frequencia Cardíaca do Animal no Histórico Clínico.");
-            }
-            if (pHistoricoClinico.pd != null) {
-                historicoClinico.pd = pHistoricoClinico.pd;
 
-            } else {
-                responses.messages.add("Por favor, informar o pd do Animal no Histórico Clínico.");
-            }
-            if (pHistoricoClinico.observacao != null) {
-                historicoClinico.observacao = pHistoricoClinico.observacao;
-            } else {
-                responses.messages.add("Por favor, informar a observacao do Animal no Histórico Clínico.");
-            }
-            if (pHistoricoClinico.pm != null) {
-                historicoClinico.pm = pHistoricoClinico.pm;
-            } else {
-                responses.messages.add("Por favor, informar o pm do Animal no Histórico Clínico.");
-            }
+                if (pHistoricoClinico.etco2 != null) {
+                    historicoClinico.etco2 = pHistoricoClinico.etco2;
+                } else {
+                    responses.messages.add("Por favor, informar o etco2 do Animal no Histórico Clínico.");
+                }
+                if (pHistoricoClinico.spo2 != null) {
+                    historicoClinico.spo2 = pHistoricoClinico.spo2;
+                } else {
+                    responses.messages.add("Por favor, informar o spo2 do Animal no Histórico Clínico.");
+                }
+                if (pHistoricoClinico.temperaturaAnimal != null) {
+                    historicoClinico.temperaturaAnimal = pHistoricoClinico.temperaturaAnimal;
+                } else {
+                    responses.messages.add("Por favor, informar a temperatura do Animal no Histórico Clínico.");
+                }
+                if (pHistoricoClinico.ps != null) {
+                    historicoClinico.ps = pHistoricoClinico.ps;
+                } else {
+                    responses.messages.add("Por favor, informar o ps do Animal no Histórico Clínico.");
+                }
+                if (pHistoricoClinico.frequenciaRespiratoria != null) {
+                    historicoClinico.frequenciaRespiratoria = pHistoricoClinico.frequenciaRespiratoria;
+                } else {
+                    responses.messages.add("Por favor, informar o frequencia Respiratória do Animal no Histórico Clínico.");
+                }
+                if (pHistoricoClinico.frequenciaCardiaca != null) {
+                    historicoClinico.frequenciaCardiaca = pHistoricoClinico.frequenciaCardiaca;
+                } else {
+                    responses.messages.add("Por favor, informar o frequencia Cardíaca do Animal no Histórico Clínico.");
+                }
+                if (pHistoricoClinico.pd != null) {
+                    historicoClinico.pd = pHistoricoClinico.pd;
 
-            if (responses.messages.size() < 1) {
-                historicoClinico.dataHistoricoClinico = new Date();
-                historicoClinico.nomeAnimal = animal.nomeApelido;
-                historicoClinico.isAtivo = Boolean.TRUE;
-                historicoClinico.usuario = usuarioAuth;
-                historicoClinico.usuarioAcao = usuarioAuth;
-                historicoClinico.usuarioNome = usuarioAuth.nome;
-                historicoClinico.usuarioAcaoNome = usuarioAuth.nome;
-                historicoClinico.dataAcao = new Date();
+                } else {
+                    responses.messages.add("Por favor, informar o pd do Animal no Histórico Clínico.");
+                }
+                if (pHistoricoClinico.observacao != null) {
+                    historicoClinico.observacao = pHistoricoClinico.observacao;
+                } else {
+                    responses.messages.add("Por favor, informar a observacao do Animal no Histórico Clínico.");
+                }
+                if (pHistoricoClinico.pm != null) {
+                    historicoClinico.pm = pHistoricoClinico.pm;
+                } else {
+                    responses.messages.add("Por favor, informar o pm do Animal no Histórico Clínico.");
+                }
 
-                historicoClinico.persist();
+                if (responses.messages.size() < 1) {
+                    historicoClinico.dataHistoricoClinico = new Date();
+                    historicoClinico.animal = animal;
+                    historicoClinico.nomeAnimal = animal.nomeApelido;
+                    historicoClinico.isAtivo = Boolean.TRUE;
+                    historicoClinico.usuario = usuarioAuth;
+                    historicoClinico.usuarioAcao = usuarioAuth;
+                    historicoClinico.usuarioNome = usuarioAuth.nome;
+                    historicoClinico.usuarioAcaoNome = usuarioAuth.nome;
+                    historicoClinico.dataAcao = new Date();
 
-                responses.status = 201;
+                    historicoClinico.persist();
+
+                    responses.status = 201;
+                    responses.data = historicoClinico;
+                    responses.messages.add("Histórico Clínico com sucesso!");
+                } else {
+                    return Response.ok(responses).status(Response.Status.BAD_REQUEST).build();
+                }
+                return Response.ok(responses).status(Response.Status.CREATED).build();
+            } else {
+                responses.status = 500;
                 responses.data = historicoClinico;
-                responses.messages.add("Histórico Clínico com sucesso!");
-            } else {
+                responses.messages.add("Histórico Clínico já cadastrado!");
                 return Response.ok(responses).status(Response.Status.BAD_REQUEST).build();
             }
-            return Response.ok(responses).status(Response.Status.CREATED).build();
         } else {
             responses.status = 500;
-            responses.data = historicoClinico;
-            responses.messages.add("Histórico Clínico já cadastrado!");
+            responses.data = pHistoricoClinico;
+            responses.messages.add("Por favor, informar o Animal do Histórico Clínico.");
             return Response.ok(responses).status(Response.Status.BAD_REQUEST).build();
         }
+
+
     }
 
     public Response updateHistoricoClinico(@NotNull HistoricoClinico pHistoricoClinico, String email) {

@@ -34,7 +34,7 @@ public class HistoricoClinicoResources {
     @Consumes("application/json")
     @RolesAllowed({ "veterinario", "biologo", "dev" })
     public Response getById(@PathParam("id") Long pId) {
-        historicoClinico = HistoricoEtologico.findById(pId);
+        historicoClinico = HistoricoClinico.findById(pId);
         return Response.ok(historicoClinico).status(Response.Status.ACCEPTED).build();
     }
 

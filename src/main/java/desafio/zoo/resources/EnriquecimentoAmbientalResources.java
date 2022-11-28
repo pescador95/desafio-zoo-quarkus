@@ -58,12 +58,13 @@ public class EnriquecimentoAmbientalResources {
             @QueryParam("page") @DefaultValue("0") int pageIndex,
             @QueryParam("size") @DefaultValue("10") int pageSize,
             @QueryParam("ativo") @DefaultValue("true") Boolean ativo,
+            @QueryParam("animalAtivo") @DefaultValue("true") Boolean animalAtivo,
             @QueryParam("strgFilter") @DefaultValue("") String strgFilter,
             @QueryParam("strgOrder") @DefaultValue("id") String strgOrder) {
         String query = "isAtivo = " + ativo + " " + strgFilter + " " + "order by " + strgOrder + " " + sortQuery;
         PanacheQuery<EnriquecimentoAmbiental> enriquecimentoAmbiental;
         enriquecimentoAmbiental = EnriquecimentoAmbiental.find(query);
-        return Response.ok(enriquecimentoAmbiental.page(Page.of(pageIndex, pageSize)).list().stream().filter(c -> c.animal.isAtivo = Boolean.TRUE).collect(Collectors.toList())).status(Response.Status.ACCEPTED).build();
+        return Response.ok(enriquecimentoAmbiental.page(Page.of(pageIndex, pageSize)).list().stream().filter(c -> c.animal.isAtivo = animalAtivo).collect(Collectors.toList())).status(Response.Status.ACCEPTED).build();
     }
 
     @POST

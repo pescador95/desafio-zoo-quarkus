@@ -57,13 +57,14 @@ public class MedicacaoResources {
             @QueryParam("page") @DefaultValue("0") int pageIndex,
             @QueryParam("size") @DefaultValue("10") int pageSize,
             @QueryParam("ativo") @DefaultValue("true") Boolean ativo,
+            @QueryParam("animalAtivo") @DefaultValue("true") Boolean animalAtivo,
+            @QueryParam("hcAtivo") @DefaultValue("true") Boolean hcAtivo,
             @QueryParam("strgFilter") @DefaultValue("") String strgFilter,
             @QueryParam("strgOrder") @DefaultValue("id") String strgOrder) {
         String query = "isAtivo = " + ativo + " " + strgFilter + " " + "order by " + strgOrder + " " + sortQuery;
         PanacheQuery<Medicacao> medicacao;
         medicacao = Medicacao.find(query);
-        return Response.ok(medicacao.page(Page.of(pageIndex, pageSize)).list().stream().filter(c -> (c.historicoClinico.isAtivo = Boolean.TRUE) && (c.historicoClinico.animal.isAtivo = Boolean.TRUE)).collect(Collectors.toList())).status(Response.Status.ACCEPTED)
-                .build();
+        return Response.ok(medicacao.page(Page.of(pageIndex, pageSize)).list().stream().filter(c -> (c.historicoClinico.isAtivo = hcAtivo) && (c.historicoClinico.animal.isAtivo = animalAtivo)).collect(Collectors.toList())).status(Response.Status.ACCEPTED).build();
     }
 
     @POST

@@ -47,6 +47,8 @@ public class ProfileResources {
     @Consumes("application/json")
     @RolesAllowed({ "veterinario", "biologo", "dev" })
     public Response listUploads(@QueryParam("sort") @DefaultValue("desc") @NotNull String sortQuery,
+                                @QueryParam("ativo") @DefaultValue("true") Boolean ativo,
+                                @QueryParam("animalAtivo") @DefaultValue("true") Boolean animalAtivo,
                                 @QueryParam("page") @DefaultValue("0") int pageIndex,
                                 @QueryParam("size") @DefaultValue("10") int pageSize,
                                 @QueryParam("id") @DefaultValue("0") int id,
@@ -56,7 +58,7 @@ public class ProfileResources {
         PanacheQuery<Profile> profile;
         profile = Profile.find(query);
 
-        return Response.ok(profile.page(Page.of(pageIndex, pageSize)).list().stream().filter(c -> c.animal.isAtivo = Boolean.TRUE).collect(Collectors.toList())).status(Response.Status.ACCEPTED).build();
+        return Response.ok(profile.page(Page.of(pageIndex, pageSize)).list().stream().filter(c -> c.animal.isAtivo = animalAtivo).collect(Collectors.toList())).status(Response.Status.ACCEPTED).build();
     }
 
     @GET

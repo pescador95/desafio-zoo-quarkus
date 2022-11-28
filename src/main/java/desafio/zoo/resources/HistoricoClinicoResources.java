@@ -59,12 +59,13 @@ public class HistoricoClinicoResources {
             @QueryParam("page") @DefaultValue("0") int pageIndex,
             @QueryParam("size") @DefaultValue("10") int pageSize,
             @QueryParam("ativo") @DefaultValue("true") Boolean ativo,
+            @QueryParam("animalAtivo") @DefaultValue("true") Boolean animalAtivo,
             @QueryParam("strgFilter") @DefaultValue("") String strgFilter,
             @QueryParam("strgOrder") @DefaultValue("id") String strgOrder) {
         String query = "isAtivo = " + ativo + " " + strgFilter + " " + "order by " + strgOrder + " " + sortQuery;
         PanacheQuery<HistoricoClinico> historicoClinico;
-        historicoClinico = HistoricoClinico.find(query);;
-        return Response.ok(historicoClinico.page(Page.of(pageIndex, pageSize)).list().stream().filter(c -> c.animal.isAtivo = Boolean.TRUE).collect(Collectors.toList())).status(Response.Status.ACCEPTED).build();
+        historicoClinico = HistoricoClinico.find(query);
+        return Response.ok(historicoClinico.page(Page.of(pageIndex, pageSize)).list().stream().filter(c -> c.animal.isAtivo = animalAtivo).collect(Collectors.toList())).status(Response.Status.ACCEPTED).build();
     }
     @GET
     @Path("/seletor")
@@ -73,11 +74,12 @@ public class HistoricoClinicoResources {
     @RolesAllowed({ "veterinario", "biologo", "dev" })
     public Response list(@QueryParam("sort") @DefaultValue("desc") @NotNull String sortQuery,
                          @QueryParam("ativo") @DefaultValue("true") Boolean ativo,
+                         @QueryParam("animalAtivo") @DefaultValue("true") Boolean animalAtivo,
                          @QueryParam("strgOrder") @DefaultValue("id") String strgOrder) {
         String query = "isAtivo = " + ativo + " " + "order by " + strgOrder + " " + sortQuery;
         PanacheQuery<HistoricoClinico> historicoClinico;
         historicoClinico = HistoricoClinico.find(query);
-        return Response.ok(historicoClinico.list().stream().filter(c -> c.animal.isAtivo = Boolean.TRUE).collect(Collectors.toList())).status(Response.Status.ACCEPTED).build();
+        return Response.ok(historicoClinico.list().stream().filter(c -> c.animal.isAtivo = animalAtivo).collect(Collectors.toList())).status(Response.Status.ACCEPTED).build();
     }
 
     @POST

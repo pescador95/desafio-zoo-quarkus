@@ -18,6 +18,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.IOException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Path("s3")
 @Consumes(MediaType.MULTIPART_FORM_DATA)
@@ -47,6 +48,8 @@ public class ProfileS3Resources {
     @Consumes("application/json")
     @RolesAllowed({ "veterinario", "biologo", "dev" })
     public Response listS3(@QueryParam("sort") @DefaultValue("desc") @NotNull String sortQuery,
+                           @QueryParam("ativo") @DefaultValue("true") Boolean ativo,
+                           @QueryParam("animalAtivo") @DefaultValue("true") Boolean animalAtivo,
                            @QueryParam("page") @DefaultValue("0") int pageIndex,
                            @QueryParam("size") @DefaultValue("10") int pageSize,
                            @QueryParam("id") @DefaultValue("0") int id,
@@ -56,7 +59,7 @@ public class ProfileS3Resources {
         PanacheQuery<Profile> profile;
         profile = Profile.find(query);
 
-        return Response.ok(profile.page(Page.of(pageIndex, pageSize)).list()).status(Response.Status.ACCEPTED).build();
+        return Response.ok(profile.page(Page.of(pageIndex, pageSize)).list().stream().filter(c -> c.animal.isAtivo = animalAtivo).collect(Collectors.toList())).status(Response.Status.ACCEPTED).build();
     }
 
     @GET

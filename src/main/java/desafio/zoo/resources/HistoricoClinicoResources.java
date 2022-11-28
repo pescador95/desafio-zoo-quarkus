@@ -17,6 +17,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
 import java.security.Principal;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Path("/historicoClinico")
 public class HistoricoClinicoResources {
@@ -62,9 +63,21 @@ public class HistoricoClinicoResources {
             @QueryParam("strgOrder") @DefaultValue("id") String strgOrder) {
         String query = "isAtivo = " + ativo + " " + strgFilter + " " + "order by " + strgOrder + " " + sortQuery;
         PanacheQuery<HistoricoClinico> historicoClinico;
+        historicoClinico = HistoricoClinico.find(query);;
+        return Response.ok(historicoClinico.page(Page.of(pageIndex, pageSize)).list().stream().filter(c -> c.animal.isAtivo = Boolean.TRUE).collect(Collectors.toList())).status(Response.Status.ACCEPTED).build();
+    }
+    @GET
+    @Path("/seletor")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes("application/json")
+    @RolesAllowed({ "veterinario", "biologo", "dev" })
+    public Response list(@QueryParam("sort") @DefaultValue("desc") @NotNull String sortQuery,
+                         @QueryParam("ativo") @DefaultValue("true") Boolean ativo,
+                         @QueryParam("strgOrder") @DefaultValue("id") String strgOrder) {
+        String query = "isAtivo = " + ativo + " " + "order by " + strgOrder + " " + sortQuery;
+        PanacheQuery<HistoricoClinico> historicoClinico;
         historicoClinico = HistoricoClinico.find(query);
-        return Response.ok(historicoClinico.page(Page.of(pageIndex, pageSize)).list()).status(Response.Status.ACCEPTED)
-                .build();
+        return Response.ok(historicoClinico.list().stream().filter(c -> c.animal.isAtivo = Boolean.TRUE).collect(Collectors.toList())).status(Response.Status.ACCEPTED).build();
     }
 
     @POST

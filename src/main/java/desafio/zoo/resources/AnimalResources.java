@@ -64,6 +64,20 @@ public class AnimalResources {
         return Response.ok(animais.page(Page.of(pageIndex, pageSize)).list()).status(Response.Status.ACCEPTED).build();
     }
 
+    @GET
+    @Path("/seletor")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes("application/json")
+    @RolesAllowed({ "veterinario", "biologo", "dev" })
+    public Response list(@QueryParam("sort") @DefaultValue("desc") @NotNull String sortQuery,
+                         @QueryParam("ativo") @DefaultValue("true") Boolean ativo,
+                         @QueryParam("strgOrder") @DefaultValue("id") String strgOrder) {
+        PanacheQuery<Animal> animais;
+        String query = "isAtivo = " + ativo + " " + "order by " + strgOrder + " " + sortQuery;
+        animais = Animal.find(query);
+        return Response.ok(animais.list()).status(Response.Status.ACCEPTED).build();
+    }
+
     @POST
     @Path("/")
     @Produces(MediaType.APPLICATION_JSON)

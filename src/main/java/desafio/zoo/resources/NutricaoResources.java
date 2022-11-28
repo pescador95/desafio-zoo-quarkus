@@ -16,6 +16,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
 import java.security.Principal;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Path("/nutricao")
 public class NutricaoResources {
@@ -62,7 +63,7 @@ public class NutricaoResources {
         String query = "isAtivo = " + ativo + " " + strgFilter + " " + "order by " + strgOrder + " " + sortQuery;
         PanacheQuery<Nutricao> nutricao;
         nutricao = Nutricao.find(query);
-        return Response.ok(nutricao.page(Page.of(pageIndex, pageSize)).list()).status(Response.Status.ACCEPTED).build();
+        return Response.ok(nutricao.page(Page.of(pageIndex, pageSize)).list().stream().filter(c -> c.animal.isAtivo = Boolean.TRUE).collect(Collectors.toList())).status(Response.Status.ACCEPTED).build();
     }
 
     @POST

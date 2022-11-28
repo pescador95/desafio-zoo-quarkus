@@ -17,6 +17,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.IOException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Path("uploads")
@@ -55,7 +56,7 @@ public class ProfileResources {
         PanacheQuery<Profile> profile;
         profile = Profile.find(query);
 
-        return Response.ok(profile.page(Page.of(pageIndex, pageSize)).list()).status(Response.Status.ACCEPTED).build();
+        return Response.ok(profile.page(Page.of(pageIndex, pageSize)).list().stream().filter(c -> c.animal.isAtivo = Boolean.TRUE).collect(Collectors.toList())).status(Response.Status.ACCEPTED).build();
     }
 
     @GET

@@ -16,6 +16,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
 import java.security.Principal;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Path("/enriquecimentoAmbiental")
 public class EnriquecimentoAmbientalResources {
@@ -62,8 +63,7 @@ public class EnriquecimentoAmbientalResources {
         String query = "isAtivo = " + ativo + " " + strgFilter + " " + "order by " + strgOrder + " " + sortQuery;
         PanacheQuery<EnriquecimentoAmbiental> enriquecimentoAmbiental;
         enriquecimentoAmbiental = EnriquecimentoAmbiental.find(query);
-        return Response.ok(enriquecimentoAmbiental.page(Page.of(pageIndex, pageSize)).list())
-                .status(Response.Status.ACCEPTED).build();
+        return Response.ok(enriquecimentoAmbiental.page(Page.of(pageIndex, pageSize)).list().stream().filter(c -> c.animal.isAtivo = Boolean.TRUE).collect(Collectors.toList())).status(Response.Status.ACCEPTED).build();
     }
 
     @POST

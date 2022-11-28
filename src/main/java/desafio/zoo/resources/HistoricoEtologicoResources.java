@@ -16,6 +16,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
 import java.security.Principal;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Path("/historicoEtologico")
 public class HistoricoEtologicoResources {
@@ -62,8 +63,7 @@ public class HistoricoEtologicoResources {
         String query = "isAtivo = " + ativo + " " + strgFilter + " " + "order by " + strgOrder + " " + sortQuery;
         PanacheQuery<HistoricoEtologico> historicoEtologico;
         historicoEtologico = HistoricoEtologico.find(query);
-        return Response.ok(historicoEtologico.page(Page.of(pageIndex, pageSize)).list())
-                .status(Response.Status.ACCEPTED).build();
+        return Response.ok(historicoEtologico.page(Page.of(pageIndex, pageSize)).list().stream().filter(c -> c.animal.isAtivo = Boolean.TRUE).collect(Collectors.toList())).status(Response.Status.ACCEPTED).build();
     }
 
     @POST

@@ -1,6 +1,11 @@
 package desafio.zoo.controller;
 
 import desafio.zoo.model.Animal;
+import desafio.zoo.model.EnriquecimentoAmbiental;
+import desafio.zoo.model.HistoricoClinico;
+import desafio.zoo.model.HistoricoEtologico;
+import desafio.zoo.model.Medicacao;
+import desafio.zoo.model.Nutricao;
 import desafio.zoo.model.Responses;
 import desafio.zoo.model.Usuario;
 import org.jetbrains.annotations.NotNull;
@@ -18,6 +23,11 @@ public class AnimalController {
     public Animal animal;
     Responses responses;
     Usuario usuarioAuth;
+    EnriquecimentoAmbiental enriquecimentoAmbiental;
+    HistoricoClinico historicoClinico;
+    HistoricoEtologico historicoEtologico;
+    Medicacao medicacao;
+    Nutricao nutricao;
 
     public Response addAnimal(@NotNull Animal pAnimal, String email) {
 
@@ -25,7 +35,8 @@ public class AnimalController {
         responses.messages = new ArrayList<>();
         usuarioAuth = Usuario.find("email = ?1", email).firstResult();
 
-        animal = Animal.find("identificacao = ?1 and isAtivo = true ORDER BY id DESC", pAnimal.identificacao).firstResult();
+        animal = Animal.find("identificacao = ?1 and isAtivo = true ORDER BY id DESC", pAnimal.identificacao)
+                .firstResult();
 
         if (animal == null) {
             animal = new Animal();
@@ -194,7 +205,6 @@ public class AnimalController {
             pListIdAnimal.forEach((pAnimal) -> {
 
                 Animal animal = Animal.find("id = ?1 and isAtivo = true ORDER BY id DESC", pAnimal).firstResult();
-
                 animal.isAtivo = Boolean.FALSE;
                 animal.dataAcao = new Date();
                 animal.usuarioAcao = usuarioAuth;
@@ -202,6 +212,50 @@ public class AnimalController {
                 animal.systemDateDeleted = new Date();
                 animal.persist();
                 animalList.add(animal);
+
+                enriquecimentoAmbiental = EnriquecimentoAmbiental
+                        .find("animalid = ?1 and isAtivo = true ORDER BY id DESC", pAnimal).firstResult();
+                enriquecimentoAmbiental.isAtivo = Boolean.FALSE;
+                enriquecimentoAmbiental.dataAcao = new Date();
+                enriquecimentoAmbiental.usuarioAcao = usuarioAuth;
+                enriquecimentoAmbiental.usuarioAcaoNome = usuarioAuth.nome;
+                enriquecimentoAmbiental.systemDateDeleted = null;
+                enriquecimentoAmbiental.persist();
+
+                historicoClinico = HistoricoClinico.find("animalid = ?1 and isAtivo = true ORDER BY id DESC", pAnimal)
+                        .firstResult();
+                medicacao = Medicacao
+                        .find("historicoclinicoid = ?1 and isAtivo = true ORDER BY id DESC", historicoClinico.id)
+                        .firstResult();
+                historicoClinico.isAtivo = Boolean.FALSE;
+                historicoClinico.dataAcao = new Date();
+                historicoClinico.usuarioAcao = usuarioAuth;
+                historicoClinico.usuarioAcaoNome = usuarioAuth.nome;
+                historicoClinico.systemDateDeleted = null;
+                medicacao.isAtivo = Boolean.TRUE;
+                medicacao.dataAcao = new Date();
+                medicacao.usuarioAcao = usuarioAuth;
+                medicacao.usuarioAcaoNome = usuarioAuth.nome;
+                medicacao.systemDateDeleted = null;
+                historicoClinico.persist();
+                medicacao.persist();
+
+                historicoEtologico = HistoricoEtologico.find("animalid = ?1 and isAtivo = true ORDER BY id DESC", pAnimal).firstResult();
+                historicoEtologico.isAtivo = Boolean.FALSE;
+                historicoEtologico.dataAcao = new Date();
+                historicoEtologico.usuarioAcao = usuarioAuth;
+                historicoEtologico.usuarioAcaoNome = usuarioAuth.nome;
+                historicoEtologico.systemDateDeleted = null;
+                historicoEtologico.persist();
+
+                nutricao = Nutricao.find("animalid = ?1 and isAtivo = true ORDER BY id DESC", pAnimal).firstResult();
+                nutricao.isAtivo = Boolean.FALSE;
+                nutricao.dataAcao = new Date();
+                nutricao.usuarioAcao = usuarioAuth;
+                nutricao.usuarioAcaoNome = usuarioAuth.nome;
+                nutricao.systemDateDeleted = null;
+                nutricao.persist();
+
             });
 
             if (pListIdAnimal.size() <= 1) {
@@ -247,6 +301,50 @@ public class AnimalController {
                 animal.systemDateDeleted = null;
                 animal.persist();
                 animalList.add(animal);
+
+                enriquecimentoAmbiental = EnriquecimentoAmbiental
+                        .find("animalid = ?1 and isAtivo = false ORDER BY id DESC", pAnimal).firstResult();
+                enriquecimentoAmbiental.isAtivo = Boolean.TRUE;
+                enriquecimentoAmbiental.dataAcao = new Date();
+                enriquecimentoAmbiental.usuarioAcao = usuarioAuth;
+                enriquecimentoAmbiental.usuarioAcaoNome = usuarioAuth.nome;
+                enriquecimentoAmbiental.systemDateDeleted = null;
+                enriquecimentoAmbiental.persist();
+
+                historicoClinico = HistoricoClinico.find("animalid = ?1 and isAtivo = false ORDER BY id DESC", pAnimal)
+                        .firstResult();
+                medicacao = Medicacao
+                        .find("historicoclinicoid = ?1 and isAtivo = true ORDER BY id DESC", historicoClinico.id)
+                        .firstResult();
+                historicoClinico.isAtivo = Boolean.TRUE;
+                historicoClinico.dataAcao = new Date();
+                historicoClinico.usuarioAcao = usuarioAuth;
+                historicoClinico.usuarioAcaoNome = usuarioAuth.nome;
+                historicoClinico.systemDateDeleted = null;
+                medicacao.isAtivo = Boolean.TRUE;
+                medicacao.dataAcao = new Date();
+                medicacao.usuarioAcao = usuarioAuth;
+                medicacao.usuarioAcaoNome = usuarioAuth.nome;
+                medicacao.systemDateDeleted = null;
+                historicoClinico.persist();
+                medicacao.persist();
+
+                historicoEtologico = HistoricoEtologico
+                        .find("animalid = ?1 and isAtivo = false ORDER BY id DESC", pAnimal).firstResult();
+                historicoEtologico.isAtivo = Boolean.TRUE;
+                historicoEtologico.dataAcao = new Date();
+                historicoEtologico.usuarioAcao = usuarioAuth;
+                historicoEtologico.usuarioAcaoNome = usuarioAuth.nome;
+                historicoEtologico.systemDateDeleted = null;
+                historicoEtologico.persist();
+
+                nutricao = Nutricao.find("animalid = ?1 and isAtivo = false ORDER BY id DESC", pAnimal).firstResult();
+                nutricao.isAtivo = Boolean.TRUE;
+                nutricao.dataAcao = new Date();
+                nutricao.usuarioAcao = usuarioAuth;
+                nutricao.usuarioAcaoNome = usuarioAuth.nome;
+                nutricao.systemDateDeleted = null;
+                nutricao.persist();
             });
             if (pListIdAnimal.size() <= 1) {
                 responses.status = 200;

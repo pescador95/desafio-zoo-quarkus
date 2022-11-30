@@ -21,8 +21,8 @@ import java.util.stream.Collectors;
 
 
 @Path("uploads")
-@Produces(MediaType.APPLICATION_JSON)
-@Consumes(MediaType.MULTIPART_FORM_DATA)
+@Produces({MediaType.MULTIPART_FORM_DATA, MediaType.APPLICATION_JSON})
+@Consumes({MediaType.MULTIPART_FORM_DATA, MediaType.APPLICATION_JSON})
 @Transactional
 public class ProfileResources {
 
@@ -79,6 +79,8 @@ public class ProfileResources {
     }
 
     @POST
+    @Produces({MediaType.MULTIPART_FORM_DATA, MediaType.APPLICATION_JSON})
+    @Consumes({MediaType.MULTIPART_FORM_DATA, MediaType.APPLICATION_JSON})
     @Path("/")
     public Response sendUpload(@MultipartForm FormData pData,
                                @QueryParam("fileRefence") @DefaultValue("animal") String pFileRefence,

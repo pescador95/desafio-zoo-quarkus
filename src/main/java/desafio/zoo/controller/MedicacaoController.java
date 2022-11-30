@@ -31,7 +31,6 @@ public class MedicacaoController {
         historicoClinico = HistoricoClinico.findById(pMedicacao.historicoClinico.id);
 
         if(historicoClinico != null){
-            if (medicacao == null) {
                 medicacao = new Medicacao();
 
                 if (pMedicacao.nomeMedicacao != null) {
@@ -74,12 +73,6 @@ public class MedicacaoController {
                     return Response.ok(responses).status(Response.Status.BAD_REQUEST).build();
                 }
                 return Response.ok(responses).status(Response.Status.CREATED).build();
-            } else {
-                responses.status = 500;
-                responses.data = medicacao;
-                responses.messages.add("medicação já cadastrada!");
-                return Response.ok(responses).status(Response.Status.BAD_REQUEST).build();
-            }
         } else {
             responses.status = 500;
             responses.data = pMedicacao;

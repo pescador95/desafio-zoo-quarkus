@@ -29,7 +29,7 @@ public class HistoricoEtologico extends PanacheEntityBase {
     public String nomeAnimal;
 
     @Column()
-    @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
+    @JsonFormat(pattern = "dd/MM/yyyy")
     public Date dataEtologico;
 
     @Column(nullable = false)

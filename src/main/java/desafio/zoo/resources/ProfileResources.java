@@ -37,7 +37,7 @@ public class ProfileResources {
     @RolesAllowed({ "veterinario", "biologo", "dev" })
     public Response count(@QueryParam("ativo") @DefaultValue("true") Boolean ativo,
                           @QueryParam("strgFilter") @DefaultValue("") String strgFilter) {
-        String query = "isAtivo = " + ativo + " " + strgFilter;
+        String query = "id > 0 " + strgFilter;
         long uploads = Profile.count(query);
         return Response.ok(uploads).status(Response.Status.ACCEPTED).build();
     }
@@ -80,7 +80,8 @@ public class ProfileResources {
 
     @POST
     @Path("/")
-    public Response sendUpload(@MultipartForm FormData pData, @QueryParam("fileRefence") String pFileRefence,
+    public Response sendUpload(@MultipartForm FormData pData,
+                               @QueryParam("fileRefence") @DefaultValue("animal") String pFileRefence,
                                @QueryParam("idAnimal") Long pIdAnimal) {
         try {
             return controller.sendUpload(pData, pFileRefence, pIdAnimal);

@@ -1,5 +1,6 @@
 package desafio.zoo.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -28,6 +29,7 @@ public class Profile extends PanacheEntityBase {
     public String mimetype;
 
     @Column()
+    @JsonFormat(pattern = "dd/MM/yyyy")
     public Date dataCriado;
 
     @Column()

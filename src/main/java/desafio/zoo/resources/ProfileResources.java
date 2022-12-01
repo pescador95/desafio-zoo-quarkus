@@ -21,8 +21,8 @@ import java.util.stream.Collectors;
 
 
 @Path("uploads")
-@Produces({MediaType.MULTIPART_FORM_DATA, MediaType.APPLICATION_JSON})
-@Consumes({MediaType.MULTIPART_FORM_DATA, MediaType.APPLICATION_JSON})
+@Produces(MediaType.APPLICATION_JSON)
+@Consumes(MediaType.MULTIPART_FORM_DATA)
 @Transactional
 public class ProfileResources {
 
@@ -82,11 +82,14 @@ public class ProfileResources {
     @Produces({MediaType.MULTIPART_FORM_DATA, MediaType.APPLICATION_JSON})
     @Consumes({MediaType.MULTIPART_FORM_DATA, MediaType.APPLICATION_JSON})
     @Path("/")
-    public Response sendUpload(@MultipartForm FormData pData,
-                               @QueryParam("fileRefence") @DefaultValue("animal") String pFileRefence,
-                               @QueryParam("idAnimal") Long pIdAnimal) {
+    public Response sendUpload(@MultipartForm("file") FormData file,
+                               @QueryParam("fileReference") String fileReference,
+                               @QueryParam("idAnimal") Long idAnimal) {
+        System.out.println(file + " arquivo");
+        System.out.println(fileReference + " string");
+        System.out.println(idAnimal + " id do animal");
         try {
-            return controller.sendUpload(pData, pFileRefence, pIdAnimal);
+            return controller.sendUpload(file, fileReference, idAnimal);
         } catch (IOException e) {
             return Response.ok(e.getMessage(), MediaType.TEXT_PLAIN).status(Response.Status.UNAUTHORIZED).build();
         }

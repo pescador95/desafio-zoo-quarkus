@@ -24,6 +24,7 @@ import java.util.stream.Collectors;
 @Path("uploads")
 @Produces({MediaType.APPLICATION_JSON, MediaType.MULTIPART_FORM_DATA})
 @Consumes({MediaType.MULTIPART_FORM_DATA, MediaType.APPLICATION_JSON})
+
 @Transactional
 public class ProfileResources {
 
@@ -86,7 +87,6 @@ public class ProfileResources {
     public Response sendUpload(@MultipartForm("file") FormData file,
                                @QueryParam("fileReference") String fileReference,
                                @QueryParam("idAnimal") Long idAnimal) {
-        System.out.println(file + " arquivo");
         try {
             return controller.sendUpload(file, fileReference, idAnimal);
         } catch (IOException e) {

@@ -15,14 +15,16 @@ import javax.transaction.Transactional;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
 
 @Path("uploads")
-@Produces(MediaType.APPLICATION_JSON)
-@Consumes(MediaType.MULTIPART_FORM_DATA)
+@Produces({MediaType.APPLICATION_JSON, MediaType.MULTIPART_FORM_DATA})
+@Consumes({MediaType.MULTIPART_FORM_DATA, MediaType.APPLICATION_JSON})
+
 @Transactional
 public class ProfileResources {
 
@@ -79,15 +81,12 @@ public class ProfileResources {
     }
 
     @POST
+    @Path("/")
     @Produces({MediaType.MULTIPART_FORM_DATA, MediaType.APPLICATION_JSON})
     @Consumes({MediaType.MULTIPART_FORM_DATA, MediaType.APPLICATION_JSON})
-    @Path("/")
     public Response sendUpload(@MultipartForm("file") FormData file,
                                @QueryParam("fileReference") String fileReference,
                                @QueryParam("idAnimal") Long idAnimal) {
-        System.out.println(file + " arquivo");
-        System.out.println(fileReference + " string");
-        System.out.println(idAnimal + " id do animal");
         try {
             return controller.sendUpload(file, fileReference, idAnimal);
         } catch (IOException e) {

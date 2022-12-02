@@ -79,7 +79,7 @@ public class EnriquecimentoAmbientalController {
 
                     responses.status = 200;
                     responses.data = enriquecimentoAmbiental;
-                    responses.messages.add("Enriquecimento Ambiental cradastrado com sucesso!");
+                    responses.messages.add("Enriquecimento Ambiental cadastrado com sucesso!");
 
                 } else {
                     return Response.ok(responses).status(Response.Status.BAD_REQUEST).build();

@@ -20,7 +20,6 @@ public class Nutricao extends PanacheEntityBase {
 
     @ManyToOne()
     @JsonIgnoreProperties("nutricao")
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @JoinColumn(name = "animalId")
     @GeneratedValue
     public Animal animal;

@@ -20,7 +20,6 @@ public class EnriquecimentoAmbiental extends PanacheEntityBase {
 
     @ManyToOne
     @JsonIgnoreProperties("enriquecimentoAmbiental")
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @JoinColumn(name = "animalId")
     @GeneratedValue
     public Animal animal;

@@ -21,8 +21,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Path("s3")
-@Consumes(MediaType.MULTIPART_FORM_DATA)
-@Produces(MediaType.APPLICATION_JSON)
+@Consumes({MediaType.MULTIPART_FORM_DATA, MediaType.APPLICATION_JSON})
+@Produces({MediaType.MULTIPART_FORM_DATA, MediaType.APPLICATION_JSON})
 @Transactional
 public class ProfileS3Resources {
 
@@ -79,7 +79,7 @@ public class ProfileS3Resources {
     }
 
     @POST
-    public Response sendS3(@MultipartForm FormData pData, @QueryParam("fileRefence") String pFileRefence, @QueryParam("idAnimal") Long pIdAnimal) {
+    public Response sendS3(@MultipartForm("file") FormData pData, @QueryParam("fileRefence") String pFileRefence, @QueryParam("idAnimal") Long pIdAnimal) {
         try {
         return controller.sendS3(pData, pFileRefence, pIdAnimal);
         } catch (IOException e) {

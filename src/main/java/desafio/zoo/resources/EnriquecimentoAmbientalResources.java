@@ -116,13 +116,11 @@ public class EnriquecimentoAmbientalResources {
             String email = json.getName();
             return controller.deleteEnriquecimentoAmbiental(pListEnriquecimentoAmbiental, email);
         } catch (Exception e) {
+            responses = new Responses();
+            responses.status = 500;
             if (pListEnriquecimentoAmbiental.size() <= 1) {
-                responses = new Responses();
-                responses.status = 500;
                 responses.messages.add("Não foi possível excluir o Enriquecimento Ambiental.");
             } else {
-                responses = new Responses();
-                responses.status = 500;
                 responses.messages.add("Não foi possível excluir os Enriquecimentos Ambientais.");
             }
             return Response.ok(responses).status(Response.Status.BAD_REQUEST).build();
@@ -140,13 +138,11 @@ public class EnriquecimentoAmbientalResources {
             String email = json.getName();
             return controller.reactivateEnriquecimentoAmbiental(pListEnriquecimentoAmbiental, email);
         } catch (Exception e) {
+            responses = new Responses();
+            responses.status = 500;
             if (pListEnriquecimentoAmbiental.size() <= 1) {
-                responses = new Responses();
-                responses.status = 500;
                 responses.messages.add("Não foi possível excluir o Enriquecimento Ambiental.");
             } else {
-                responses = new Responses();
-                responses.status = 500;
                 responses.messages.add("Não foi possível excluir os Enriquecimentos Ambientais.");
             }
             return Response.ok(responses).status(Response.Status.BAD_REQUEST).build();

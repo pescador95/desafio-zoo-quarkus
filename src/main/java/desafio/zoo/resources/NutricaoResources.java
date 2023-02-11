@@ -114,13 +114,11 @@ public class NutricaoResources {
             String email = json.getName();
             return controller.deleteNutricao(pListIdnutricao, email);
         } catch (Exception e) {
+            responses = new Responses();
+            responses.status = 500;
             if (pListIdnutricao.size() <= 1) {
-                responses = new Responses();
-                responses.status = 500;
                 responses.messages.add("Não foi possível excluir a ficha de nutrição.");
             } else {
-                responses = new Responses();
-                responses.status = 500;
                 responses.messages.add("Não foi possível excluir as a fichas de nutrição.");
             }
             return Response.ok(responses).status(Response.Status.BAD_REQUEST).build();
@@ -138,13 +136,11 @@ public class NutricaoResources {
             String email = json.getName();
             return controller.reactivateNutricao(pListIdnutricao, email);
         } catch (Exception e) {
+            responses = new Responses();
+            responses.status = 500;
             if (pListIdnutricao.size() <= 1) {
-                responses = new Responses();
-                responses.status = 500;
                 responses.messages.add("Não foi possível reativar a ficha de nutrição.");
             } else {
-                responses = new Responses();
-                responses.status = 500;
                 responses.messages.add("Não foi possível reativar as a fichas de nutrição.");
             }
             return Response.ok(responses).status(Response.Status.BAD_REQUEST).build();

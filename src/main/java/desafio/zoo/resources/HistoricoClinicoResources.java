@@ -129,13 +129,11 @@ public class HistoricoClinicoResources {
             String email = json.getName();
             return controller.deleteHistoricoClinico(pListIdHistoricoClinico, email);
         } catch (Exception e) {
+            responses = new Responses();
+            responses.status = 500;
             if (pListIdHistoricoClinico.size() <= 1) {
-                responses = new Responses();
-                responses.status = 500;
                 responses.messages.add("Não foi possível excluir o Histórico Clínico.");
             } else {
-                responses = new Responses();
-                responses.status = 500;
                 responses.messages.add("Não foi possível excluir os Históricos Clínicos.");
             }
             return Response.ok(responses).status(Response.Status.BAD_REQUEST).build();
@@ -153,13 +151,11 @@ public class HistoricoClinicoResources {
             String email = json.getName();
             return controller.reactivateHistoricoClinico(pListIdHistoricoClinico, email);
         } catch (Exception e) {
+            responses = new Responses();
+            responses.status = 500;
             if (pListIdHistoricoClinico.size() <= 1) {
-                responses = new Responses();
-                responses.status = 500;
                 responses.messages.add("Não foi possível reativar o Histórico Clínico.");
             } else {
-                responses = new Responses();
-                responses.status = 500;
                 responses.messages.add("Não foi possível reativar os Históricos Clínicos.");
             }
             return Response.ok(responses).status(Response.Status.BAD_REQUEST).build();

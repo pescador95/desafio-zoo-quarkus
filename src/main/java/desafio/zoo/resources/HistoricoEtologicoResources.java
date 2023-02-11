@@ -116,13 +116,11 @@ public class HistoricoEtologicoResources {
             String email = json.getName();
             return controller.deleteHistoricoEtologico(pListHistoricoEtologico, email);
         } catch (Exception e) {
+            responses = new Responses();
+            responses.status = 500;
             if (pListHistoricoEtologico.size() <= 1) {
-                responses = new Responses();
-                responses.status = 500;
                 responses.messages.add("Não foi possível excluir o Histórico Etológico.");
             } else {
-                responses = new Responses();
-                responses.status = 500;
                 responses.messages.add("Não foi possível excluir os Históricos Etológicos.");
             }
             return Response.ok(responses).status(Response.Status.BAD_REQUEST).build();
@@ -141,13 +139,11 @@ public class HistoricoEtologicoResources {
             String email = json.getName();
             return controller.reactivateHistoricoEtologico(pListHistoricoEtologico, email);
         } catch (Exception e) {
+            responses = new Responses();
+            responses.status = 500;
             if (pListHistoricoEtologico.size() <= 1) {
-                responses = new Responses();
-                responses.status = 500;
                 responses.messages.add("Não foi possível reativar o Histórico Etológico.");
             } else {
-                responses = new Responses();
-                responses.status = 500;
                 responses.messages.add("Não foi possível reativar os Históricos Etológicos.");
             }
             return Response.ok(responses).status(Response.Status.BAD_REQUEST).build();

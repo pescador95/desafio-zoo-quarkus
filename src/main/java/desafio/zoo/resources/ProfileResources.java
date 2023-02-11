@@ -15,7 +15,6 @@ import javax.transaction.Transactional;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -104,13 +103,11 @@ public class ProfileResources {
         try {
             return controller.removeUpload(pListIdProfile);
         } catch (Exception e) {
+            responses = new Responses();
+            responses.status = 500;
             if (pListIdProfile.size() <= 1) {
-                responses = new Responses();
-                responses.status = 500;
                 responses.messages.add("Não foi possível excluir o Arquivo.");
             } else {
-                responses = new Responses();
-                responses.status = 500;
                 responses.messages.add("Não foi possível excluir os Arquivos.");
             }
             return Response.ok(responses).status(Response.Status.BAD_REQUEST).build();

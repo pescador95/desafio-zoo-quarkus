@@ -125,13 +125,11 @@ public class AnimalResources {
             String email = json.getName();
             return controller.deleteAnimal(pListIdAnimal, email);
         } catch (Exception e) {
+            responses = new Responses();
+            responses.status = 500;
             if (pListIdAnimal.size() <= 1) {
-                responses = new Responses();
-                responses.status = 500;
                 responses.messages.add("Não foi possível excluir o animal.");
             } else {
-                responses = new Responses();
-                responses.status = 500;
                 responses.messages.add("Não foi possível excluir os animais.");
             }
             return Response.ok(responses).status(Response.Status.BAD_REQUEST).build();
@@ -149,13 +147,11 @@ public class AnimalResources {
             String email = json.getName();
             return controller.reactivateAnimal(pListIdAnimal, email);
         } catch (Exception e) {
+            responses = new Responses();
+            responses.status = 500;
             if (pListIdAnimal.size() <= 1) {
-                responses = new Responses();
-                responses.status = 500;
                 responses.messages.add("Não foi possível reativar o animal.");
             } else {
-                responses = new Responses();
-                responses.status = 500;
                 responses.messages.add("Não foi possível reativar os animais.");
             }
             return Response.ok(responses).status(Response.Status.BAD_REQUEST).build();

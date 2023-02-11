@@ -164,17 +164,17 @@ public class EnriquecimentoAmbientalController {
 
     public Response deleteEnriquecimentoAmbiental(List<Long> pListEnriquecimentoAmbiental, String email) {
 
-        Integer countList = pListEnriquecimentoAmbiental.size();
-        List<EnriquecimentoAmbiental> enriquecimentoAmbientalList = new ArrayList<>();
+        List<EnriquecimentoAmbiental> enriquecimentoAmbientalList;
+        List<EnriquecimentoAmbiental> enriquecimentoAmbientalListAux = new ArrayList<>();
         responses = new Responses();
         responses.messages = new ArrayList<>();
+
         usuarioAuth = Usuario.find("email = ?1", email).firstResult();
+        enriquecimentoAmbientalList = EnriquecimentoAmbiental.list("id in ?1 and isAtivo = true", pListEnriquecimentoAmbiental);
+        Integer countList = enriquecimentoAmbientalList.size();
 
         try {
-            pListEnriquecimentoAmbiental.forEach((pEnriquecimentoAmbiental) -> {
-
-                enriquecimentoAmbiental = EnriquecimentoAmbiental
-                        .find("id = ?1 and isAtivo = true ORDER BY id DESC", pEnriquecimentoAmbiental).firstResult();
+            enriquecimentoAmbientalList.forEach((enriquecimentoAmbiental) -> {
 
                 enriquecimentoAmbiental.isAtivo = Boolean.FALSE;
                 enriquecimentoAmbiental.dataAcao = new Date();
@@ -182,27 +182,24 @@ public class EnriquecimentoAmbientalController {
                 enriquecimentoAmbiental.usuarioAcaoNome = usuarioAuth.nome;
                 enriquecimentoAmbiental.systemDateDeleted = new Date();
                 enriquecimentoAmbiental.persist();
-                enriquecimentoAmbientalList.add(enriquecimentoAmbiental);
+                enriquecimentoAmbientalListAux.add(enriquecimentoAmbiental);
             });
-
-            if (pListEnriquecimentoAmbiental.size() <= 1) {
-                responses.status = 200;
+            responses.status = 200;
+            if (countList <= 1) {
                 responses.data = enriquecimentoAmbiental;
                 responses.messages.add("Enriquecimento Ambiental excluído com sucesso.");
             } else {
-                responses.status = 200;
-                responses.dataList = Collections.singletonList(enriquecimentoAmbientalList);
+                responses.dataList = Collections.singletonList(enriquecimentoAmbientalListAux);
                 responses.messages.add(countList + " Enriquecimentos Ambientais excluídos com sucesso.");
             }
             return Response.ok(responses).status(Response.Status.ACCEPTED).build();
         } catch (Exception e) {
-            if (pListEnriquecimentoAmbiental.size() <= 1) {
-                responses.status = 500;
+            responses.status = 500;
+            if (countList <= 1) {
                 responses.data = enriquecimentoAmbiental;
                 responses.messages.add("Enriquecimento Ambiental não localizado ou já excluído.");
             } else {
-                responses.status = 500;
-                responses.dataList = Collections.singletonList(enriquecimentoAmbientalList);
+                responses.dataList = Collections.singletonList(enriquecimentoAmbientalListAux);
                 responses.messages.add("Enriquecimentos Ambientais não localizados ou já excluídos.");
             }
             return Response.ok(responses).status(Response.Status.BAD_REQUEST).build();
@@ -211,16 +208,18 @@ public class EnriquecimentoAmbientalController {
 
     public Response reactivateEnriquecimentoAmbiental(List<Long> pListEnriquecimentoAmbiental, String email) {
 
-        Integer countList = pListEnriquecimentoAmbiental.size();
-        List<EnriquecimentoAmbiental> enriquecimentoAmbientalList = new ArrayList<>();
+
+        List<EnriquecimentoAmbiental> enriquecimentoAmbientalList;
+        List<EnriquecimentoAmbiental> enriquecimentoAmbientalListAux = new ArrayList<>();
         responses = new Responses();
         responses.messages = new ArrayList<>();
+
         usuarioAuth = Usuario.find("email = ?1", email).firstResult();
+        enriquecimentoAmbientalList = EnriquecimentoAmbiental.list("id in ?1 and isAtivo = false", pListEnriquecimentoAmbiental);
+        Integer countList = enriquecimentoAmbientalList.size();
 
         try {
-            pListEnriquecimentoAmbiental.forEach((pEnriquecimentoAmbiental) -> {
-                enriquecimentoAmbiental = EnriquecimentoAmbiental
-                        .find("id = ?1 and isAtivo = false ORDER BY id DESC", pEnriquecimentoAmbiental).firstResult();
+            enriquecimentoAmbientalList.forEach((enriquecimentoAmbiental) -> {
 
                 enriquecimentoAmbiental.isAtivo = Boolean.TRUE;
                 enriquecimentoAmbiental.dataAcao = new Date();
@@ -228,25 +227,23 @@ public class EnriquecimentoAmbientalController {
                 enriquecimentoAmbiental.usuarioAcaoNome = usuarioAuth.nome;
                 enriquecimentoAmbiental.systemDateDeleted = null;
                 enriquecimentoAmbiental.persist();
-                enriquecimentoAmbientalList.add(enriquecimentoAmbiental);
+                enriquecimentoAmbientalListAux.add(enriquecimentoAmbiental);
             });
-            if (pListEnriquecimentoAmbiental.size() <= 1) {
-                responses.status = 200;
+            responses.status = 200;
+            if (countList <= 1) {
                 responses.data = enriquecimentoAmbiental;
                 responses.messages.add("Enriquecimento Ambiental reativado com sucesso.");
             } else {
-                responses.status = 200;
-                responses.dataList = Collections.singletonList(enriquecimentoAmbientalList);
+                responses.dataList = Collections.singletonList(enriquecimentoAmbientalListAux);
                 responses.messages.add(countList + " Enriquecimentos Ambientais reativados com sucesso.");
             }
             return Response.ok(responses).status(Response.Status.ACCEPTED).build();
         } catch (Exception e) {
-            if (pListEnriquecimentoAmbiental.size() <= 1) {
-                responses.status = 500;
+            responses.status = 500;
+            if (countList <= 1) {
                 responses.data = enriquecimentoAmbiental;
                 responses.messages.add("Enriquecimento Ambiental não localizado ou já reativado.");
             } else {
-                responses.status = 500;
                 responses.dataList = Collections.singletonList(enriquecimentoAmbientalList);
                 responses.messages.add("Enriquecimentos Ambientais não localizados ou já reativados.");
             }

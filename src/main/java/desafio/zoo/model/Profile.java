@@ -49,5 +49,5 @@ public class Profile extends PanacheEntityBase {
 
     public Profile() {
 
-    }
+        }
 }

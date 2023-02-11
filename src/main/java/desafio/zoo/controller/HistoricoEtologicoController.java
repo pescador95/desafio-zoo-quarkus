@@ -151,16 +151,18 @@ public class HistoricoEtologicoController {
 
     public Response deleteHistoricoEtologico(List<Long> pListHistoricoEtologico, String email) {
 
-        List<HistoricoEtologico> historicoEtologicoList = new ArrayList<>();
+        List<HistoricoEtologico> historicoEtologicoList;
+        List<HistoricoEtologico> historicoEtologicoListAux = new ArrayList<>();
         responses = new Responses();
         responses.messages = new ArrayList<>();
+
         usuarioAuth = Usuario.find("email = ?1", email).firstResult();
+        historicoEtologicoList = HistoricoEtologico.list("id in ?1 and isAtivo = true", pListHistoricoEtologico);
+        Integer countList = historicoEtologicoList.size();
 
         try {
-            pListHistoricoEtologico.forEach((pHistoricoEtologico) -> {
 
-                historicoEtologico = HistoricoEtologico
-                        .find("id = ?1 and isAtivo = true ORDER BY id DESC", pHistoricoEtologico).firstResult();
+            historicoEtologicoList.forEach((historicoEtologico)  -> {
 
                 historicoEtologico.isAtivo = Boolean.FALSE;
                 historicoEtologico.dataAcao = new Date();
@@ -168,25 +170,23 @@ public class HistoricoEtologicoController {
                 historicoEtologico.usuarioAcaoNome = usuarioAuth.nome;
                 historicoEtologico.systemDateDeleted = new Date();
                 historicoEtologico.persist();
-                historicoEtologicoList.add(historicoEtologico);
+                historicoEtologicoListAux.add(historicoEtologico);
             });
-            if (pListHistoricoEtologico.size() <= 1) {
-                responses.status = 200;
+            responses.status = 200;
+            if (historicoEtologicoListAux.size() <= 1) {
                 responses.data = historicoEtologico;
                 responses.messages.add("Histórico Etológico excluído com sucesso.");
             } else {
-                responses.status = 200;
-                responses.dataList = Collections.singletonList(historicoEtologicoList);
-                responses.messages.add("Históricos Etológico excluídos com sucesso.");
+                responses.dataList = Collections.singletonList(historicoEtologicoListAux);
+                responses.messages.add(countList + " Históricos Etológico excluídos com sucesso.");
             }
             return Response.ok(responses).status(Response.Status.ACCEPTED).build();
         } catch (Exception e) {
-            if (pListHistoricoEtologico.size() <= 1) {
-                responses.status = 500;
+            responses.status = 500;
+            if (historicoEtologicoList.size() <= 1) {
                 responses.data = historicoEtologico;
                 responses.messages.add("Histórico Etológico não localizado ou já excluído.");
             } else {
-                responses.status = 500;
                 responses.dataList = Collections.singletonList(historicoEtologicoList);
                 responses.messages.add("Históricos Etológico não localizados ou já excluídos.");
             }
@@ -196,42 +196,41 @@ public class HistoricoEtologicoController {
 
     public Response reactivateHistoricoEtologico(List<Long> pListHistoricoEtologico, String email) {
 
-        List<HistoricoEtologico> historicoEtologicoList = new ArrayList<>();
+        List<HistoricoEtologico> historicoEtologicoList;
+        List<HistoricoEtologico> historicoEtologicoListAux = new ArrayList<>();
         responses = new Responses();
         responses.messages = new ArrayList<>();
+
         usuarioAuth = Usuario.find("email = ?1", email).firstResult();
+        historicoEtologicoList = HistoricoEtologico.list("id in ?1 and isAtivo = false", pListHistoricoEtologico);
+        Integer countList = historicoEtologicoList.size();
 
         try {
-            pListHistoricoEtologico.forEach((pHistoricoEtologico) -> {
-
-                historicoEtologico = HistoricoEtologico
-                        .find("id = ?1 and isAtivo = false ORDER BY id DESC", pHistoricoEtologico).firstResult();
+            historicoEtologicoList.forEach((historicoEtologico) -> {
 
                 historicoEtologico.isAtivo = Boolean.TRUE;
                 historicoEtologico.dataAcao = new Date();
                 historicoEtologico.usuarioAcao = usuarioAuth;
                 historicoEtologico.usuarioAcaoNome = usuarioAuth.nome;
-                historicoEtologico.systemDateDeleted = new Date();
+                historicoEtologico.systemDateDeleted = null;
                 historicoEtologico.persist();
-                historicoEtologicoList.add(historicoEtologico);
+                historicoEtologicoListAux.add(historicoEtologico);
             });
-            if (pListHistoricoEtologico.size() <= 1) {
-                responses.status = 200;
+            responses.status = 200;
+            if (historicoEtologicoListAux.size() <= 1) {
                 responses.data = historicoEtologico;
                 responses.messages.add("Histórico Etológico reativado com sucesso.");
             } else {
-                responses.status = 200;
-                responses.dataList = Collections.singletonList(historicoEtologicoList);
-                responses.messages.add("Históricos Etológico reativados com sucesso.");
+                responses.dataList = Collections.singletonList(historicoEtologicoListAux);
+                responses.messages.add(countList + " Históricos Etológico reativados com sucesso.");
             }
             return Response.ok(responses).status(Response.Status.ACCEPTED).build();
         } catch (Exception e) {
-            if (pListHistoricoEtologico.size() <= 1) {
-                responses.status = 500;
+            responses.status = 500;
+            if (historicoEtologicoList.size() <= 1) {
                 responses.data = historicoEtologico;
                 responses.messages.add("Histórico Etológico não localizado ou já reativado.");
             } else {
-                responses.status = 500;
                 responses.dataList = Collections.singletonList(historicoEtologicoList);
                 responses.messages.add("Históricos Etológico não localizados ou já reativados.");
             }

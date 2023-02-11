@@ -216,17 +216,18 @@ public class HistoricoClinicoController {
 
     public Response deleteHistoricoClinico(List<Long> pListIdHistoricoClinico, String email) {
 
-        Integer countList = pListIdHistoricoClinico.size();
-        List<HistoricoClinico> historicoClinicoList = new ArrayList<>();
+        List<HistoricoClinico> historicoClinicoList;
+        List<HistoricoClinico> historicoClinicoListAux = new ArrayList<>();
         responses = new Responses();
         responses.messages = new ArrayList<>();
+
         usuarioAuth = Usuario.find("email = ?1", email).firstResult();
+        historicoClinicoList = HistoricoClinico.list("id in ?1 and isAtivo = true", pListIdHistoricoClinico);
+        Integer countList = historicoClinicoList.size();
+
         try {
 
-            pListIdHistoricoClinico.forEach((pHistoricoClinico) -> {
-
-                historicoClinico = HistoricoClinico
-                        .find("id = ?1 and isAtivo = true ORDER BY id DESC", pHistoricoClinico).firstResult();
+            historicoClinicoList.forEach((historicoClinico) -> {
 
                 historicoClinico.isAtivo = Boolean.FALSE;
                 historicoClinico.dataAcao = new Date();
@@ -234,25 +235,24 @@ public class HistoricoClinicoController {
                 historicoClinico.usuarioAcaoNome = usuarioAuth.nome;
                 historicoClinico.systemDateDeleted = new Date();
                 historicoClinico.persist();
+                historicoClinicoListAux.add(historicoClinico);
             });
 
-            if (pListIdHistoricoClinico.size() <= 1) {
-                responses.status = 200;
+            responses.status = 200;
+            if (historicoClinicoListAux.size() <= 1) {
                 responses.data = historicoClinico;
                 responses.messages.add("Histórico Clínico excluído com sucesso.");
             } else {
-                responses.status = 200;
-                responses.dataList = Collections.singletonList(historicoClinicoList);
+                responses.dataList = Collections.singletonList(historicoClinicoListAux);
                 responses.messages.add(countList + " Históricos Clínico excluídos com sucesso.");
             }
             return Response.ok(responses).status(Response.Status.ACCEPTED).build();
         } catch (Exception e) {
-            if (pListIdHistoricoClinico.size() <= 1) {
-                responses.status = 500;
+            responses.status = 500;
+            if (historicoClinicoList.size() <= 1) {
                 responses.data = historicoClinico;
                 responses.messages.add("Histórico Clínico não localizado ou já excluído.");
             } else {
-                responses.status = 200;
                 responses.dataList = Collections.singletonList(historicoClinicoList);
                 responses.messages.add(countList + " Históricos Clínico não localizado ou já excluído.");
             }
@@ -262,43 +262,43 @@ public class HistoricoClinicoController {
 
     public Response reactivateHistoricoClinico(@NotNull List<Long> pListIdHistoricoClinico, String email) {
 
-        Integer countList = pListIdHistoricoClinico.size();
-        List<HistoricoClinico> historicoClinicoList = new ArrayList<>();
+        List<HistoricoClinico> historicoClinicoList;
+        List<HistoricoClinico> historicoClinicoListAux = new ArrayList<>();
         responses = new Responses();
         responses.messages = new ArrayList<>();
+
         usuarioAuth = Usuario.find("email = ?1", email).firstResult();
+        historicoClinicoList = HistoricoClinico.list("id in ?1 and isAtivo = false", pListIdHistoricoClinico);
+        int countList = historicoClinicoList.size();
+
         try {
 
-            pListIdHistoricoClinico.forEach((pHistoricoClinico) -> {
-
-                historicoClinico = HistoricoClinico
-                        .find("id = ?1 and isAtivo = false ORDER BY id DESC", pHistoricoClinico).firstResult();
+            historicoClinicoList.forEach((historicoClinico) -> {
 
                 historicoClinico.isAtivo = Boolean.TRUE;
                 historicoClinico.dataAcao = new Date();
                 historicoClinico.usuarioAcao = usuarioAuth;
                 historicoClinico.usuarioAcaoNome = usuarioAuth.nome;
-                historicoClinico.systemDateDeleted = new Date();
+                historicoClinico.systemDateDeleted = null;
                 historicoClinico.persist();
+                historicoClinicoListAux.add(historicoClinico);
             });
 
-            if (pListIdHistoricoClinico.size() <= 1) {
-                responses.status = 200;
+            responses.status = 200;
+            if (countList <= 1) {
                 responses.data = historicoClinico;
                 responses.messages.add("Histórico Clínico reativado com sucesso.");
             } else {
-                responses.status = 200;
-                responses.dataList = Collections.singletonList(historicoClinicoList);
+                responses.dataList = Collections.singletonList(historicoClinicoListAux);
                 responses.messages.add(countList + " Históricos Clínico reativados com sucesso.");
             }
             return Response.ok(responses).status(Response.Status.ACCEPTED).build();
         } catch (Exception e) {
-            if (pListIdHistoricoClinico.size() <= 1) {
-                responses.status = 500;
+            responses.status = 500;
+            if (countList <= 1) {
                 responses.data = historicoClinico;
                 responses.messages.add("Histórico Clínico não localizado ou já reativado.");
             } else {
-                responses.status = 200;
                 responses.dataList = Collections.singletonList(historicoClinicoList);
                 responses.messages.add(countList + " Históricos Clínico não localizado ou já reativados.");
             }

@@ -1,13 +1,6 @@
 package desafio.zoo.controller;
 
-import desafio.zoo.model.Animal;
-import desafio.zoo.model.EnriquecimentoAmbiental;
-import desafio.zoo.model.HistoricoClinico;
-import desafio.zoo.model.HistoricoEtologico;
-import desafio.zoo.model.Medicacao;
-import desafio.zoo.model.Nutricao;
-import desafio.zoo.model.Responses;
-import desafio.zoo.model.Usuario;
+import desafio.zoo.model.*;
 import org.jetbrains.annotations.NotNull;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -23,11 +16,6 @@ public class AnimalController {
     public Animal animal;
     Responses responses;
     Usuario usuarioAuth;
-    EnriquecimentoAmbiental enriquecimentoAmbiental;
-    HistoricoClinico historicoClinico;
-    HistoricoEtologico historicoEtologico;
-    Medicacao medicacao;
-    Nutricao nutricao;
 
     public Response addAnimal(@NotNull Animal pAnimal, String email) {
 
@@ -195,42 +183,42 @@ public class AnimalController {
 
     public Response deleteAnimal(@NotNull List<Long> pListIdAnimal, String email) {
 
-        Integer countList = pListIdAnimal.size();
-        List<Animal> animalList = new ArrayList<>();
+
+        List<Animal> animalList;
+        List<Animal> animalListAux = new ArrayList<>();
         responses = new Responses();
         responses.messages = new ArrayList<>();
+
         usuarioAuth = Usuario.find("email = ?1", email).firstResult();
+        animalList = Animal.list("id in ?1 and isAtivo = true", pListIdAnimal);
+        int countList = animalList.size();
 
         try {
-            pListIdAnimal.forEach((pAnimal) -> {
+            animalList.forEach((animal) -> {
 
-                Animal animal = Animal.find("id = ?1 and isAtivo = true ORDER BY id DESC", pAnimal).firstResult();
                 animal.isAtivo = Boolean.FALSE;
                 animal.dataAcao = new Date();
                 animal.usuarioAcao = usuarioAuth;
                 animal.usuarioAcaoNome = usuarioAuth.nome;
                 animal.systemDateDeleted = new Date();
                 animal.persist();
-                animalList.add(animal);
+                animalListAux.add(animal);
             });
-
-            if (pListIdAnimal.size() <= 1) {
-                responses.status = 200;
+            responses.status = 200;
+            if (countList <= 1) {
                 responses.data = animal;
                 responses.messages.add("Animal excluído com sucesso.");
             } else {
-                responses.status = 200;
-                responses.dataList = Collections.singletonList(animalList);
+                responses.dataList = Collections.singletonList(animalListAux);
                 responses.messages.add(countList + " Animais excluídos com sucesso.");
             }
             return Response.ok(responses).status(Response.Status.ACCEPTED).build();
         } catch (Exception e) {
-            if (pListIdAnimal.size() <= 1) {
-                responses.status = 500;
+            responses.status = 500;
+            if (countList <= 1) {
                 responses.data = animal;
                 responses.messages.add("Animal não localizado ou já excluído.");
             } else {
-                responses.status = 500;
                 responses.dataList = Collections.singletonList(animalList);
                 responses.messages.add("Animais não localizados ou já excluídos.");
             }
@@ -240,41 +228,40 @@ public class AnimalController {
 
     public Response reactivateAnimal(@NotNull List<Long> pListIdAnimal, String email) {
 
-        Integer countList = pListIdAnimal.size();
-        List<Animal> animalList = new ArrayList<>();
+        List<Animal> animalList;
+        List<Animal> animalListAux = new ArrayList<>();
         responses = new Responses();
         responses.messages = new ArrayList<>();
+
         usuarioAuth = Usuario.find("email = ?1", email).firstResult();
+        animalList = Animal.list("id in ?1 and isAtivo = false", pListIdAnimal);
+        int countList = animalList.size();
 
         try {
-            pListIdAnimal.forEach((pAnimal) -> {
-                Animal animal = Animal.find("id = ?1 and isAtivo = false ORDER BY id DESC", pAnimal).firstResult();
-
+            animalList.forEach((animal) -> {
                 animal.isAtivo = Boolean.TRUE;
                 animal.dataAcao = new Date();
                 animal.usuarioAcao = usuarioAuth;
                 animal.usuarioAcaoNome = usuarioAuth.nome;
                 animal.systemDateDeleted = null;
                 animal.persist();
-                animalList.add(animal);
+                animalListAux.add(animal);
             });
-            if (pListIdAnimal.size() <= 1) {
-                responses.status = 200;
+            responses.status = 200;
+            if (countList <= 1) {
                 responses.data = animal;
                 responses.messages.add("Animal reativado com sucesso!");
             } else {
-                responses.status = 200;
-                responses.dataList = Collections.singletonList(animalList);
+                responses.dataList = Collections.singletonList(animalListAux);
                 responses.messages.add(countList + " Animais reativados com sucesso!");
             }
             return Response.ok(responses).status(Response.Status.ACCEPTED).build();
         } catch (Exception e) {
-            if (pListIdAnimal.size() <= 1) {
-                responses.status = 500;
+            responses.status = 500;
+            if (countList <= 1) {
                 responses.data = animal;
                 responses.messages.add("Animal não localizado ou já reativado.");
             } else {
-                responses.status = 500;
                 responses.dataList = Collections.singletonList(animalList);
                 responses.messages.add("Animais não localizados ou já reativados.");
             }

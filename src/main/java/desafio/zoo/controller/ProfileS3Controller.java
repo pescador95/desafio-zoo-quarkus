@@ -48,9 +48,7 @@ public class ProfileS3Controller {
                 .map(FileObject::from)
                 .collect(Collectors.toList());
 
-        ProfileS3 profileS3View = new ProfileS3(profiles, listObjectsRequest);
-
-        return profileS3View;
+        return new ProfileS3(profiles, listObjectsRequest);
     }
 
     public ProfileS3 findOne(Long id) {
@@ -70,9 +68,7 @@ public class ProfileS3Controller {
                 .filter(item -> item.getObjectKey().equals(profile.keyName))
                 .collect(Collectors.toList());
 
-        ProfileS3 profileS3View = new ProfileS3(profile, listObjectsRequest.get(0));
-
-        return profileS3View;
+        return new ProfileS3(profile, listObjectsRequest.get(0));
     }
 
 
@@ -137,13 +133,16 @@ public class ProfileS3Controller {
 
     public Response removeS3(List<Long> pListIdProfile) {
 
-        Integer countList = pListIdProfile.size();
+        List<Profile> profileList;
         responses = new Responses();
         responses.messages = new ArrayList<>();
 
+        profileList = Profile.list("id in ?1 and isAtivo = true", pListIdProfile);
+        int countList = pListIdProfile.size();
+
         try {
-            pListIdProfile.forEach((pProfile) -> {
-                profile = Profile.find("id = ?1 and isAtivo = true ORDER BY id DESC", pProfile).firstResult();
+            profileList.forEach((profile) -> {
+
 
                 Profile.delete("id = ?1", profile.id);
 
@@ -152,20 +151,18 @@ public class ProfileS3Controller {
                 s3.deleteObject(deleteObjectRequest);
 
             });
-            if (pListIdProfile.size() <= 1) {
-                responses.status = 200;
+            responses.status = 200;
+            if (countList <= 1) {
                 responses.messages.add("Arquivo excluído com sucesso!");
             } else {
-                responses.status = 200;
                 responses.messages.add(countList + " Arquivos excluídos com sucesso!");
             }
             return Response.ok(responses).status(Response.Status.ACCEPTED).build();
         } catch (Exception e) {
-            if (pListIdProfile.size() <= 1) {
-                responses.status = 500;
+            responses.status = 500;
+            if (countList <= 1) {
                 responses.messages.add("Arquivo não localizado ou já excluído.");
             } else {
-                responses.status = 500;
                 responses.messages.add("Arquivos não localizados ou já excluídos.");
             }
             return Response.ok(responses).status(Response.Status.BAD_REQUEST).build();

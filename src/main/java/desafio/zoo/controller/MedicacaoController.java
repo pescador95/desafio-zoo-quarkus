@@ -142,17 +142,20 @@ public class MedicacaoController {
         }
     }
 
-    public Response deleteMedicacao(List<Long> pListMedicacao, String email) {
+    public Response deleteMedicacao(List<Long> pListIdMedicacao, String email) {
 
-        List<Medicacao> medicacaoList = new ArrayList<>();
+        List<Medicacao> medicacaoList;
+        List<Medicacao> medicacaoListAux = new ArrayList<>();
         responses = new Responses();
         responses.messages = new ArrayList<>();
+
         usuarioAuth = Usuario.find("email = ?1", email).firstResult();
+        medicacaoList = Medicacao.list("id in ?1 and isAtivo = true", pListIdMedicacao);
+        int countList = medicacaoList.size();
 
         try {
 
-            pListMedicacao.forEach((pMedicacao) -> {
-                medicacao = Medicacao.find("id = ?1 and isAtivo = true ORDER BY id DESC", pMedicacao).firstResult();
+            medicacaoList.forEach((medicacao) -> {
 
                 medicacao.isAtivo = Boolean.FALSE;
                 medicacao.dataAcao = new Date();
@@ -160,25 +163,23 @@ public class MedicacaoController {
                 medicacao.usuarioAcaoNome = usuarioAuth.nome;
                 medicacao.systemDateDeleted = new Date();
                 medicacao.persist();
-                medicacaoList.add(medicacao);
+                medicacaoListAux.add(medicacao);
             });
-            if (pListMedicacao.size() <= 1) {
-                responses.status = 200;
+            responses.status = 200;
+            if (countList <= 1) {
                 responses.data = medicacao;
                 responses.messages.add("Medicação excluída com sucesso.");
             } else {
-                responses.status = 200;
-                responses.dataList = Collections.singletonList(medicacaoList);
-                responses.messages.add("Medicações excluídas com sucesso.");
+                responses.dataList = Collections.singletonList(medicacaoListAux);
+                responses.messages.add(countList + " Medicações excluídas com sucesso.");
             }
             return Response.ok(responses).status(Response.Status.ACCEPTED).build();
         } catch (Exception e) {
-            if (pListMedicacao.size() <= 1) {
-                responses.status = 500;
+            responses.status = 500;
+            if (countList <= 1) {
                 responses.data = medicacao;
                 responses.messages.add("Medicação não localizada ou já excluída.");
             } else {
-                responses.status = 500;
                 responses.dataList = Collections.singletonList(medicacaoList);
                 responses.messages.add("Medicações não localizadas ou já excluídas.");
             }
@@ -186,38 +187,41 @@ public class MedicacaoController {
         }
     }
 
-    public Response reactivateMedicacao(List<Long> pListMedicacao, String email) {
+    public Response reactivateMedicacao(List<Long> pListIdMedicacao, String email) {
 
-        List<Medicacao> medicacaoList = new ArrayList<>();
+        List<Medicacao> medicacaoList;
+        List<Medicacao> medicacaoListAux = new ArrayList<>();
         responses = new Responses();
         responses.messages = new ArrayList<>();
+
         usuarioAuth = Usuario.find("email = ?1", email).firstResult();
+        medicacaoList = Medicacao.list("id in ?1 and isAtivo = false", pListIdMedicacao);
+        Integer countList = medicacaoList.size();
 
         try {
 
-            pListMedicacao.forEach((pMedicacao) -> {
-                medicacao = Medicacao.find("id = ?1 and isAtivo = false ORDER BY id DESC", pMedicacao).firstResult();
+            medicacaoList.forEach((medicacao) -> {
 
                 medicacao.isAtivo = Boolean.TRUE;
                 medicacao.dataAcao = new Date();
                 medicacao.usuarioAcao = usuarioAuth;
                 medicacao.usuarioAcaoNome = usuarioAuth.nome;
-                medicacao.systemDateDeleted = new Date();
+                medicacao.systemDateDeleted = null;
                 medicacao.persist();
-                medicacaoList.add(medicacao);
+                medicacaoListAux.add(medicacao);
             });
-            if (pListMedicacao.size() <= 1) {
+            if (medicacaoListAux.size() <= 1) {
                 responses.status = 200;
                 responses.data = medicacao;
                 responses.messages.add("Medicação reativada com sucesso.");
             } else {
                 responses.status = 200;
-                responses.dataList = Collections.singletonList(medicacaoList);
-                responses.messages.add("Medicações reativadas com sucesso.");
+                responses.dataList = Collections.singletonList(medicacaoListAux);
+                responses.messages.add(countList + " Medicações reativadas com sucesso.");
             }
             return Response.ok(responses).status(Response.Status.ACCEPTED).build();
         } catch (Exception e) {
-            if (pListMedicacao.size() <= 1) {
+            if (medicacaoList.size() <= 1) {
                 responses.status = 500;
                 responses.data = medicacao;
                 responses.messages.add("Medicação não localizada ou já reativada.");

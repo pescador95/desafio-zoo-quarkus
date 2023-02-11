@@ -149,15 +149,18 @@ public class NutricaoController {
 
     public Response deleteNutricao(List<Long> pListIdnutricao, String email) {
 
-        Integer countList = pListIdnutricao.size();
-        List<Nutricao> nutricaoList = new ArrayList<>();
+        List<Nutricao> nutricaoList;
+        List<Nutricao> nutricaoListAux = new ArrayList<>();
+
         responses = new Responses();
         responses.messages = new ArrayList<>();
+
         usuarioAuth = Usuario.find("email = ?1", email).firstResult();
+        nutricaoList = Nutricao.list("id in ?1 and isAtivo = true", pListIdnutricao);
+        int countList = nutricaoList.size();
 
         try {
-            pListIdnutricao.forEach((pNutricao) -> {
-                nutricao = Nutricao.find("id = ?1 and isAtivo = true ORDER BY id DESC", pNutricao).firstResult();
+            nutricaoList.forEach((nutricao) -> {
 
                 nutricao.isAtivo = Boolean.FALSE;
                 nutricao.dataAcao = new Date();
@@ -165,25 +168,23 @@ public class NutricaoController {
                 nutricao.usuarioAcaoNome = usuarioAuth.nome;
                 nutricao.systemDateDeleted = new Date();
                 nutricao.persist();
-                nutricaoList.add(nutricao);
+                nutricaoListAux.add(nutricao);
             });
-            if (pListIdnutricao.size() <= 1) {
-                responses.status = 200;
+            responses.status = 200;
+            if (countList <= 1) {
                 responses.data = animal;
                 responses.messages.add("Ficha de Nutricação excluída com sucesso.");
             } else {
-                responses.status = 200;
-                responses.dataList = Collections.singletonList(nutricaoList);
+                responses.dataList = Collections.singletonList(nutricaoListAux);
                 responses.messages.add(countList + " Fichas de Nutricação excluídas com sucesso.");
             }
             return Response.ok(responses).status(Response.Status.ACCEPTED).build();
         } catch (Exception e) {
-            if (pListIdnutricao.size() <= 1) {
-                responses.status = 500;
+            responses.status = 500;
+            if (countList <= 1) {
                 responses.data = animal;
                 responses.messages.add("Ficha de Nutricação não localizada ou já excluída.");
             } else {
-                responses.status = 500;
                 responses.dataList = Collections.singletonList(nutricaoList);
                 responses.messages.add("Fichas de Nutricação não localizadas ou já excluídas.");
             }
@@ -193,15 +194,19 @@ public class NutricaoController {
 
     public Response reactivateNutricao(List<Long> pListIdnutricao, String email) {
 
-        Integer countList = pListIdnutricao.size();
-        List<Nutricao> nutricaoList = new ArrayList<>();
+        List<Nutricao> nutricaoList;
+        List<Nutricao> nutricaoListAux = new ArrayList<>();
+
         responses = new Responses();
         responses.messages = new ArrayList<>();
+
         usuarioAuth = Usuario.find("email = ?1", email).firstResult();
+        nutricaoList = Nutricao.list("id = ?1 and isAtivo = false", pListIdnutricao);
+        int countList = nutricaoList.size();
 
         try {
-            pListIdnutricao.forEach((pNutricao) -> {
-                nutricao = Nutricao.find("id = ?1 and isAtivo = false ORDER BY id DESC", pNutricao).firstResult();
+
+            nutricaoList.forEach((nutricao) -> {
 
                 nutricao.isAtivo = Boolean.TRUE;
                 nutricao.dataAcao = new Date();
@@ -209,25 +214,23 @@ public class NutricaoController {
                 nutricao.usuarioAcaoNome = usuarioAuth.nome;
                 nutricao.systemDateDeleted = new Date();
                 nutricao.persist();
-                nutricaoList.add(nutricao);
+                nutricaoListAux.add(nutricao);
             });
-            if (pListIdnutricao.size() <= 1) {
-                responses.status = 200;
+            responses.status = 200;
+            if (countList <= 1) {
                 responses.data = animal;
                 responses.messages.add("Ficha de Nutricação excluída com sucesso.");
             } else {
-                responses.status = 200;
-                responses.dataList = Collections.singletonList(nutricaoList);
+                responses.dataList = Collections.singletonList(nutricaoListAux);
                 responses.messages.add(countList + " Fichas de Nutricação excluídas com sucesso.");
             }
             return Response.ok(responses).status(Response.Status.ACCEPTED).build();
         } catch (Exception e) {
-            if (pListIdnutricao.size() <= 1) {
-                responses.status = 500;
+            responses.status = 500;
+            if (countList <= 1) {
                 responses.data = animal;
                 responses.messages.add("Ficha de Nutricação não localizada ou já excluída.");
             } else {
-                responses.status = 500;
                 responses.dataList = Collections.singletonList(nutricaoList);
                 responses.messages.add("Fichas de Nutricação não localizadas ou já excluídas.");
             }

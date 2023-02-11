@@ -102,13 +102,14 @@ public class ProfileController {
 
     public Response removeUpload(List<Long> pListIdProfile) {
 
-        Integer countList = pListIdProfile.size();
+         List<Profile> profileList;
         responses = new Responses();
         responses.messages = new ArrayList<>();
+        profileList = Profile.list("id in ?1 and isAtivo = true", pListIdProfile);
+        int countList = profileList.size();
 
         try {
-            pListIdProfile.forEach((pProfile) -> {
-                profile = Profile.find("id = ?1 and isAtivo = true ORDER BY id DESC", pProfile).firstResult();
+            profileList.forEach((profile) -> {
 
                 try {
                     Profile.delete("id = ?1", profile.id);
@@ -117,20 +118,18 @@ public class ProfileController {
                     throw new RuntimeException(ex);
                 }
             });
-            if (pListIdProfile.size() <= 1) {
-                responses.status = 200;
+            responses.status = 200;
+            if (countList <= 1) {
                 responses.messages.add("Arquivo excluído com sucesso!");
             } else {
-                responses.status = 200;
                 responses.messages.add(countList + " Arquivos excluídos com sucesso!");
             }
             return Response.ok(responses).status(Response.Status.ACCEPTED).build();
         } catch (Exception e) {
-            if (pListIdProfile.size() <= 1) {
-                responses.status = 500;
+            responses.status = 500;
+            if (countList <= 1) {
                 responses.messages.add("Arquivo não localizado ou já excluído.");
             } else {
-                responses.status = 500;
                 responses.messages.add("Arquivos não localizados ou já excluídos.");
             }
             return Response.ok(responses).status(Response.Status.BAD_REQUEST).build();

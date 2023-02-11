@@ -97,13 +97,11 @@ public class ProfileS3Resources {
         try {
             return controller.removeS3(pListIdProfile);
         } catch (Exception e) {
+            responses = new Responses();
+            responses.status = 500;
             if (pListIdProfile.size() <= 1) {
-                responses = new Responses();
-                responses.status = 500;
                 responses.messages.add("Não foi possível excluir o Arquivo.");
             } else {
-                responses = new Responses();
-                responses.status = 500;
                 responses.messages.add("Não foi possível excluir os Arquivos.");
             }
             return Response.ok(responses).status(Response.Status.BAD_REQUEST).build();

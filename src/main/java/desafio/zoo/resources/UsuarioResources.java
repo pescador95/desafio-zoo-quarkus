@@ -127,13 +127,11 @@ public class UsuarioResources {
             String email = json.getName();
             return controller.deleteUser(pListIdusuario, email);
         } catch (Exception e) {
+            responses = new Responses();
+            responses.status = 500;
             if (pListIdusuario.size() <= 1) {
-                responses = new Responses();
-                responses.status = 500;
                 responses.messages.add("Não foi possível excluir o Usuário.");
             } else {
-                responses = new Responses();
-                responses.status = 500;
                 responses.messages.add("Não foi possível excluir os Usuários.");
             }
             return Response.ok(responses).status(Response.Status.BAD_REQUEST).build();
@@ -151,13 +149,11 @@ public class UsuarioResources {
             String email = json.getName();
             return controller.reactivateUser(pListIdusuario, email);
         } catch (Exception e) {
+            responses = new Responses();
+            responses.status = 500;
             if (pListIdusuario.size() <= 1) {
-                responses = new Responses();
-                responses.status = 500;
                 responses.messages.add("Não foi possível reativar o Usuário.");
             } else {
-                responses = new Responses();
-                responses.status = 500;
                 responses.messages.add("Não foi possível reativar os Usuários.");
             }
             return Response.ok(responses).status(Response.Status.BAD_REQUEST).build();

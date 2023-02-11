@@ -114,13 +114,11 @@ public class MedicacaoResources {
             String email = json.getName();
             return controller.deleteMedicacao(pListMedicacao, email);
         } catch (Exception e) {
+            responses = new Responses();
+            responses.status = 500;
             if (pListMedicacao.size() <= 1) {
-                responses = new Responses();
-                responses.status = 500;
                 responses.messages.add("Não foi possível excluir a medicação.");
             } else {
-                responses = new Responses();
-                responses.status = 500;
                 responses.messages.add("Não foi possível excluir as medicações.");
             }
             return Response.ok(responses).status(Response.Status.BAD_REQUEST).build();
@@ -138,13 +136,11 @@ public class MedicacaoResources {
             String email = json.getName();
             return controller.reactivateMedicacao(pListMedicacao, email);
         } catch (Exception e) {
+            responses = new Responses();
+            responses.status = 500;
             if (pListMedicacao.size() <= 1) {
-                responses = new Responses();
-                responses.status = 500;
                 responses.messages.add("Não foi possível reativar a medicação.");
             } else {
-                responses = new Responses();
-                responses.status = 500;
                 responses.messages.add("Não foi possível reativar as medicações.");
             }
             return Response.ok(responses).status(Response.Status.BAD_REQUEST).build();

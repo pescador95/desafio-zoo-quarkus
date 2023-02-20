@@ -1,9 +1,7 @@
 package desafio.zoo.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 
 import javax.persistence.*;
@@ -36,7 +34,6 @@ public class Profile extends PanacheEntityBase {
     public Long fileSize;
 
     @ManyToOne()
-    @JsonIgnoreProperties("profile")
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @JoinColumn(name = "animalId")
     @GeneratedValue
@@ -49,5 +46,5 @@ public class Profile extends PanacheEntityBase {
 
     public Profile() {
 
-        }
+    }
 }

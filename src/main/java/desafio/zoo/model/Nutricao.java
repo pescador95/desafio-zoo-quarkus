@@ -1,6 +1,7 @@
 package desafio.zoo.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
@@ -10,6 +11,7 @@ import java.util.Date;
 
 @Entity
 @Table(name = "nutricao")
+@JsonIgnoreProperties({"usuario", "usuarioAcao", "isAtivo", "dataAcao", "systemDateDeleted"})
 public class Nutricao extends PanacheEntityBase {
 
     @Column()
@@ -19,7 +21,7 @@ public class Nutricao extends PanacheEntityBase {
     public Long id;
 
     @ManyToOne()
-    @JsonIgnoreProperties("nutricao")
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @JoinColumn(name = "animalId")
     @GeneratedValue
     public Animal animal;
@@ -42,15 +44,13 @@ public class Nutricao extends PanacheEntityBase {
     public boolean isAtivo;
 
     @ManyToOne()
-    @JsonIgnoreProperties("nutricao")
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @JsonIgnore
     @JoinColumn(name = "userId", insertable = false, updatable = false)
     @GeneratedValue
     public Usuario usuario;
 
     @ManyToOne()
-    @JsonIgnoreProperties("nutricao")
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @JsonIgnore
     @JoinColumn(name = "userId")
     @GeneratedValue
     public Usuario usuarioAcao;
@@ -62,10 +62,12 @@ public class Nutricao extends PanacheEntityBase {
     public String usuarioAcaoNome;
 
     @Column()
+    @JsonIgnore
     @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
     public Date dataAcao;
 
     @Column()
+    @JsonIgnore
     @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
     public Date systemDateDeleted;
 

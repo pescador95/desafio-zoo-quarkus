@@ -1,11 +1,10 @@
 package desafio.zoo.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
-import org.hibernate.annotations.LazyCollection;
-import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -13,6 +12,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "animal")
+@JsonIgnoreProperties({"usuario", "usuarioAcao", "isAtivo", "dataAcao", "systemDateDeleted"})
 public class Animal extends PanacheEntityBase {
 
 
@@ -55,18 +55,17 @@ public class Animal extends PanacheEntityBase {
     public String orgao;
 
     @Column()
+    @JsonIgnore
     public boolean isAtivo;
 
     @ManyToOne()
-    @JsonIgnoreProperties("animal")
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @JsonIgnore
     @JoinColumn(name = "userId", insertable = false, updatable = false)
     @GeneratedValue
     public Usuario usuario;
 
     @ManyToOne()
-    @JsonIgnoreProperties("animal")
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @JsonIgnore
     @JoinColumn(name = "userId")
     @GeneratedValue
     public Usuario usuarioAcao;
@@ -78,36 +77,38 @@ public class Animal extends PanacheEntityBase {
     public String usuarioAcaoNome;
 
     @Column()
+    @JsonIgnore
     @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
     public Date dataAcao;
 
     @Column()
+    @JsonIgnore
     @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
     public Date systemDateDeleted;
 
-    @LazyCollection(LazyCollectionOption.FALSE)
-    @OneToMany(fetch = FetchType.LAZY, targetEntity = Nutricao.class, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "animal")
-    @JsonIgnoreProperties("animal")
+    @OneToMany(mappedBy = "animal", cascade = CascadeType.ALL)
+    @JsonIgnore
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     List<Nutricao> nutricaoList;
 
-    @LazyCollection(LazyCollectionOption.FALSE)
-    @OneToMany(fetch = FetchType.LAZY, targetEntity = HistoricoEtologico.class, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "animal")
-    @JsonIgnoreProperties("animal")
+    @OneToMany(mappedBy = "animal", cascade = CascadeType.ALL)
+    @JsonIgnore
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     List<HistoricoEtologico> historicoEtologicoList;
 
-    @LazyCollection(LazyCollectionOption.FALSE)
-    @OneToMany(fetch = FetchType.LAZY, targetEntity = HistoricoClinico.class, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "animal")
-    @JsonIgnoreProperties("animal")
+    @OneToMany(mappedBy = "animal", cascade = CascadeType.ALL)
+    @JsonIgnore
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     List<HistoricoClinico> historicoClinicoList;
 
-    @LazyCollection(LazyCollectionOption.FALSE)
-    @OneToMany(fetch = FetchType.LAZY, targetEntity = EnriquecimentoAmbiental.class, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "animal")
-    @JsonIgnoreProperties("animal")
+    @OneToMany(mappedBy = "animal", cascade = CascadeType.ALL)
+    @JsonIgnore
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     List<EnriquecimentoAmbiental> enriquecimentoAmbientalList;
 
-    @LazyCollection(LazyCollectionOption.FALSE)
-    @OneToMany(fetch = FetchType.LAZY, targetEntity = Profile.class, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "animal")
-    @JsonIgnoreProperties("animal")
+    @OneToMany(mappedBy = "animal", cascade = CascadeType.ALL)
+    @JsonIgnore
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     List<Profile> profileList;
 
     public Animal() {

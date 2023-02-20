@@ -1,6 +1,7 @@
 package desafio.zoo.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
@@ -10,6 +11,7 @@ import java.util.Date;
 
 @Entity
 @Table(name = "enriquecimentoAmbiental")
+@JsonIgnoreProperties({"usuario", "usuarioAcao", "isAtivo", "dataAcao", "systemDateDeleted"})
 public class EnriquecimentoAmbiental extends PanacheEntityBase {
 
     @Column()
@@ -19,7 +21,7 @@ public class EnriquecimentoAmbiental extends PanacheEntityBase {
     public Long id;
 
     @ManyToOne
-    @JsonIgnoreProperties("enriquecimentoAmbiental")
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @JoinColumn(name = "animalId")
     @GeneratedValue
     public Animal animal;
@@ -37,14 +39,12 @@ public class EnriquecimentoAmbiental extends PanacheEntityBase {
     public String descricaoEnriquecimento;
 
     @ManyToOne()
-    @JsonIgnoreProperties("enriquecimentoAmbiental")
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @JsonIgnore
     @JoinColumn(name = "userId")
     @GeneratedValue
     public Usuario usuarioAcao;
 
     @ManyToOne()
-    @JsonIgnoreProperties("enriquecimentoAmbiental")
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @JoinColumn(name = "userId", insertable = false, updatable = false)
     @GeneratedValue
@@ -57,13 +57,16 @@ public class EnriquecimentoAmbiental extends PanacheEntityBase {
     public String usuarioAcaoNome;
 
     @Column()
+    @JsonIgnore
     public boolean isAtivo;
 
     @Column()
+    @JsonIgnore
     @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
     public Date dataAcao;
 
     @Column()
+    @JsonIgnore
     @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
     public Date systemDateDeleted;
 

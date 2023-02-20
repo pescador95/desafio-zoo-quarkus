@@ -1,6 +1,7 @@
 package desafio.zoo.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
@@ -9,6 +10,7 @@ import javax.persistence.*;
 import java.util.Date;
 
 @Entity
+@JsonIgnoreProperties({"usuario", "usuarioAcao", "isAtivo", "dataAcao", "systemDateDeleted"})
 @Table(name = "historicoEtologico")
 public class HistoricoEtologico extends PanacheEntityBase {
 
@@ -19,7 +21,7 @@ public class HistoricoEtologico extends PanacheEntityBase {
     public Long id;
 
     @ManyToOne()
-    @JsonIgnoreProperties("historicoEtologico")
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @JoinColumn(name = "animalId")
     @GeneratedValue
     public Animal animal;
@@ -38,18 +40,17 @@ public class HistoricoEtologico extends PanacheEntityBase {
     public String descricaoEtologico;
 
     @Column()
+    @JsonIgnore
     public boolean isAtivo;
 
     @ManyToOne()
-    @JsonIgnoreProperties("historicoEtologico")
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @JoinColumn(name = "userId", insertable = false, updatable = false)
     @GeneratedValue
     public Usuario usuario;
 
     @ManyToOne()
-    @JsonIgnoreProperties("historicoEtologico")
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @JsonIgnore
     @JoinColumn(name = "userId")
     @GeneratedValue
     public Usuario usuarioAcao;
@@ -61,10 +62,12 @@ public class HistoricoEtologico extends PanacheEntityBase {
     public String usuarioAcaoNome;
 
     @Column()
+    @JsonIgnore
     @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
     public Date dataAcao;
 
     @Column()
+    @JsonIgnore
     @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
     public Date systemDateDeleted;
 
